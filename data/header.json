@@ -1,0 +1,50 @@
+{
+  "header": [
+    {
+      "label": "home",
+      "href": "/"
+    },
+    {
+      "label": "services",
+      "href": "/services",
+      "subItems": [
+        {
+          "label": "residential roofing",
+          "href": "/services/residential-roofing"
+        },
+        {
+          "label": "ici Roofing",
+          "href": "/services/ICI"
+        },
+        {
+          "label": "waterproofing",
+          "href": "/services/waterproofing"
+        },
+        {
+          "label": "architectural cladding",
+          "href": "/services/architectural-cladding"
+        },
+        {
+          "label": "repairs & maintenance",
+          "href": "/services/repairs"
+        }
+      ]
+    },
+    {
+      "label": "projects",
+      "href": "/projects"
+    },
+    {
+      "label": "about",
+      "href": "/about"
+    },
+    {
+      "label": "careers",
+      "href": "/careers"
+    },
+    {
+      "label": "contact",
+      "href": "/contact"
+    }
+  ]
+}

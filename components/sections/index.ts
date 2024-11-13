@@ -1,0 +1,5 @@
+export * from "./AboutUs"
+export * from "./HomeGallery"
+export * from "./Header"
+export * from "./Footer"
+export * from "./ServiceSlider"
