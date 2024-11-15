@@ -5,19 +5,13 @@ import { images } from "@/constants"
 import Image from 'next/image'
 import {FaArrowDown} from "react-icons/fa";
 import Link from "next/link";
-import {client} from "@/sanity/lib/client";
+import {getHomeVideoData} from "@/sanity/lib/queries";
 
 interface HomeVideo {
     videoUrl: string;
 }
 
-const getHomeVideoData = async () => {
-    const query = `*[_type == "homeVideo"]{
-  videoLabel,
-  "videoUrl": url.asset->url
-}`
-    return await client.fetch(query);
-}
+
 
 export const BgHomeVideo: React.FC = () => {
     const [videoError, setVideoError] = useState(false);

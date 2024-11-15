@@ -3,20 +3,15 @@
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
-import { client } from "@/sanity/lib/client";
 import { PortableText } from "next-sanity";
+import {getAboutUsHomeData} from "@/sanity/lib/queries";
 
 interface AboutUsHome {
     content: Array<{ _key: string; _type: string; children: Array<{ _key: string; text: string }> }>;
 }
 
 
-const getAboutUsHomeData = async () => {
-    const query = `*[_type == "aboutUsHome"]{
-        content
-    }[0]`;
-    return await client.fetch(query);
-};
+
 
 export const AboutUs = () => {
     const [aboutUsData, setAboutUsData] = useState<AboutUsHome | null>(null);

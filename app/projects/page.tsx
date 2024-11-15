@@ -3,18 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { client } from "@/sanity/lib/client";
+import {fetchProjects} from "@/sanity/lib/queries";
 
-const fetchProjects = async () => {
-    const query = `*[_type == "projectPage"]{
-        _id,
-        title,
-        category,
-        "imageUrl": image.asset->url,
-        "slug": slug.current
-    }`;
-    return await client.fetch(query);
-};
 
 interface Project {
     _id: string;

@@ -8,7 +8,7 @@ import "swiper/css/pagination";
 import { Autoplay } from "swiper/modules";
 import { FaArrowRight } from "react-icons/fa";
 import Link from "next/link";
-import { client } from "@/sanity/lib/client";
+import {getServiceCarouselData} from "@/sanity/lib/queries";
 
 interface Service {
     title: string;
@@ -21,17 +21,7 @@ interface Service {
 
 const categories = ["residential-roofing", "ICI-roofing", "repairs", "waterproofing", "architectural-cladding"];
 
-const getServiceCarouselData = async () => {
-    const query = `*[_type == "serviceCarousel"]{
-        title,
-        serviceLink,
-        requestLink,
-        category,
-        description,
-        "mainImageUrl": mainImage.asset->url
-    }`;
-    return await client.fetch(query);
-};
+
 
 export const ServiceSlider: React.FC = () => {
     const [services, setServices] = useState<Service[]>([]);
