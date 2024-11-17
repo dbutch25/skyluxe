@@ -94,9 +94,9 @@ const ResidentRoofingPage = async () => {
                     <h1 className="inline border-b-2 border-primary-800">{title}</h1>
                 </div>
                 <div className="py-10">
-                    <div className="flex flex-col md:flex-row justify-center gap-5 md:gap-16 w-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {residentialList?.map((section, index) => (
-                            section?.items?.map((item, i) => (
+                            section?.items.map((item, i) => (
                                 <div key={`${index}-${i}`} className="flex items-center text-base text-gray-700">
                                     <FaCircleCheck size={20} className="text-secondary-500 mr-2 min-w-5 min-h-5"/>
                                     <span>{item}</span>
@@ -129,7 +129,7 @@ const ResidentRoofingPage = async () => {
                             className=" w-full h-96 md:w-1/2 object-cover rounded-lg shadow-lg"
                         />
                     </div>
-                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                    <div className="pb-20 md:py-5 flex items-center justify-center">
                         <Carousel images={residentialImages} />
                     </div>
                 </div>

@@ -198,7 +198,7 @@ export const fetchResidentialData = groq`
       },
       alt
     },
-    residentialList[]->{
+    residentialList[] {
       items
     },
     firstTitle,
