@@ -18,7 +18,7 @@ interface CarouselProps {
     images: string[]; // Array of image URLs or StaticImageData
 }
 
-const Carousel: React.FC<CarouselProps> = ({ images }) => {
+export const Carousel: React.FC<CarouselProps> = ({ images = [] }) => {
     // Correct type for thumbsSwiper
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
@@ -32,7 +32,7 @@ const Carousel: React.FC<CarouselProps> = ({ images }) => {
                 zoom={true}
                 className="relative w-full h-96"
             >
-                {images.map((image, index) => (
+                {images?.map((image, index) => (
                     <SwiperSlide key={index} className="flex justify-center items-center">
                         <div className="swiper-zoom-container">
                             <Image
@@ -44,7 +44,7 @@ const Carousel: React.FC<CarouselProps> = ({ images }) => {
                             />
                         </div>
                     </SwiperSlide>
-                ))}
+                )) ||[]}
             </Swiper>
 
             {/* Thumbnail Carousel */}

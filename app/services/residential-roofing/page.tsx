@@ -1,36 +1,84 @@
 import Image from "next/image";
 import { FaArrowDown } from "react-icons/fa";
-import {claddingGallery, images} from "@/constants";
 import {FaCircleCheck} from "react-icons/fa6";
 import React from "react";
-import Carousel from "@/components/layouts/CarouselSlider";
+import Carousel from "@/components/elements/Carousel";
 import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 import {Marquee} from "@/components";
+import {client} from "@/sanity/lib/client";
+import {fetchResidentialData} from "@/sanity/lib/queries";
+
+interface ImageData {
+    image: {
+        asset: {
+            _id: string;
+            url: string;
+        };
+    };
+    alt: string;
+}
+interface CarouselMImage {
+    url: string; // Image URL from the CMS
+    alt: string; // Alt text for the image
+}
+
+interface ListItem {
+    items: string[];
+}
+
+interface ResidentialPageData {
+    title: string;
+    backgroundImage: ImageData;
+    residentialList: ListItem[];
+    firstTitle: string;
+    firstContent: string;
+    firstImage: ImageData;
+    secondImage: ImageData;
+    residentialImages: string[];
+    asphaltTitle: string;
+    asphaltFirstContent: string;
+    asphaltImage: ImageData;
+    asphaltImages: string[];
+    cedarTitle: string;
+    cedarFirstContent: string;
+    cedarFirstImage: ImageData;
+    cedarSecondImage: ImageData;
+    cedarImages: string[];
+    metalsTitle: string;
+    metalsList: ListItem[];
+    metalsContent: string;
+    metalsFirstImage: ImageData;
+    metalsImages: string[];
+    guttersTitle: string;
+    guttersContent: string;
+    guttersFirstImage: ImageData;
+    guttersSecondImage: ImageData;
+    guttersImages: string[];
+    naturalTitle: string;
+    naturalContent: string;
+    naturalImages: string[];
+    syntheticTitle: string;
+    syntheticContent: string;
+    syntheticImage: ImageData;
+    syntheticImages: string[];
+    skylightTitle: string;
+    skylightContent: string;
+    carouselMImages: CarouselMImage[];
+}
 
 
-const residentialItems = [
-    "New Construction Roof Installation",
-    "Roof Replacement",
-    "Roof Repairs"
-]
 
-const metals = [
-    "Copper",
-    "Lead",
-    "Zinc",
-    "Brass",
-    "Bronze",
-    "Alloys"
-]
+const ResidentRoofingPage = async () => {
+    const residentialData: ResidentialPageData = await client.fetch(fetchResidentialData)
 
-const ResidentRoofingPage = () => {
+    const { title, backgroundImage, residentialList, firstTitle, firstContent, firstImage, secondImage, residentialImages, asphaltTitle, asphaltFirstContent, asphaltImage, asphaltImages, cedarTitle, cedarFirstContent, cedarFirstImage, cedarSecondImage, cedarImages, metalsTitle, metalsList, metalsContent, metalsFirstImage, metalsImages, guttersTitle, guttersContent, guttersFirstImage, guttersSecondImage, guttersImages, naturalTitle, naturalContent, naturalImages, syntheticTitle, syntheticContent, syntheticImage, syntheticImages, skylightTitle, skylightContent, carouselMImages} = residentialData
     return (
         <>
             <section>
                 <div className="relative w-full h-screen overflow-hidden">
                     <Image
-                        src={images.homeImage}
-                        alt="Background"
+                        src={backgroundImage?.image?.asset?.url}
+                        alt={backgroundImage?.alt}
                         className="absolute top-0 left-0 w-full h-full object-cover"
                         fill
                         priority
@@ -43,203 +91,170 @@ const ResidentRoofingPage = () => {
             </section>
             <section className="container mx-auto pt-20">
                 <div className="text-3xl font-julius text-primary-950 text-center">
-                    <h1 className="inline border-b-2 border-primary-800">Residential Roofing</h1>
+                    <h1 className="inline border-b-2 border-primary-800">{title}</h1>
                 </div>
                 <div className="py-10">
                     <div className="flex flex-col md:flex-row justify-center gap-5 md:gap-16 w-full">
-                        {residentialItems.map((item, index) => (
-                            <div key={index} className="flex items-center text-base text-gray-700">
-                                <FaCircleCheck size={20} className="text-secondary-500 mr-2 min-w-5 min-h-5"/>
-                                <span>{item}</span>
-                            </div>
+                        {residentialList?.map((section, index) => (
+                            section?.items?.map((item, i) => (
+                                <div key={`${index}-${i}`} className="flex items-center text-base text-gray-700">
+                                    <FaCircleCheck size={20} className="text-secondary-500 mr-2 min-w-5 min-h-5"/>
+                                    <span>{item}</span>
+                                </div>
+                            ))
+
                         ))}
                     </div>
                 </div>
                 <div>
                     <div>
-                        <h3 className="text-xl font-julius text-primary-950 pt-10">Flat Roofing</h3>
+                        <h3 className="text-xl font-julius text-primary-950 pt-10">{firstTitle}</h3>
                         <p className="text-primary-950 font-montserrat text-base py-5">
-                            Since we are experienced with the scale and difficulty of commercial projects, the
-                            residential flat roof projects are a breeze. It is un-common to find a reputable commercial
-                            contractor who also takes on residential projects. The commercial contractors are the pros
-                            when it comes to flat roofing and we are one of them. T Modified bitumen is the most
-                            commonly used residential flat roofing application these days. We are skilled in installing
-                            all modified bitumen applications ranging from cold applied, heat welded and mop down. As
-                            with the rest of our work, we install all of our residential flat roofs to manufacturers’
-                            specification. Flat roof system manufacturers we use are Soprema, Polyglass, Bakor etc.
+                            {firstContent}
                         </p>
                     </div>
                     <div className='flex flex-col gap-10 md:flex-row py-5'>
                         <Image
-                            src={images.homeImage}
-                            alt="placeholder"
+                            src={firstImage?.image?.asset?.url}
+                            alt={firstImage?.alt}
                             width={500}
                             height={350}
-                            className="w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
+                            className="w-full h-96 md:w-1/2 object-cover rounded-lg shadow-lg"
                         />
                         <Image
-                            src={images.homeImage}
-                            alt="placeholder"
+                            src={secondImage?.image?.asset?.url}
+                            alt={secondImage?.alt}
                             width={500}
                             height={350}
-                            className=" w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
+                            className=" w-full h-96 md:w-1/2 object-cover rounded-lg shadow-lg"
                         />
                     </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Carousel slides={claddingGallery}/>
+                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                        <Carousel images={residentialImages} />
                     </div>
                 </div>
                 <div>
                     <div>
-                        <h3 className="text-xl font-julius text-primary-950 pt-10">Asphalt Shingles</h3>
+                        <h3 className="text-xl font-julius text-primary-950 pt-10">{asphaltTitle}</h3>
                         <p className="text-primary-950 font-montserrat text-base py-5">
-                            Asphalt shingle roof systems are the most popular application for residential roofs. Asphalt
-                            shingle systems consist of more than just shingles. They consist of roof sheathing, metal
-                            flashings, underlayment, stack flashings, vent flashings and shingles. It is important that
-                            the entire system gets addressed upon inspection. Our team attends all manufacturer training
-                            sessions and is knowledgeable of manufacturer specifications and warranties from
-                            Certainteed, GAF, IKO & BP. From designer to luxury shingles we have installed them all and
-                            we install them all according to manufacturers’ specification.
+                            {asphaltFirstContent}
                         </p>
                     </div>
                     <div className='py-5'>
                         <Image
-                            src={images.homeImage}
-                            alt="placeholder"
-                            width={1280}
+                            src={asphaltImage?.image?.asset?.url}
+                            alt={asphaltImage?.alt}
+                            width={1080}
                             height={720}
                             className="w-full h-full object-cover rounded-lg shadow-lg"
                         />
                     </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Carousel slides={claddingGallery}/>
+                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                        <Carousel images={asphaltImages}/>
                     </div>
                 </div>
                 <div>
                     <div>
                         <h3 className="text-xl font-julius text-primary-950 pt-10">
-                            Cedar Shakes & Shingles
+                            {cedarTitle}
                         </h3>
                         <p className="text-primary-950 font-montserrat text-base py-5">
-                            Cedar shakes and shingles are more aesthetically pleasing and typically have a longer life
-                            than a basic asphalt shingle. Cedar roofs have exceptional thermal insulation properties
-                            which can help lower heating costs. There is more difficulty in installing a cedar roof in
-                            comparison to an asphalt shingle roof. We follow the guidelines from the “Cedar Shake &
-                            Shingle Bureau Roof Manual” which is the highest standard for cedar installation guidelines.
+                            {cedarFirstContent}
                         </p>
                     </div>
                     <div className='flex flex-col gap-10 md:flex-row py-5'>
                         <Image
-                            src={images.homeImage}
-                            alt="placeholder"
+                            src={cedarFirstImage?.image?.asset?.url}
+                            alt={cedarFirstImage?.alt}
                             width={500}
                             height={350}
                             className="w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
                         />
                         <Image
-                            src={images.homeImage}
-                            alt="placeholder"
+                            src={cedarSecondImage?.image?.asset?.url}
+                            alt={cedarSecondImage?.alt}
                             width={500}
                             height={350}
                             className=" w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
                         />
                     </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Carousel slides={claddingGallery}/>
+                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                        <Carousel images={cedarImages}/>
                     </div>
                 </div>
                 <div>
                     <div>
                         <h3 className="text-xl font-julius text-primary-950 pt-10">
-                            Custom Copper & Exotic Metals
+                            {metalsTitle}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-5">
-                            {metals.map((item, index) => (
-                                <div key={index} className="flex items-center text-base text-gray-700">
-                                    <FaCircleCheck size={20} className="text-secondary-500 mr-2 min-w-5 min-h-5"/>
-                                    <span>{item}</span>
-                                </div>
+                            {metalsList?.map((section, index) => (
+                                section?.items?.map((item, i) => (
+                                    <div key={`${index}-${i}`} className="flex items-center text-left text-base text-gray-700">
+                                        <FaCircleCheck size={20} className="text-secondary-500 mr-2 min-w-5 min-h-5" />
+                                        <span>{item}</span>
+                                    </div>
+                                ))
                             ))}
                         </div>
-                        <p className="text-primary-950 font-montserrat text-base py-5">
-                            Copper and exotic metal work, when installed properly, is intended to last a lifetime. It is
-                            important to find a coppersmith who can fabricate and install copper properly without too
-                            much use of caulking, solder and petrochemical sealants. We fabricate and install it to
-                            historical standards. We can fabricate and install exotic metals for many different
-                            applications including: shingles, panels, flashings, gutters and downpipes.
-                        </p>
-                    </div>
-                    <div className='flex flex-col gap-10 md:flex-row py-5'>
-                        <Image
-                            src={images.homeImage}
-                            alt="placeholder"
-                            width={500}
-                            height={350}
-                            className="w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
-                        />
-                        <Image
-                            src={images.homeImage}
-                            alt="placeholder"
-                            width={500}
-                            height={350}
-                            className=" w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
-                        />
-                    </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Carousel slides={claddingGallery}/>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <h3 className="text-xl font-julius text-primary-950 pt-10">
-                            Metal Roofing & Gutters
-                        </h3>
-                        <p className="text-primary-950 font-montserrat text-base py-5">
-                            There are many different types of aluminum and steel roofing applications. We install all
-                            metal roofing systems. We have our own machinery to fabricate many different types of metal
-                            roof panels in our shop. We also install other manufacturer’s metal roof systems. We also
-                            install many different aluminum and steel gutters and downpipes from basic to custom
-                            profiles.
 
-                        </p>
                     </div>
                     <div className='flex flex-col gap-10 md:flex-row py-5'>
                         <Image
-                            src={images.homeImage}
-                            alt="placeholder"
+                            src={metalsFirstImage?.image?.asset?.url}
+                            alt={metalsFirstImage?.alt}
                             width={500}
                             height={350}
                             className="w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
                         />
-                        <Image
-                            src={images.homeImage}
-                            alt="placeholder"
-                            width={500}
-                            height={350}
-                            className=" w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
-                        />
+                        <p className="w-full h-full md:w-1/2 text-primary-950 font-montserrat text-base py-5">
+                            {metalsContent}
+                        </p>
                     </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Carousel slides={claddingGallery}/>
+                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                        <Carousel images={metalsImages}/>
                     </div>
                 </div>
                 <div>
                     <div>
                         <h3 className="text-xl font-julius text-primary-950 pt-10">
-                            Natural Slate Tiles
+                            {guttersTitle}
                         </h3>
                         <p className="text-primary-950 font-montserrat text-base py-5">
-                            Due to the nature of slate roofing tiles, installation difficulty, their cost, it is
-                            important that only the highest skilled and experienced tradesmen should perform your slate
-                            roof installation of repair. Slate tiles are available in several colours and sizes. A
-                            properly installed slate roof can be the most aesthetically pleasing and longest lasting
-                            option for your roof. All of our slate installations and slate repairs are completed
-                            according to “The Slate Roof Bible” by Joseph Jenkins. We purchase our slate tiles from
-                            North Country Slate in Toronto.
+                            {guttersContent}
                         </p>
                     </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Carousel slides={claddingGallery}/>
+                    <div className='flex flex-col gap-10 md:flex-row py-5'>
+                        <Image
+                            src={guttersFirstImage?.image?.asset?.url}
+                            alt={guttersFirstImage?.alt}
+                            width={500}
+                            height={350}
+                            className="w-full h-96 md:w-1/2 object-cover rounded-lg shadow-lg"
+                        />
+                        <Image
+                            src={guttersSecondImage?.image?.asset?.url}
+                            alt={guttersSecondImage?.alt}
+                            width={500}
+                            height={350}
+                            className=" w-full h-96 md:w-1/2 object-cover rounded-lg shadow-lg"
+                        />
+                    </div>
+                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                        <Carousel images={guttersImages}/>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <h3 className="text-xl font-julius text-primary-950 pt-10">
+                            {naturalTitle}
+                        </h3>
+                        <p className="text-primary-950 font-montserrat text-base py-5">
+                            {naturalContent}
+                        </p>
+                    </div>
+                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                        <Carousel images={naturalImages}/>
                     </div>
                     <div className="py-5">
                         <YouTubeEmbed videoId={"J0_g6N3-WeU"}/>
@@ -249,40 +264,41 @@ const ResidentRoofingPage = () => {
                 <div>
                     <div>
                         <h3 className="text-xl font-julius text-primary-950 pt-10">
-                            Synthetic Slate Tiles
+                            {syntheticTitle}
                         </h3>
                     </div>
                     <div className='flex flex-col items-center justify-center gap-10 md:flex-row py-5'>
                         <p className="flex justify-center text-primary-950 font-montserrat text-base w-full h-full md:w-1/2">
-                            Synthetic Slate has been gaining tons of popularity over the last few years. We have lots of
-                            experience in installing many different brands of synthetic slate from Eco-Star, Inspire
-                            Slate, Da Vinci Single and Multi Width Tiles. We have also installed many Synthetic Shake
-                            Tiles which mimics the look of a cedar roof. These synthetic products look gorgeous and also
-                            last a lot longer than a typical asphalt shingle roof.
+                            {syntheticContent}
                         </p>
                         <Image
-                            src={images.homeImage}
-                            alt="placeholder"
+                            src={syntheticImage?.image?.asset?.url}
+                            alt={syntheticImage?.alt}
                             width={500}
                             height={350}
                             className="w-full h-full md:w-1/2 object-cover rounded-lg shadow-lg"
                         />
                     </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Carousel slides={claddingGallery}/>
+                    <div className="pb-10 md:py-5 flex items-center justify-center">
+                        <Carousel images={syntheticImages}/>
                     </div>
                 </div>
                 <div>
                     <div>
                         <h3 className="text-xl font-julius text-primary-950 pt-10">
-                            Skylight Installation
+                            {skylightTitle}
                         </h3>
                         <p className="text-primary-950 font-montserrat text-base w-full pt-2">
-                            To install skylights properly you must complete the necessary framing/rough carpentry before you install the skylight. The framing/rough carpentry must be completed according to building code. Once you cut one or more roof rafters for the skylight tunnel you must make sure you follow procedures to keep the roof framing to building code. We specialize in the skylight installation of all manufacturers including:
+                            {skylightContent}
                         </p>
                     </div>
-                    <div className="py-5 flex items-center justify-center">
-                        <Marquee images={claddingGallery} />
+                    <div className="py-20 flex items-center justify-center">
+                        <Marquee
+                            images={carouselMImages?.map(img => ({
+                                url: img.url,
+                                alt: img.alt,
+                            }))}
+                        />
                     </div>
                 </div>
             </section>

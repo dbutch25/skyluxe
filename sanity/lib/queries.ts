@@ -85,3 +85,238 @@ export const projectQuery = groq`
     "carouselImages": carouselImages[].asset->url
   }
 `;
+
+export const getRepairsPage = groq`
+  *[_type == "repairs"]{
+    title,
+    firstContent,
+    secondContent,
+    "firstImage": {
+      "url": firstImage.image.asset->url,
+      "alt": firstImage.alt
+    },
+    thirdContent,
+    "images": images[]{
+      "url": image.asset->url,
+      "alt": alt
+    },
+    listSections[]{
+      items
+    }
+  }
+`;
+
+// queries/waterproofingQuery.ts
+
+// lib/sanity/queries.ts
+
+export const getWaterproofingPage = groq`
+  *[_type == "waterproofing"][0] {
+    title,
+    description,
+    accordionItems[] {
+      accordionTitle,
+      accordionContent
+    },
+    gallery[] {
+      "url": galleryImage.asset->url,
+      galleryAlt
+    },
+    manufacturersGallery[] {
+      "url": manufacturerImage.asset->url,
+      manufacturerAlt
+    }
+  }
+`;
+
+export const getCladdingPage = groq`
+  *[_type == "cladding"][0] {
+    title,
+    content,
+    extraTitle,
+    extraContent,
+    listSections[] {
+      items
+    },
+    galleryImages[] {
+      "url": image.asset->url,
+      alt
+    },
+    carouselMImages[] {
+      "url": image.asset->url,
+      alt
+    },
+    carouselADImages[] {
+      "url": image.asset->url,
+      alt
+    }
+  }
+`;
+
+export const getICIRoofingPage = groq`
+  *[_type == "iciRoofing"][0] {
+    title,
+    content,
+    firstTitle,
+    firstContent,
+    firstImage {
+      "url": image.asset->url,
+      alt
+    },
+    secondImage {
+      "url": image.asset->url,
+      alt
+    },
+    secondContent,
+    thirdContent,
+    secondTitle,
+    listSections[] {
+      items
+    },
+    listItem,
+    galleryImages[] {
+      "url": image.asset->url,
+       alt
+    },
+    extraTitle,
+    carouselMImages[] {
+        "url": image.asset->url,
+        alt
+    }
+  }
+`;
+
+export const fetchResidentialData = groq`
+   *[_type == "residential"][0]{
+    title,
+    backgroundImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    residentialList[]->{
+      items
+    },
+    firstTitle,
+    firstContent,
+    firstImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    secondImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    "residentialImages": residentialImages[].asset->url,
+    asphaltTitle,
+    asphaltFirstContent,
+    asphaltImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    "asphaltImages": asphaltImages[].asset->url,
+    cedarTitle,
+    cedarFirstContent,
+    cedarFirstImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    cedarSecondImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    "cedarImages": cedarImages[].asset->url,
+    metalsTitle,
+    metalsList[]->{
+      items
+    },
+    metalsContent,
+    metalsFirstImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    "metalsImages": metalsImages[].asset->url,
+    guttersTitle,
+    guttersContent,
+    guttersFirstImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    guttersSecondImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    "guttersImages": guttersImages[].asset->url,
+    naturalTitle,
+    naturalContent,
+    "naturalImages": naturalImages[].asset->url,
+    syntheticTitle,
+    syntheticContent,
+    syntheticImage{
+      image{
+        asset->{
+          _id,
+          url
+        },
+      },
+      alt
+    },
+    "syntheticImages": syntheticImages[].asset->url,
+    skylightTitle,
+    skylightContent,
+    carouselMImages[] {
+        "url": image.asset->url,
+        alt
+    }
+  }`;
+
+
+
+
+
+
+

@@ -96,4 +96,31 @@ strong {
   padding: 0 10px;
 }
 
+/* styles/globals.css or a separate CSS file */
+
+/* Define the marquee container */
+.marquee-wrapper {
+  width: 100%;
+  overflow: hidden; /* Hide the overflowing content */
+  padding: 0 10px; /* Optional, adjust for spacing around the marquee */
+}
+
+/* Marquee animation */
+.marquee {
+  display: flex;
+  gap: 100px; /* Adjust the gap between the images */
+  animation: marquee-animation 30s linear infinite; /* Animation for scrolling */
+}
+
+/* Define the animation for the marquee */
+@keyframes marquee-animation {
+  0% {
+    transform: translateX(0); /* Start from the beginning */
+  }
+  100% {
+    transform: translateX(-100%); /* Scroll to the left, and restart */
+  }
+}
+
+
 
