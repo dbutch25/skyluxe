@@ -72,7 +72,7 @@ export const HomeGallery: React.FC = () => {
                                 <Image
                                     src={item.imageUrl}
                                     alt={item.title || 'Gallery image'} // Use title as alt, fallback if missing
-                                    width={400}
+                                    width={450}
                                     height={300}
                                     className="w-full h-full md:w-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                                 />

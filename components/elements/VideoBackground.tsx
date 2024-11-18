@@ -13,10 +13,11 @@ const VideoBackground = ({ videoSrc }: { videoSrc: string }) => (
             className="pointer-events-none absolute top-0 left-0 w-full h-full object-cover"
         />
         <div
-            className='absolute rounded-full bg-transparent p-2 text-white border-2 border-white shadow-lg inline-block animate-bounce bottom-6 left-6'>
-            <FaArrowDown size="24" />
+            className="absolute rounded-full bg-transparent p-2 text-white border-2 border-white shadow-lg inline-block animate-bounce bottom-10 left-10 transform -translate-x-1/2">
+            <FaArrowDown size="35"/>
         </div>
     </div>
+
 );
 
 export default VideoBackground;

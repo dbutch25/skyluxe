@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import {FaFacebookF, FaInstagram, FaYoutube, FaTiktok} from 'react-icons/fa';
 import { images } from '@/constants'; // Adjust the path if needed
 
 const Footer: React.FC = () => {
@@ -57,44 +57,44 @@ const Footer: React.FC = () => {
                     {/* Services Column */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">Services</h4>
-                        <Link href="/" className="mb-1 hover:underline">Residential Roofing</Link>
-                        <Link href="/" className="mb-1 hover:underline">ICI Roofing</Link>
-                        <Link href="/" className="mb-1 hover:underline">Architectural Cladding</Link>
-                        <Link href="/" className="mb-1 hover:underline">Waterproofing</Link>
-                        <Link href="/" className="mb-1 hover:underline">Repairs & Maintenance</Link>
+                        <Link href="/services/residential-roofing" className="mb-1 hover:underline">Residential Roofing</Link>
+                        <Link href="/services/ICI" className="mb-1 hover:underline">ICI Roofing</Link>
+                        <Link href="/services/architectural-cladding" className="mb-1 hover:underline">Architectural Cladding</Link>
+                        <Link href="/services/waterproofing" className="mb-1 hover:underline">Waterproofing</Link>
+                        <Link href="/services/repairs" className="mb-1 hover:underline">Repairs & Maintenance</Link>
                     </div>
 
                     {/* About Us Column */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">About Us</h4>
-                        <Link href="/" className="mb-1 hover:underline">Our Story</Link>
-                        <Link href="/" className="mb-1 hover:underline">Our Team</Link>
-                        <Link href="/" className="mb-1 hover:underline">Careers</Link>
+                        <Link href="/about" className="mb-1 hover:underline">Our Story</Link>
+                        <Link href="/about" className="mb-1 hover:underline">Our Team</Link>
+                        <Link href="/careers" className="mb-1 hover:underline">Careers</Link>
                     </div>
 
                     {/* Resources Column */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">Resources</h4>
-                        <Link href="/" className="mb-1 hover:underline">Blog</Link>
-                        <Link href="/" className="mb-1 hover:underline">Warranties</Link>
-                        <Link href="/" className="mb-1 hover:underline">Contact Us</Link>
+                        <Link href="/projects" className="mb-1 hover:underline">Projects</Link>
+                        <Link href="/about" className="mb-1 hover:underline">Warranties</Link>
+                        <Link href="/contact" className="mb-1 hover:underline">Contact Us</Link>
                     </div>
 
                     {/* Column 4: Social Icons */}
                     <div className="flex flex-col items-start">
                         <h4 className="font-semibold text-lg mb-4">Follow Us</h4>
                         <div className="flex space-x-4">
-                            <Link href="https://facebook.com" target="_blank" aria-label="Facebook">
+                            <Link href="https://www.facebook.com/SkyluxeRoofing/" target="_blank" aria-label="Facebook">
                                 <FaFacebookF className="text-xl hover:text-secondary-400 transition-colors duration-300" />
                             </Link>
-                            <Link href="https://twitter.com" target="_blank" aria-label="Twitter">
-                                <FaTwitter className="text-xl hover:text-secondary-400 transition-colors duration-300" />
+                            <Link href="https://www.youtube.com/@skyluxeroofing" target="_blank" aria-label="Youtube">
+                                <FaYoutube className="text-xl hover:text-secondary-400 transition-colors duration-300" />
                             </Link>
-                            <Link href="https://instagram.com" target="_blank" aria-label="Instagram">
+                            <Link href="https://www.instagram.com/skyluxeroofing/?hl=en" target="_blank" aria-label="Instagram">
                                 <FaInstagram className="text-xl hover:text-secondary-400 transition-colors duration-300" />
                             </Link>
-                            <Link href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-                                <FaLinkedinIn className="text-xl hover:text-secondary-400 transition-colors duration-300" />
+                            <Link href="https://www.tiktok.com/@skyluxeroofing" target="_blank" aria-label="TikTok">
+                                <FaTiktok className="text-xl hover:text-secondary-400 transition-colors duration-300" />
                             </Link>
                         </div>
                     </div>
