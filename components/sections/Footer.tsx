@@ -1,5 +1,3 @@
-// components/Footer.tsx
-
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,7 +9,6 @@ const Footer: React.FC = () => {
         <footer className="bg-primary-50 text-primary-950 pt-20">
             <div className="container mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-                    {/* Column 1: Logo */}
                     <div className="flex flex-col items-center">
                         <Link href="/">
                             <Image
@@ -24,21 +21,19 @@ const Footer: React.FC = () => {
                         </Link>
                     </div>
 
-                    {/* Column 2: Contact Info with Title */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">Contact Us</h4>
                         <Link href="https://www.google.com/maps/place/1941+Mattawa+Ave,+Mississauga,+ON,+Canada" target="_blank" aria-label="Address Location" className="mb-2 hover:underline">
                             1941 Mattawa Ave. Mississauga, ON, Canada
                         </Link>
-                        <Link href="tel:+1234567890" className="mb-2 hover:underline">
-                            Phone: (123) 456-7890
+                        <Link href="tel:+16476295893" className="mb-2 hover:underline">
+                            Phone: (647) 629 5893
                         </Link>
-                        <Link href="mailto:info@example.com" className="hover:underline">
-                            Email: info@example.com
+                        <Link href="mailto:info@syluxeroofing.com" className="hover:underline">
+                            Email: info@skyluxeroofing.com
                         </Link>
                     </div>
 
-                    {/* Column 3: Map */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">Our Location</h4>
                         <iframe
@@ -54,7 +49,6 @@ const Footer: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-primary-700 pt-8">
-                    {/* Services Column */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">Services</h4>
                         <Link href="/services/residential-roofing" className="mb-1 hover:underline">Residential Roofing</Link>
@@ -64,7 +58,6 @@ const Footer: React.FC = () => {
                         <Link href="/services/repairs" className="mb-1 hover:underline">Repairs & Maintenance</Link>
                     </div>
 
-                    {/* About Us Column */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">About Us</h4>
                         <Link href="/about" className="mb-1 hover:underline">Our Story</Link>
@@ -72,7 +65,6 @@ const Footer: React.FC = () => {
                         <Link href="/careers" className="mb-1 hover:underline">Careers</Link>
                     </div>
 
-                    {/* Resources Column */}
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">Resources</h4>
                         <Link href="/projects" className="mb-1 hover:underline">Projects</Link>
@@ -80,7 +72,6 @@ const Footer: React.FC = () => {
                         <Link href="/contact" className="mb-1 hover:underline">Contact Us</Link>
                     </div>
 
-                    {/* Column 4: Social Icons */}
                     <div className="flex flex-col items-start">
                         <h4 className="font-semibold text-lg mb-4">Follow Us</h4>
                         <div className="flex space-x-4">

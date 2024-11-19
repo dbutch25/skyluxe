@@ -49,8 +49,6 @@ const CladdingPage = async () => {
                 <p className="text-lg font-montserrat text-center text-gray-600 mb-12">
                     {content}
                 </p>
-
-                {/* Cladding Items List */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {listSections?.map((section, index) => (
                         section.items.map((item, i) => (
@@ -63,7 +61,6 @@ const CladdingPage = async () => {
                 </div>
             </div>
 
-            {/* Gallery Section */}
             <ServicePagesGallery
                 images={galleryImages.map(image => ({
                     url: image.url,
@@ -85,7 +82,6 @@ const CladdingPage = async () => {
                 </div>
             </div>
 
-            {/* Partners Section */}
             <div className="container">
                 <div>
                     <h2 className="text-primary-950 font-julius text-2xl">

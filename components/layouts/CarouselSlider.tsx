@@ -11,7 +11,7 @@ import 'swiper/css/free-mode';
 import { Navigation, Thumbs, FreeMode, Zoom } from 'swiper/modules';
 import Image, { StaticImageData } from 'next/image';
 
-// Import the Swiper type
+
 import { Swiper as SwiperCore } from 'swiper';
 
 interface CarouselProps {
@@ -19,12 +19,11 @@ interface CarouselProps {
 }
 
 const Carousel: React.FC<CarouselProps> = ({ slides }) => {
-    // Type thumbsSwiper as SwiperCore or null
+
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
     return (
         <div className="w-full max-w-4xl mx-auto">
-            {/* Main Carousel */}
             <Swiper
                 modules={[Navigation, Thumbs, Zoom]}
                 navigation
@@ -47,7 +46,6 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
                 ))}
             </Swiper>
 
-            {/* Thumbnail Carousel */}
             <Swiper
                 modules={[FreeMode, Thumbs]}
                 onSwiper={setThumbsSwiper}

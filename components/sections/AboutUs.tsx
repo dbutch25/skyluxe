@@ -22,10 +22,9 @@ export const AboutUs = () => {
             setAboutUsData(data);
         };
 
-        // Call the async function
         fetchData().catch((error) => console.error("Error fetching data:", error));
 
-    }, []); // Empty dependency array ensures this runs only once on component mount
+    }, []);
 
     if (!aboutUsData) return null;
 

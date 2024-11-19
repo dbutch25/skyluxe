@@ -3,14 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowRight } from 'react-icons/fa';
 
-// Update the prop to accept an array of objects containing both image URL and alt text
 interface GalleryImage {
     url: string;
     alt: string;
 }
 
 interface ServicePagesGalleryProps {
-    images: GalleryImage[]; // Use GalleryImage array
+    images: GalleryImage[];
 }
 
 const ServicePagesGallery: React.FC<ServicePagesGalleryProps> = ({ images }) => {
@@ -18,10 +17,10 @@ const ServicePagesGallery: React.FC<ServicePagesGalleryProps> = ({ images }) => 
         <div className="container py-20 mx-auto text-center">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {images.map((image, index) => (
-                    <div key={index} className="relative w-full h-96"> {/* Set a fixed height for each image container */}
+                    <div key={index} className="relative w-full h-96">
                         <Image
-                            src={image.url} // Use the url from the image object
-                            alt={image.alt} // Use the alt text from the image object
+                            src={image.url}
+                            alt={image.alt}
                             width={400}
                             height={600}
                             className="rounded-lg object-cover w-full h-full"

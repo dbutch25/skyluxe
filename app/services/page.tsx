@@ -8,7 +8,7 @@ const ResidentialRoofing = () => {
         <>
             <div className="relative w-full h-[40vh]">
                 <Image
-                    src={images.serviceHero} // Replace with your image path
+                    src={images.serviceHero}
                     alt="Hero"
                     layout="fill"
                     className="w-full h-full object-cover"
@@ -104,7 +104,6 @@ const ResidentialRoofing = () => {
                     </div>
 
                     <div className="container mx-auto p-4">
-                        {/* Row 1 */}
                         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mb-4 py-10 font-montserrat text-sm">
                             <ul>
                                 <li className="mb-2"><FaCircleCheck className="inline mr-2 text-secondary-500"/>Foundation
@@ -163,7 +162,6 @@ const ResidentialRoofing = () => {
                     </div>
 
                     <div className="container mx-auto p-4">
-                        {/* Row 1 */}
                         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mb-4 py-10 font-montserrat text-sm">
                             <ul>
                                 <li className="mb-2"><FaCircleCheck className="inline mr-2 text-secondary-500"/>BUR
@@ -226,7 +224,6 @@ const ResidentialRoofing = () => {
                     </div>
 
                     <div className="container mx-auto p-4">
-                        {/* Row 1 */}
                         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mb-4 py-10 font-montserrat text-sm">
                             <ul>
                                 <li className="mb-2"><FaCircleCheck className="inline mr-2 text-secondary-500"/>Standing
@@ -301,7 +298,6 @@ const ResidentialRoofing = () => {
                     </div>
 
                     <div className="container mx-auto p-4">
-                        {/* Row 1 */}
                         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mb-4 py-10 font-montserrat text-sm">
                             <ul>
                                 <li className="mb-2"><FaCircleCheck className="inline mr-2 text-secondary-500"/>24HR Emergency Service

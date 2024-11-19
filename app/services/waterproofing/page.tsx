@@ -4,7 +4,6 @@ import Accordion from "@/components/elements/Accordion";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
 import { Marquee } from "@/components";
 
-// Define the structure of the fetched data
 interface AccordionItem {
     accordionTitle: string;
     accordionContent: string[];
@@ -28,9 +27,7 @@ interface WaterproofingPageData {
     manufacturersGallery: ManufacturerGalleryItem[] | null;
 }
 
-// Async function to fetch data from Sanity
 const WaterproofingPage = async () => {
-    // Fetch the data from Sanity
     const waterproofingData: WaterproofingPageData = await client.fetch(getWaterproofingPage);
 
     const { title, description, accordionItems, gallery, manufacturersGallery } = waterproofingData;
@@ -47,7 +44,6 @@ const WaterproofingPage = async () => {
                     </p>
                 </div>
 
-                {/* Accordion */}
                 <div className="py-10">
                     {accordionItems && accordionItems.length > 0 && (
                         <Accordion
@@ -59,7 +55,6 @@ const WaterproofingPage = async () => {
                     )}
                 </div>
 
-                {/* Gallery */}
                 <div className="py-10">
                     {gallery && gallery.length > 0 && (
                         <ServicePagesGallery
@@ -71,7 +66,6 @@ const WaterproofingPage = async () => {
                     )}
                 </div>
 
-                {/* Manufacturers Marquee */}
                 <div className="pb-20 pt-10">
                     <h3 className="text-center text-primary-950 font-julius text-lg">Manufacturers</h3>
                     {manufacturersGallery && manufacturersGallery.length > 0 && (

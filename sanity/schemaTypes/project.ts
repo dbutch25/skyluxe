@@ -8,6 +8,8 @@ const Project = defineType({
         defineField({ name: "title", type: "string", title: "Title" }),
         defineField({ name: "slug", type: "slug", title: "Slug", options: { source: "title" } }),
         defineField({ name: "backgroundVideo", type: "file", title: "Background Video" }),
+        defineField({ name: "fallbackImage", type: "image", title: "fallback Image" }),
+
         defineField({ name: "content", type: "text", title: "Main Content" }),
         defineField({ name: "mainImage", type: "image", title: "Main Image" }),
         defineField({
@@ -30,6 +32,10 @@ const Project = defineType({
         defineField({ name: "centeredText", type: "text", title: "Centered Text" }),
         defineField({ name: "images", type: "array", of: [{ type: "image" }], title: "Images" }),
         defineField({ name: "carouselImages", type: "array", of: [{ type: "image" }], title: "Carousel Images" }),
+        defineField({ name: "firstEmbed", type: "text", title: "First Embed" }),
+        defineField({ name: "secondEmbed", type: "text", title: "Second Embed" }),
+        defineField({ name: "thirdEmbed", type: "text", title: "Third Embed" }),
+
 
     ],
 }

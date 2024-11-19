@@ -1,7 +1,7 @@
 "use client";
 import headerData from "@/data/header.json";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { images } from "@/constants";
 import { FaX } from "react-icons/fa6";
@@ -12,7 +12,7 @@ export const Header = () => {
     const [showMenu, setShowMenu] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
-    const [openSubMenu, setOpenSubMenu] = useState<number | null>(null); // Track which sub-menu is open
+    const [openSubMenu, setOpenSubMenu] = useState<number | null>(null);
     const pathname = usePathname();
     const isSanityStudio = pathname.startsWith("/studio");
 
@@ -25,13 +25,28 @@ export const Header = () => {
     };
 
     const toggleSubMenu = (index: number) => {
-        setOpenSubMenu((prev) => (prev === index ? null : index)); // Toggle sub-menu
+        setOpenSubMenu((prev) => (prev === index ? null : index));
     };
 
     const handleSubMenuItemClick = () => {
-        setOpenSubMenu(null); // Close submenu
-        closeMenu(); // Close main menu on mobile
+        setOpenSubMenu(null);
+        closeMenu();
     };
+
+    const handleClickOutside = useCallback((event: MouseEvent) => {
+        const menuElement = document.getElementById("main-menu");
+        const submenuElements = document.querySelectorAll(".submenu");
+
+        if (
+            menuElement &&
+            !menuElement.contains(event.target as Node) &&
+            !Array.from(submenuElements).some((submenu) =>
+                submenu.contains(event.target as Node)
+            )
+        ) {
+            setOpenSubMenu(null);
+        }
+    }, []);
 
     useEffect(() => {
         let lastScrollY = window.scrollY;
@@ -40,9 +55,9 @@ export const Header = () => {
             const currentScrollY = window.scrollY;
 
             if (currentScrollY > lastScrollY && currentScrollY > 50) {
-                setIsVisible(false); // Scrolling down
+                setIsVisible(false);
             } else {
-                setIsVisible(true); // Scrolling up
+                setIsVisible(true);
             }
 
             lastScrollY = currentScrollY;
@@ -50,10 +65,14 @@ export const Header = () => {
         };
 
         window.addEventListener("scroll", handleScroll);
+
+        document.addEventListener("click", handleClickOutside);
+
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            document.removeEventListener("click", handleClickOutside);
         };
-    }, []);
+    }, [handleClickOutside]);
 
     if (isSanityStudio) return null;
 
@@ -70,12 +89,11 @@ export const Header = () => {
                         alt="Logo"
                         width={200}
                         height={100}
-                        className="transition-all duration-300"
+                        className="w-48 sm:w-36 md:w-44 lg:w-52 transition-all duration-300"
                     />
                 </Link>
-
-                {/* Main Navigation */}
                 <ul
+                    id="main-menu"
                     className={`flex flex-col duration-300 lg:flex-row absolute right-0 bg-primary-50 w-screen h-screen lg:h-fit lg:w-fit lg:top-0 lg:relative lg:bg-transparent gap-6 justify-center items-center ${
                         showMenu ? "top-0" : "-top-[100vh]"
                     } `}
@@ -92,16 +110,14 @@ export const Header = () => {
                                 onClick={() => (item.subItems ? toggleSubMenu(index) : closeMenu())}
                             >
                                 <Link href={item.href}>{item.label}</Link>
-                                {/* Indicator for sub-items */}
                                 {item.subItems && (
                                     <span className="ml-2">{openSubMenu === index ? "▲" : "▼"}</span>
                                 )}
                             </div>
 
-                            {/* Sub-menu */}
                             {item.subItems && (
                                 <div
-                                    className={`absolute left-0 top-full mt-2 bg-white shadow-md border rounded-md w-48 transition-transform duration-300 z-20 ${
+                                    className={`submenu absolute left-0 top-full mt-2 bg-white shadow-md border rounded-md w-48 transition-transform duration-300 z-20 ${
                                         openSubMenu === index ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
                                     }`}
                                 >
@@ -121,7 +137,6 @@ export const Header = () => {
                         </li>
                     ))}
 
-                    {/* "Request A Quote" Button for Mobile */}
                     <li className="lg:hidden" onClick={closeMenu}>
                         <button className="tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
                             Request A Quote
@@ -129,17 +144,15 @@ export const Header = () => {
                     </li>
                 </ul>
 
-                {/* "Menu" Button for Mobile */}
                 <div className="lg:hidden">
                     <button
                         onClick={toggleMenu}
                         className="text-primary-950 z-20 relative"
                     >
-                        {showMenu ? <FaX size={35} /> : <FaAlignJustify size={35} />}
+                        {showMenu ? <FaX size={30} /> : <FaAlignJustify size={30} />}
                     </button>
                 </div>
 
-                {/* "Request A Quote" Button for Desktop */}
                 <button className="hidden uppercase sm:block tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
                     Request A Quote
                 </button>

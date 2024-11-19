@@ -46,7 +46,6 @@ export const HomeGallery: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                {/* Large Image */}
                 {largeGalleryItem && (
                     <div className="col-span-2 relative overflow-hidden rounded-lg shadow-lg">
                         <Link href={largeGalleryItem.slug}>
@@ -64,14 +63,13 @@ export const HomeGallery: React.FC = () => {
                     </div>
                 )}
 
-                {/* Small Images */}
                 <div className="flex flex-col gap-10">
                     {galleryItems.map((item) => (
                         <div key={item._id} className="relative overflow-hidden rounded-lg shadow-lg flex-1">
                             <Link href={item.slug}>
                                 <Image
                                     src={item.imageUrl}
-                                    alt={item.title || 'Gallery image'} // Use title as alt, fallback if missing
+                                    alt={item.title || 'Gallery image'}
                                     width={450}
                                     height={300}
                                     className="w-full h-full md:w-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"

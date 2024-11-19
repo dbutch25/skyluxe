@@ -74,6 +74,7 @@ export const projectQuery = groq`
     title,
     slug,
     "backgroundVideo": backgroundVideo.asset->url,
+    "fallbackImage": fallbackImage.asset->url,
     content,
     "mainImage": mainImage.asset->url,
     listSections,
@@ -82,7 +83,10 @@ export const projectQuery = groq`
     "fullWidthImage": fullWidthImage.asset->url,
     centeredText,
     "images": images[].asset->url,
-    "carouselImages": carouselImages[].asset->url
+    "carouselImages": carouselImages[].asset->url,
+    firstEmbed,
+    secondEmbed,
+    thirdEmbed
   }
 `;
 
@@ -105,10 +109,6 @@ export const getRepairsPage = groq`
     }
   }
 `;
-
-// queries/waterproofingQuery.ts
-
-// lib/sanity/queries.ts
 
 export const getWaterproofingPage = groq`
   *[_type == "waterproofing"][0] {

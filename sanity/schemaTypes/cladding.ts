@@ -28,7 +28,6 @@ const Cladding = defineType({
                 },
             ],
         }),
-        // Gallery Images with Alt Text
         defineField({
             name: "galleryImages",
             type: "array",
@@ -57,7 +56,6 @@ const Cladding = defineType({
             type: "text",
             title: "Extra Content",
         }),
-        // Carousel Manufacturers Images with Alt Text
         defineField({
             name: "carouselMImages",
             type: "array",
@@ -80,7 +78,6 @@ const Cladding = defineType({
                 },
             ],
         }),
-        // Carousel AD Images with Alt Text
         defineField({
             name: "carouselADImages",
             type: "array",

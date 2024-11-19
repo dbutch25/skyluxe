@@ -10,7 +10,7 @@ const CareersPage = () => {
         <section className="mx-auto">
             <div className="relative w-full h-[60vh]">
                 <Image
-                    src={images.about2} // Replace with your image path
+                    src={images.about2}
                     alt="Hero"
                     className="object-cover w-full h-full object-top"
                 />

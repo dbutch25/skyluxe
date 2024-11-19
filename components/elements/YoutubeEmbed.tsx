@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface YouTubeEmbedProps {
-    videoId: string; // Accepts the YouTube video ID as a prop
+    videoId: string;
 }
 
 const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({ videoId }) => {

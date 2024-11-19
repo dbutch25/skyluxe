@@ -6,18 +6,16 @@ import React from "react";
 const AboutPage = () => {
     return (
         <section className="flex flex-col items-center">
-            {/* Hero Section */}
 
             <div className="mt-20 relative w-full h-[60vh]">
                 <Image
-                    src={images.about2} // Replace with your image path
+                    src={images.about2}
                     alt="Hero"
                     className="object-cover w-full h-full object-top"
                 />
             </div>
             <div className="container">
 
-                {/* Title and Excerpt */}
                 <div>
                     <div className="text-center py-8 md:py-12">
                         <div className="text-3xl font-julius text-primary-950 text-center pb-5">
@@ -80,16 +78,14 @@ const AboutPage = () => {
                     </div>
                 </div>
 
-                {/* Image and Team Section */}
                 <div className="text-3xl font-julius text-primary-950 text-center pt-20 pb-5">
                     <h2 className="inline border-b-2 border-primary-800">Our Team</h2>
                 </div>
                 <div className="flex flex-col lg:flex-row items-center py-8 gap-8">
 
-                    {/* Left Side Image */}
                     <div className="w-full h-64 md:h-full">
                     <Image
-                            src={images.about1} // Replace with your image path
+                            src={images.about1}
                             alt="Our Team"
                             width={400}
                             height={600}
@@ -97,7 +93,6 @@ const AboutPage = () => {
                         />
                     </div>
 
-                    {/* Right Side Team Members */}
                     <div className="w-full flex flex-col justify-start space-y-6">
                         <div className="border-b pb-4">
                             <h3 className="text-xl font-julius text-primary-900">

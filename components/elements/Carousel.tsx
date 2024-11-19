@@ -11,20 +11,17 @@ import 'swiper/css/free-mode';
 import { Navigation, Thumbs, FreeMode, Zoom } from 'swiper/modules';
 import Image from 'next/image';
 
-// Importing the SwiperCore type
 import { Swiper as SwiperCore } from 'swiper';
 
 interface CarouselProps {
-    images: string[]; // Array of image URLs or StaticImageData
+    images: string[];
 }
 
 export const Carousel: React.FC<CarouselProps> = ({ images = [] }) => {
-    // Correct type for thumbsSwiper
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
     return (
         <div className="w-full max-w-4xl mx-auto">
-            {/* Main Carousel */}
             <Swiper
                 modules={[Navigation, Thumbs, Zoom]}
                 navigation
@@ -47,7 +44,6 @@ export const Carousel: React.FC<CarouselProps> = ({ images = [] }) => {
                 )) ||[]}
             </Swiper>
 
-            {/* Thumbnail Carousel */}
             <Swiper
                 modules={[FreeMode, Thumbs]}
                 onSwiper={setThumbsSwiper}
@@ -63,8 +59,8 @@ export const Carousel: React.FC<CarouselProps> = ({ images = [] }) => {
                             <Image
                                 src={image}
                                 alt={`Thumbnail ${index + 1}`}
-                                fill // Uses the parent container's size
-                                style={{ objectFit: 'cover' }} // Ensures the image covers the space without distortion
+                                fill
+                                style={{ objectFit: 'cover' }}
                                 className="rounded-md"
                             />
                         </div>

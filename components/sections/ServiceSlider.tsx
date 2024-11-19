@@ -48,7 +48,6 @@ export const ServiceSlider: React.FC = () => {
                     <span>What We Do</span>
                 </div>
 
-                {/* Filter Buttons */}
                 <div className="flex flex-wrap justify-center gap-2 pb-8">
                     {categories.map((category) => (
                         <button
@@ -61,7 +60,6 @@ export const ServiceSlider: React.FC = () => {
                     ))}
                 </div>
 
-                {/* Swiper Slider */}
                 <div className="container w-full h-full">
                     <Swiper
                         modules={[Autoplay]}
