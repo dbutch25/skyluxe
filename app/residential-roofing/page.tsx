@@ -4,7 +4,7 @@ import {FaCircleCheck} from "react-icons/fa6";
 import React from "react";
 import Carousel from "@/components/elements/Carousel";
 import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
-import {Marquee} from "@/components";
+import Marquee from "@/components/elements/Marquee";
 import {client} from "@/sanity/lib/client";
 import {fetchResidentialData} from "@/sanity/lib/queries";
 

@@ -7,8 +7,6 @@ import { projectQuery } from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
 import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 
-export const revalidate = 60;
-
 interface ListSection {
     title: string;
     items: string[];
@@ -66,13 +64,13 @@ const ProjectDetailPage = async ({ params }: { params: { slug: string } }) => {
                             <p>{project.content}</p>
                         </div>
                         {project.mainImage && (
-                            <div className="w-full h-96 md:w-1/2">
+                            <div className="w-full h-96 md:w-1/2 rounded-lg shadow-lg">
                                 <Image
                                     src={project.mainImage}
                                     alt={project.title}
                                     width={600}
                                     height={400}
-                                    className="object-cover h-full w-full rounded-lg shadow-lg"
+                                    className="object-contain h-full w-full "
                                 />
                             </div>
                         )}
@@ -81,7 +79,7 @@ const ProjectDetailPage = async ({ params }: { params: { slug: string } }) => {
                         className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-5 p-10">
                         {project.listSections
                             ?.filter(
-                                (section) => section.title && section.items?.length // Ensure title exists and items array is non-empty
+                                (section) => section.title && section.items?.length
                             )
                             .map((section, index) => (
                                 <div key={index}>
@@ -129,7 +127,7 @@ const ProjectDetailPage = async ({ params }: { params: { slug: string } }) => {
                     </div>
                     )}
                     {project.fullWidthImage && (
-                        <div className="py-5">
+                        <div className="py-10">
                             <Image
                                 src={project.fullWidthImage}
                                 alt="Full Width"

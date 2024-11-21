@@ -10,23 +10,23 @@
       "subItems": [
         {
           "label": "residential roofing",
-          "href": "/services/residential-roofing"
+          "href": "/residential-roofing"
         },
         {
           "label": "ici Roofing",
-          "href": "/services/ICI"
+          "href": "/ICI"
         },
         {
           "label": "waterproofing",
-          "href": "/services/waterproofing"
+          "href": "/waterproofing"
         },
         {
           "label": "architectural cladding",
-          "href": "/services/architectural-cladding"
+          "href": "/architectural-cladding"
         },
         {
           "label": "repairs & maintenance",
-          "href": "/services/repairs"
+          "href": "/repairs"
         }
       ]
     },

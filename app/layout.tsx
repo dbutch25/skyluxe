@@ -6,8 +6,8 @@ import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
 
 export const metadata = {
-    title: "My Site",
-    description: "An amazing Next.js website",
+    title: "Skyluxe Roofing & Sheet Metal",
+    description: "We specialize in Industrial, Commercial, Institutional, and Residential projects with highly skilled staff and trusted resources.",
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => {

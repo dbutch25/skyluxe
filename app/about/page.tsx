@@ -130,14 +130,14 @@ const AboutPage = () => {
                         </div>
                         <div className="border-b pb-4">
                             <h3 className="text-xl font-julius text-primary-900">
-                                Felipe Lopez
+                                Saul Navarro
                             </h3>
                             <h4 className="text-sm font-montserrat text-primary-800 pb-3">
                                 Project Manager
                             </h4>
                             <p className="text-primary-950 font-montserrat text-base">
-                                Felipe is responsible for scheduling, ordering material and assigning the crews for each
-                                project. After the initial proposal gets approved. Felipe will be in touch to schedule
+                                Saul is responsible for scheduling, ordering material and assigning the crews for each
+                                project. After the initial proposal gets approved. Saul will be in touch to schedule
                                 the
                                 project and address any of the client’s special concerns or requests. He then manages
                                 the

@@ -1,4 +1,10 @@
-import { AboutUs, HomeGallery, BgHomeVideo, ServiceSlider } from "@/components";
+import BgHomeVideo from "@/components/layouts/BgHomeVideo";
+import dynamic from "next/dynamic";
+
+// Dynamically import components
+const AboutUs = dynamic(() => import("@/components/sections/AboutUs"));
+const ServiceSlider = dynamic(() => import("@/components/sections/ServiceSlider"));
+const HomeGallery = dynamic(() => import("@/components/sections/HomeGallery"));
 
 const Home = () => {
     return (
@@ -12,4 +18,3 @@ const Home = () => {
 };
 
 export default Home;
-

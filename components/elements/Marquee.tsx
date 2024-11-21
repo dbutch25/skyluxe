@@ -11,7 +11,6 @@ interface MarqueeProps {
 }
 
 export const Marquee: React.FC<MarqueeProps> = ({ images }) => {
-    console.log("Rendering Marquee with images:", images);
     return (
         <div className="overflow-hidden w-full py-10">
             <div className="marquee-wrapper">
@@ -26,7 +25,7 @@ export const Marquee: React.FC<MarqueeProps> = ({ images }) => {
                                 className=" object-contain"
                             />
                         </div>
-                    )) || []}
+                    )) ||[]}
                 </div>
             </div>
         </div>
