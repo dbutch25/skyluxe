@@ -43,13 +43,12 @@ export const fetchHomeGalleryOneData = async () => {
     }
 };
 
-export const getAboutUsHomeData = async () => {
-    const query = `*[_type == "aboutUsHome"]{
-        content
-    }[0]`;
-    return await client.fetch(query);
-};
 
+export const getAboutUsHomeData = groq`
+    *[_type == "aboutUsHome"]{
+        content
+    }
+`
 export const getHomeVideoData = async () => {
     const query = `*[_type == "homeVideo"]{
   videoLabel,
@@ -62,7 +61,7 @@ export const fetchProjects = async () => {
     const query = `*[_type == "projectPage"]{
         _id,
         title,
-        category,
+        category[],
         "imageUrl": image.asset->url,
         "slug": slug.current
     }`;

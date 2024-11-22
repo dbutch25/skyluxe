@@ -9,12 +9,12 @@ import {fetchProjects} from "@/sanity/lib/queries";
 interface Project {
     _id: string;
     title: string;
-    category: string;
+    category: string[];
     imageUrl: string;
     slug: string;
 }
 
-const categories = ["residential roofing", "waterproofing", "ICI"];
+const categories = ["residential roofing", "waterproofing", "ICI", "architectural cladding"];
 
 const ProjectsPage = () => {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -34,7 +34,7 @@ const ProjectsPage = () => {
         setFilteredProjects(
             activeCategory === "All"
                 ? projects
-                : projects.filter(project => project.category === activeCategory)
+                : projects.filter(project => project.category.includes(activeCategory))
         );
     }, [activeCategory, projects]);
 
@@ -44,14 +44,14 @@ const ProjectsPage = () => {
                 {categories.map((category) => (
                     <button
                         key={category}
-                        className={`px-3 md:px-4 py-1 md:py-2 capitalize border-2 border-secondary-800 rounded-full text-base font-montserrat ${activeCategory === category ? "bg-secondary-900 text-white" : "bg-gray-200 text-primary-950"} duration-900`}
+                        className={`px-3 md:px-4 py-1 md:py-2 capitalize border-2 border-secondary-800 text-base font-montserrat ${activeCategory === category ? "bg-secondary-900 text-white" : "bg-gray-200 text-primary-950"} duration-900`}
                         onClick={() => setActiveCategory(category)}
                     >
                         {category}
                     </button>
                 ))}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 py-10">
                 {filteredProjects.map((project) => (
                     <div key={project._id} className="relative">
                         <Link href={`/projects/${project.slug}`}>

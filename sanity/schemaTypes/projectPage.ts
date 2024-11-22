@@ -33,14 +33,16 @@ const projectPage = defineType({
         defineField({
             name: 'category',
             title: 'Category',
-            type: 'string',
+            type: 'array',
+            of: [{ type: 'string' }],
             options: {
                 list: [
                     { title: 'Waterproofing', value: 'waterproofing' },
                     { title: 'Residential Roofing', value: 'residential roofing' },
                     { title: 'ICI', value: 'ICI' },
+                    { title: 'Architectural Cladding', value: "architectural cladding"},
                 ],
-                layout: 'radio',
+                layout: 'list', // Use checkbox layout for multiple selections
             },
         }),
     ],

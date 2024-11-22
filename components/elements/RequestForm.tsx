@@ -2,17 +2,29 @@
 
 import React, { useState } from "react";
 
-export default function ContactForm() {
+export default function RequestForm() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         number: "",
-        message: "",
+        serviceType: "",
+        scopeOfWork: "",
     });
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [error, setError] = useState<string | null>(null);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const serviceOptions = [
+        "Residential Roofing",
+        "ICI Roofing",
+        "Repairs",
+        "Waterproofing",
+        "Architectural Cladding",
+        "Restoration"
+    ];
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
@@ -20,7 +32,6 @@ export default function ContactForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus("loading");
-        setError(null);
 
         // Basic validation
         if (!formData.email.includes("@")) {
@@ -36,7 +47,7 @@ export default function ContactForm() {
         }
 
         try {
-            const response = await fetch("/api/contact", {
+            const response = await fetch("/api/request", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
@@ -48,7 +59,7 @@ export default function ContactForm() {
             }
 
             setStatus("success");
-            setFormData({ name: "", email: "", number: "", message: "" });
+            setFormData({ name: "", email: "", number: "", serviceType: "", scopeOfWork: "" });
         } catch (err: unknown) {
             setStatus("error");
 
@@ -61,10 +72,12 @@ export default function ContactForm() {
         }
     };
 
-
     return (
-        <div className="container mx-auto px-4">
-            <form onSubmit={handleSubmit} className="max-w-lg mx-auto shadow-md rounded font-montserrat bg-primary-50 px-8 pt-6 pb-8 mb-4">
+        <div className="container mx-auto px-4 py-20">
+            <form
+                onSubmit={handleSubmit}
+                className="max-w-3xl mx-auto shadow-md rounded font-montserrat bg-primary-50 px-8 pt-6 pb-8 mb-4"
+            >
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-primary-950 text-sm font-bold mb-2">
                         Name
@@ -108,13 +121,35 @@ export default function ContactForm() {
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="message" className="block text-primary-950 text-sm font-bold mb-2">
-                        Message
+                    <label htmlFor="serviceType" className="block text-primary-950 text-sm font-bold mb-2">
+                        Type of Service
+                    </label>
+                    <select
+                        id="serviceType"
+                        name="serviceType"
+                        value={formData.serviceType}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-3 py-2 border rounded bg-white"
+                    >
+                        <option value="" disabled>
+                            Select a service
+                        </option>
+                        {serviceOptions.map((service, index) => (
+                            <option key={index} value={service}>
+                                {service}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="scopeOfWork" className="block text-primary-950 text-sm font-bold mb-2">
+                        Scope of Work
                     </label>
                     <textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
+                        id="scopeOfWork"
+                        name="scopeOfWork"
+                        value={formData.scopeOfWork}
                         onChange={handleChange}
                         required
                         className="w-full px-3 py-2 border rounded"
@@ -126,11 +161,25 @@ export default function ContactForm() {
                     disabled={status === "loading"}
                 >
                     {status === "loading" && (
-                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                             viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        <svg
+                            className="animate-spin h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8z"
+                            ></path>
                         </svg>
                     )}
                     {status === "loading" ? "Sending..." : "Send"}

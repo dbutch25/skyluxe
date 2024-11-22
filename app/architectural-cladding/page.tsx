@@ -2,7 +2,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { client } from "@/sanity/lib/client";
 import { getCladdingPage } from "@/sanity/lib/queries";
 import React from "react";
-import { Marquee } from "@/components";
+import { Marquee } from "@/components/elements/Marquee";
 import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
 

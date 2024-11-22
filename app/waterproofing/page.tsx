@@ -2,7 +2,7 @@ import { client } from '@/sanity/lib/client';  // Assuming you have your sanity 
 import { getWaterproofingPage } from '@/sanity/lib/queries';  // The query you provided
 import Accordion from "@/components/elements/Accordion";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
-import { Marquee } from "@/components";
+import { Marquee } from "@/components/elements/Marquee";
 
 interface AccordionItem {
     accordionTitle: string;

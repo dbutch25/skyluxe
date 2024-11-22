@@ -3,7 +3,7 @@ import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 import Image from "next/image";
 import {FaCircleCheck} from "react-icons/fa6";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
-import {Marquee} from "@/components";
+import {Marquee} from "@/components/elements/Marquee";
 import {getICIRoofingPage} from "@/sanity/lib/queries";
 import {client} from "@/sanity/lib/client";
 

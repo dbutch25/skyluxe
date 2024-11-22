@@ -52,7 +52,7 @@ export const ServiceSlider: React.FC = () => {
                     {categories.map((category) => (
                         <button
                             key={category}
-                            className={`px-4 py-2 capitalize border-2 border-secondary-800 rounded-full text-base font-montserrat ${activeCategory === category ? "bg-secondary-900 text-white" : "bg-gray-200 text-gray-700"} transition-colors duration-300`}
+                            className={`px-4 py-2 capitalize border-2 border-secondary-800 text-base font-montserrat ${activeCategory === category ? "bg-secondary-900 text-white" : "bg-gray-200 text-gray-700"} transition-colors duration-300`}
                             onClick={() => setActiveCategory(category)}
                         >
                             {category.replace('-', ' ')}

@@ -79,7 +79,7 @@ export const Header = () => {
     return (
         <>
             <header
-                className={`h-28 select-none bg-primary-100 font-montserrat flex justify-between border-b-2 border-primary-4000 items-center px-6 w-full transition-all duration-300 ease-in-out ${
+                className={`h-28 bg-primary-100 font-montserrat flex justify-between border-b-2 border-primary-4000 items-center px-6 w-full transition-all duration-300 ease-in-out ${
                     isSticky ? "fixed top-0 z-20 bg-primary-50 shadow-lg" : "absolute z-10 opacity-95"
                 } ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
             >
@@ -139,26 +139,29 @@ export const Header = () => {
                         ))}
 
                         <li className="lg:hidden" onClick={closeMenu}>
-                            <button
+                            <Link
+                                href="/quote"
                                 className="tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
                                 Request A Quote
-                            </button>
+                            </Link>
                         </li>
                     </ul>
 
                     <div className="lg:hidden">
-                        <button
+                        <Link
+                            href="/quote"
                             onClick={toggleMenu}
                             className="text-primary-950 z-20 relative"
                         >
                             {showMenu ? <FaX size={30}/> : <FaAlignJustify size={30}/>}
-                        </button>
+                        </Link>
                     </div>
 
-                    <button
+                    <Link
+                        href="/quote"
                         className="hidden uppercase sm:block tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
                         Request A Quote
-                    </button>
+                    </Link>
                 </div>
                 <div
                     className="hidden py-2 lg:inline bg-primary-50 font-montserrat border-b-2 px-6 rounded-b-sm transition-all duration-300 ease-in-out absolute z-20 opacity-95 right-0 top-[112px]">
