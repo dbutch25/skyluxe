@@ -43,7 +43,7 @@ const ContactPage = () => {
                         <div
                             className="flex flex-col justify-center w-4/5 py-2 h-auto border-2 rounded-2xl shadow-lg items-center bg-primary-100">
                             <div className="flex items-center justify-center h-full">
-                                <FaPhone size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
+                                <FaLocationArrow size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
                             </div>
                             <h3 className="font-julius text-base text-secondary-900">
                                 Location
