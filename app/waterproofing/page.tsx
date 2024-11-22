@@ -1,5 +1,5 @@
-import { client } from '@/sanity/lib/client';  // Assuming you have your sanity client setup
-import { getWaterproofingPage } from '@/sanity/lib/queries';  // The query you provided
+import { client } from '@/sanity/lib/client';
+import { getWaterproofingPage } from '@/sanity/lib/queries';
 import Accordion from "@/components/elements/Accordion";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
 import { Marquee } from "@/components/elements/Marquee";
@@ -49,7 +49,7 @@ const WaterproofingPage = async () => {
                         <Accordion
                             items={accordionItems.map(item => ({
                                 title: item.accordionTitle,
-                                content: item.accordionContent.join(', ')  // Handle content properly
+                                content: item.accordionContent.join(', ')
                             }))}
                         />
                     )}

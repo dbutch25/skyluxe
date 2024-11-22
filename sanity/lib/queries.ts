@@ -13,6 +13,13 @@ export const getServiceCarouselData = async () => {
     return await client.fetch(query);
 };
 
+export const getAboutUsHomeData = async () => {
+    const query = `*[_type == "aboutUsHome"]{
+        content
+    }[0]`;
+    return await client.fetch(query);
+};
+
 export const fetchHomeGalleryData = async () => {
     try {
         const query = `*[_type == "homeGallery"]{
@@ -43,12 +50,6 @@ export const fetchHomeGalleryOneData = async () => {
     }
 };
 
-
-export const getAboutUsHomeData = groq`
-    *[_type == "aboutUsHome"]{
-        content
-    }
-`
 export const getHomeVideoData = async () => {
     const query = `*[_type == "homeVideo"]{
   videoLabel,

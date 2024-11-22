@@ -33,7 +33,6 @@ export default function RequestForm() {
         e.preventDefault();
         setStatus("loading");
 
-        // Basic validation
         if (!formData.email.includes("@")) {
             setError("Please enter a valid email address.");
             setStatus("error");
@@ -63,7 +62,6 @@ export default function RequestForm() {
         } catch (err: unknown) {
             setStatus("error");
 
-            // Ensure `err` is an instance of Error
             if (err instanceof Error) {
                 setError(err.message);
             } else {

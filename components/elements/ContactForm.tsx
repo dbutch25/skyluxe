@@ -52,7 +52,6 @@ export default function ContactForm() {
         } catch (err: unknown) {
             setStatus("error");
 
-            // Ensure `err` is an instance of Error
             if (err instanceof Error) {
                 setError(err.message);
             } else {

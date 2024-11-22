@@ -74,7 +74,7 @@ const ResidentialRoofing = () => {
                 </div>
                 <div className="flex w-full uppercase font-montserrat flex-col md:flex-row">
                     <div className="md:w-1/2 h-[150px] w-full bg-primary-800 flex items-center justify-center">
-                        <Link href="/services/residential-roofing"
+                        <Link href="/residential-roofing"
                               className="tracking-widest border-2 border-primary-50 px-7 py-3 text-white rounded hover:bg-primary-700">
                             Learn More
                         </Link>
@@ -132,7 +132,7 @@ const ResidentialRoofing = () => {
                 </div>
                 <div className="flex w-full uppercase font-montserrat flex-col md:flex-row">
                     <div className="md:w-1/2 h-[150px] w-full bg-primary-800 flex items-center justify-center">
-                        <Link href="/services/waterproofing"
+                        <Link href="/waterproofing"
                               className="tracking-widest border-2 border-primary-50 px-7 py-3 text-white rounded hover:bg-primary-700">
                             Learn More
                         </Link>
@@ -197,7 +197,7 @@ const ResidentialRoofing = () => {
                 </div>
                 <div className="flex w-full uppercase font-montserrat flex-col md:flex-row">
                     <div className="md:w-1/2 h-[150px] w-full bg-primary-800 flex items-center justify-center">
-                        <Link href="/services/ICI"
+                        <Link href="/ICI"
                               className="tracking-widest border-2 border-primary-50 px-7 py-3 text-white rounded hover:bg-primary-700">
                             Learn More
                         </Link>
@@ -272,7 +272,7 @@ const ResidentialRoofing = () => {
                 </div>
                 <div className="flex w-full uppercase font-montserrat flex-col md:flex-row">
                     <div className="md:w-1/2 h-[150px] w-full bg-primary-800 flex items-center justify-center">
-                        <Link href="/services/architectural-cladding"
+                        <Link href="/architectural-cladding"
                               className="tracking-widest border-2 border-primary-50 px-7 py-3 text-white rounded hover:bg-primary-700">
                             Learn More
                         </Link>
@@ -324,7 +324,7 @@ const ResidentialRoofing = () => {
                 </div>
                 <div className="flex w-full uppercase font-montserrat flex-col md:flex-row">
                     <div className="md:w-1/2 h-[150px] w-full bg-primary-800 flex items-center justify-center">
-                        <Link href="/services/repairs"
+                        <Link href="/repairs"
                               className="tracking-widest border-2 border-primary-50 px-7 py-3 text-white rounded hover:bg-primary-700">
                             Learn More
                         </Link>
