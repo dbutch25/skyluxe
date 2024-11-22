@@ -139,34 +139,33 @@ export const Header = () => {
                         ))}
 
                         <li className="lg:hidden" onClick={closeMenu}>
-                            <Link
-                                href="/quote"
-                                className="tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
+                            <Link href="/quote"
+                                  className="tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
                                 Request A Quote
                             </Link>
                         </li>
                     </ul>
 
+                    {/* Mobile Menu Button */}
                     <div className="lg:hidden">
-                        <Link
-                            href="/quote"
+                        <button
                             onClick={toggleMenu}
                             className="text-primary-950 z-20 relative"
                         >
                             {showMenu ? <FaX size={30}/> : <FaAlignJustify size={30}/>}
-                        </Link>
+                        </button>
                     </div>
 
-                    <Link
-                        href="/quote"
-                        className="hidden uppercase sm:block tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
+                    {/* Request A Quote Button */}
+                    <Link href="/quote"
+                          className="hidden uppercase sm:block tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
                         Request A Quote
                     </Link>
-                </div>
+            </div>
+            <div
+                className="hidden py-2 lg:inline bg-primary-50 font-montserrat border-b-2 px-6 rounded-b-sm transition-all duration-300 ease-in-out absolute z-20 opacity-95 right-0 top-[112px]">
                 <div
-                    className="hidden py-2 lg:inline bg-primary-50 font-montserrat border-b-2 px-6 rounded-b-sm transition-all duration-300 ease-in-out absolute z-20 opacity-95 right-0 top-[112px]">
-                    <div
-                        className="flex items-center gap-2 font-montserrat text-left text-sm text-gray-700"
+                    className="flex items-center gap-2 font-montserrat text-left text-sm text-gray-700"
                     >
                         <FaPhone
                             size={10}

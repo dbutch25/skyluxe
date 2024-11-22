@@ -17,7 +17,7 @@ const ContactPage = () => {
                         className="w-full px-5 h-28 border-2 rounded-2xl shadow-lg flex gap-6 items-center bg-primary-100">
                         {/* Icon Container */}
                         <div className="flex items-center justify-center h-full">
-                            <FaPhone size={30} className="pl-5 min-w-14 min-h-10 text-secondary-500"/>
+                            <FaPhone size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
                         </div>
 
                         {/* Text Container */}
@@ -35,7 +35,7 @@ const ContactPage = () => {
                         className="w-full px-5 h-28 border-2 rounded-2xl shadow-lg flex gap-6 items-center bg-primary-100">
                         {/* Icon Container */}
                         <div className="flex items-center justify-center h-full">
-                            <FaEnvelope size={30} className="pl-5 min-w-14 min-h-10 text-secondary-500"/>
+                            <FaEnvelope size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
                         </div>
 
                         {/* Text Container */}
@@ -53,7 +53,7 @@ const ContactPage = () => {
                         className="w-full px-5 h-28 border-2 rounded-2xl shadow-lg flex gap-6 items-center bg-primary-100">
                         {/* Icon Container */}
                         <div className="flex items-center justify-center h-full">
-                            <FaLocationArrow size={30} className="pl-5 min-w-14 min-h-10 text-secondary-500"/>
+                            <FaLocationArrow size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
                         </div>
 
                         {/* Text Container */}
