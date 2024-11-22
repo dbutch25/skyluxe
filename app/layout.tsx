@@ -13,7 +13,7 @@ export const metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
     return (
         <html lang="en">
-        <body className="bg-[rgb(255,253,245)] select-none" data-barba="wrapper">
+        <body className="bg-[rgb(255,253,245)] select-none " data-barba="wrapper">
         <Header />
         <main data-barba="container" data-barba-namespace="home">
             {children}
