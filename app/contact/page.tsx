@@ -37,7 +37,7 @@ const ContactPage = () => {
                             </h3>
                             <Link href="mailto:info@syluxeroofing.com"
                                   className="font-montserrat text-sm text-primary-950 hover:underline">
-                                info@syluxeroofing.com
+                                info@skyluxeroofing.com
                             </Link>
                         </div>
                         <div

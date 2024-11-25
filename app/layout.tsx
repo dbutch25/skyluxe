@@ -8,6 +8,9 @@ import { ReactNode } from "react";
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
     description: "We specialize in Industrial, Commercial, Institutional, and Residential projects with highly skilled staff and trusted resources.",
+    icons: {
+        icon: "/favicon.ico",
+    },
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
