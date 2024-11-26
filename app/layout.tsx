@@ -3,6 +3,7 @@ import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
 import PlausibleProvider from 'next-plausible'
+import Script from "next/script";
 
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
@@ -34,6 +35,11 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
             <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com"/>
         </head>
         <body className="bg-[rgb(255,253,245)] select-none " data-barba="wrapper">
+        <Script
+            strategy="beforeInteractive"
+            src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY}/`}
+
+        />
         <Header/>
         <main data-barba="container" data-barba-namespace="home">
             {children}
