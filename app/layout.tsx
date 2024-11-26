@@ -31,7 +31,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     return (
         <html lang="en">
         <head>
-            <PlausibleProvider domain="skyluxeroofing.com"/>
+            <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com"/>
         </head>
         <body className="bg-[rgb(255,253,245)] select-none " data-barba="wrapper">
         <Header/>

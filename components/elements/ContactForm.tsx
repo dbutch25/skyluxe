@@ -121,7 +121,7 @@ export default function ContactForm() {
                 </div>
                 <button
                     type="submit"
-                    className="bg-secondary-600 hover:bg-primary-800 hover:border-2 border-secondary-600 text-primary-50 font-bold py-2 px-4 rounded flex items-center justify-center gap-2"
+                    className="plausible-event-name=ContactForm bg-secondary-600 hover:bg-primary-800 hover:border-2 border-secondary-600 text-primary-50 font-bold py-2 px-4 rounded flex items-center justify-center gap-2"
                     disabled={status === "loading"}
                 >
                     {status === "loading" && (
