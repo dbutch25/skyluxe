@@ -63,7 +63,7 @@ export default function ContactForm() {
 
     return (
         <div className="container mx-auto py-10 px-4">
-            <form onSubmit={handleSubmit} className="max-w-lg mx-auto shadow-md rounded font-montserrat bg-primary-50 px-8 pt-6 pb-8 mb-4">
+            <form onSubmit={handleSubmit} className="plausible-event-name=ContactForm max-w-lg mx-auto shadow-md rounded font-montserrat bg-primary-50 px-8 pt-6 pb-8 mb-4">
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-primary-950 text-sm font-bold mb-2">
                         Name
@@ -121,7 +121,7 @@ export default function ContactForm() {
                 </div>
                 <button
                     type="submit"
-                    className="plausible-event-name=ContactForm bg-secondary-600 hover:bg-primary-800 hover:border-2 border-secondary-600 text-primary-50 font-bold py-2 px-4 rounded flex items-center justify-center gap-2"
+                    className="bg-secondary-600 hover:bg-primary-800 hover:border-2 border-secondary-600 text-primary-50 font-bold py-2 px-4 rounded flex items-center justify-center gap-2"
                     disabled={status === "loading"}
                 >
                     {status === "loading" && (
