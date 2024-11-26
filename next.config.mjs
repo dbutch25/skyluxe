@@ -1,6 +1,4 @@
-const { withPlausibleProxy } = require('next-plausible')
-
-export default withPlausibleProxy()({
+export default {
     images: {
         remotePatterns: [
             {
@@ -11,4 +9,4 @@ export default withPlausibleProxy()({
             },
         ],
     },
-});
+};
