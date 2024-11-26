@@ -9,6 +9,21 @@ export const metadata = {
     icons: {
         icon: "/favicon.ico",
     },
+    openGraph: {
+        title: "Skyluxe Roofing & Sheet Metal",
+        description: "We specialize in Industrial, Commercial, Institutional, and Residential projects with highly skilled staff and trusted resources.",
+        url: "https://www.skyluxeroofing.com",
+        siteName: "Skyluxe Roofing",
+        images: [
+            {
+                url: "/ava.jpg",
+                width: 1200,
+                height: 630,
+                alt: "Skyluxe Roofing homepage banner",
+            },
+        ],
+    }
+
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => {

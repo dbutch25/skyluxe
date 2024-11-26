@@ -7,6 +7,7 @@ import knudson1 from "@/public/images/knudson1.jpg"
 import serviceHero from "@/public/images/serviceHero.jpg"
 import about1 from "@/public/images/about1.jpg"
 import about2 from "@/public/images/about2.jpg"
+import ava from "@/public/images/ava.jpg"
 
 
 export const images = {
@@ -18,7 +19,8 @@ export const images = {
     knudson1,
     serviceHero,
     about1,
-    about2
+    about2,
+    ava
 };
 
 
