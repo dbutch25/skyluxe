@@ -1,6 +1,4 @@
-// app/layout.tsx
-
-import "./globals.css"; // Import global styles
+import "./globals.css";
 import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";

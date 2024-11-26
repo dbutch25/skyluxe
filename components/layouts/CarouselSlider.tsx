@@ -15,7 +15,7 @@ import Image, { StaticImageData } from 'next/image';
 import { Swiper as SwiperCore } from 'swiper';
 
 interface CarouselProps {
-    slides: (string | StaticImageData)[]; // Array of image URLs or StaticImageData
+    slides: (string | StaticImageData)[];
 }
 
 const Carousel: React.FC<CarouselProps> = ({ slides }) => {

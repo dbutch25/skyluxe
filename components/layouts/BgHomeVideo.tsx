@@ -20,7 +20,7 @@ export const BgHomeVideo: React.FC = () => {
     useEffect(() => {
         const fetchVideoData = async () => {
             const data = await getHomeVideoData();
-            setVideoData(data[0]); // assuming only one background video entry
+            setVideoData(data[0]);
         };
         fetchVideoData();
     }, []);

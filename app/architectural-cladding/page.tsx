@@ -7,31 +7,31 @@ import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
 
 interface CladdingListSection {
-    items: string[]; // Array of list items
+    items: string[];
 }
 
 interface GalleryImage {
-    url: string; // Image URL from the CMS
-    alt: string; // Alt text for the image
+    url: string;
+    alt: string;
 }
 interface CarouselMImage {
-    url: string; // Image URL from the CMS
-    alt: string; // Alt text for the image
+    url: string;
+    alt: string;
 }
 interface CarouselADImage {
-    url: string; // Image URL from the CMS
-    alt: string; // Alt text for the image
+    url: string;
+    alt: string;
 }
 
 interface CladdingPageData {
-    title: string; // Title of the page
-    content: string; // Main content description
+    title: string;
+    content: string;
     extraTitle: string;
     extraContent: string;
-    listSections: CladdingListSection[]; // List sections for cladding items
-    galleryImages: GalleryImage[]; // Gallery images with URL and alt text
-    carouselMImages: CarouselMImage[]; // Carousel images for manufacturers
-    carouselADImages: CarouselADImage[]; // Carousel images for architects/designers
+    listSections: CladdingListSection[];
+    galleryImages: GalleryImage[];
+    carouselMImages: CarouselMImage[];
+    carouselADImages: CarouselADImage[];
 }
 
 

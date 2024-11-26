@@ -9,21 +9,19 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "All fields are required." }, { status: 400 });
         }
 
-        // Configure your transporter
         const transporter = nodemailer.createTransport({
-            host: process.env.CONTACT_HOST_SERVER, // Update based on your email provider
+            host: process.env.CONTACT_HOST_SERVER,
             port: Number(process.env.CONTACT_PORT),
             secure: true,
             auth: {
-                user: process.env.CONTACT_USER, // Your email address
-                pass: process.env.CONTACT_PASSWD, // Use an app password if needed
+                user: process.env.CONTACT_USER,
+                pass: process.env.CONTACT_PASSWD,
             },
         });
 
-        // Configure email options
         const mailOptions = {
-            from: process.env.CONTACT_FROM, // Sender address
-            to: process.env.CONTACT_TO, // Recipient email
+            from: process.env.CONTACT_FROM,
+            to: process.env.CONTACT_TO,
             subject: "New Contact Form Submission",
             html: `
         <h2>New Contact Form Submission</h2>
@@ -35,7 +33,6 @@ export async function POST(req: Request) {
       `,
         };
 
-        // Send the email
         await transporter.sendMail(mailOptions);
 
         return NextResponse.json({ message: "Email sent successfully." }, { status: 200 });

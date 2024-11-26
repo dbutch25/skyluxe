@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {FaFacebookF, FaInstagram, FaYoutube, FaTiktok} from 'react-icons/fa';
-import { images } from '@/constants'; // Adjust the path if needed
+import { images } from '@/constants';
 
 const Footer: React.FC = () => {
     return (

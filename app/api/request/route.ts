@@ -5,19 +5,17 @@ export async function POST(req: Request) {
     try {
         const { name, email, number, serviceType, scopeOfWork } = await req.json();
 
-        // Validate required fields
         if (!name || !email || !number || !serviceType || !scopeOfWork) {
             return NextResponse.json({ error: "All fields are required." }, { status: 400 });
         }
 
-        // Nodemailer transporter configuration
         const transporter = nodemailer.createTransport({
             host: process.env.REQUEST_HOST_SERVER,
             port: Number(process.env.REQUEST_PORT),
             secure: true,
             auth: {
                 user: process.env.REQUEST_USER,
-                pass: process.env.REQUEST_PASSWD, // Ensure the correct environment variable name
+                pass: process.env.REQUEST_PASSWD,
             },
         });
 
@@ -36,7 +34,6 @@ export async function POST(req: Request) {
             `,
         };
 
-        // Send email
         await transporter.sendMail(mailOptions);
 
         return NextResponse.json({ message: "Email sent successfully." }, { status: 200 });

@@ -17,7 +17,6 @@ interface Repairs {
     listSections: { items: string[] }[];
 }
 
-// Fetch data in a server component
 const RepairsPage = async () => {
     const repairsData: Repairs[] = await client.fetch(getRepairsPage);
 
@@ -25,7 +24,7 @@ const RepairsPage = async () => {
         return <p className="text-center py-20">No repair data available.</p>;
     }
 
-    const data = repairsData[0]; // Assuming a single document is fetched
+    const data = repairsData[0];
     const { title, firstContent, secondContent, firstImage, thirdContent, images, listSections } = data;
 
     return (

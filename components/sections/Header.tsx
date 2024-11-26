@@ -146,7 +146,6 @@ export const Header = () => {
                         </li>
                     </ul>
 
-                    {/* Mobile Menu Button */}
                     <div className="lg:hidden">
                         <button
                             onClick={toggleMenu}
@@ -156,7 +155,6 @@ export const Header = () => {
                         </button>
                     </div>
 
-                    {/* Request A Quote Button */}
                     <Link href="/quote"
                           className="hidden uppercase sm:block tracking-widest border-2 border-secondary-800 px-7 py-3 text-secondary-800 rounded hover:text-primary-50 hover:border-none hover:bg-primary-700">
                         Request A Quote

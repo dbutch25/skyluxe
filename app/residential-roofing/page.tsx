@@ -18,8 +18,8 @@ interface ImageData {
     alt: string;
 }
 interface CarouselMImage {
-    url: string; // Image URL from the CMS
-    alt: string; // Alt text for the image
+    url: string;
+    alt: string;
 }
 
 interface ListItem {
