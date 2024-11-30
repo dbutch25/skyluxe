@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import { images } from "@/constants"
 import Image from 'next/image'
 import {FaArrowDown} from "react-icons/fa";
-import Link from "next/link";
 import {getHomeVideoData} from "@/sanity/lib/queries";
 
 interface HomeVideo {
@@ -48,11 +47,15 @@ export const BgHomeVideo: React.FC = () => {
                 />
             )}
 
-            <Link
-                href='/'
-                className='absolute rounded-full bg-transparent p-2 text-white border-2 border-white shadow-lg inline-block animate-bounce bottom-6 left-6'>
-                <FaArrowDown size="24" />
-            </Link>
+            <div
+                className="absolute inset-x-0 bottom-14 flex justify-center"
+            >
+                <div
+                    className="rounded-full bg-transparent p-2 text-white border-2 border-white shadow-lg animate-bounce"
+                >
+                    <FaArrowDown size="35"/>
+                </div>
+            </div>
         </div>
     );
 };

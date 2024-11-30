@@ -12,10 +12,10 @@ const ContactPage = () => {
             </div>
             <div className="container flex flex-col-reverse lg:flex-row py-20">
                 <div
-                    className='w-full lg:min-w-[500px] h-auto py-6 flex items-center justify-center flex-col bg-primary-50 shadow-lg rounded-lg'>
+                    className='w-full lg:min-w-[500px] max-w-lg max-h-[525px] py-6 px-12 flex items-center justify-center flex-col bg-primary-50 shadow-lg rounded-lg'>
                     <div className="w-full flex flex-col gap-14 justify-evenly items-center">
                         <div
-                            className="flex flex-col justify-center w-4/5 py-2 h-auto border-2 rounded-2xl shadow-lg items-center bg-primary-100">
+                            className="flex flex-col justify-center w-full py-2 h-auto border-2 rounded-2xl shadow-lg items-center bg-primary-100">
                             <div className="flex items-center justify-center h-full">
                                 <FaPhone size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
                             </div>
@@ -28,7 +28,7 @@ const ContactPage = () => {
                             </Link>
                         </div>
                         <div
-                            className="flex flex-col justify-center w-4/5 py-2 h-auto border-2 rounded-2xl shadow-lg items-center bg-primary-100">
+                            className="flex flex-col justify-center w-full py-2 h-auto border-2 rounded-2xl shadow-lg items-center bg-primary-100">
                             <div className="flex items-center justify-center h-full">
                                 <FaEnvelope size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
                             </div>
@@ -41,7 +41,7 @@ const ContactPage = () => {
                             </Link>
                         </div>
                         <div
-                            className="flex flex-col justify-center w-4/5 py-2 h-auto border-2 rounded-2xl shadow-lg items-center bg-primary-100">
+                            className="flex flex-col justify-center w-full py-2 h-auto border-2 rounded-2xl shadow-lg items-center bg-primary-100">
                             <div className="flex items-center justify-center h-full">
                                 <FaLocationArrow size={25} className="pl-5 min-w-11 min-h-11 text-secondary-500"/>
                             </div>

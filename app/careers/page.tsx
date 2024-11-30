@@ -30,28 +30,14 @@ const CareersPage = () => {
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                     <div className="bg-primary-100 px-8 py-6 rounded-3xl border-t-4 border-secondary-400 shadow-lg">
-                        <h4 className="font-julius">Roofing Sheet Metal Installer</h4>
+                        <h4 className="font-julius">Metal Roofer</h4>
                         <div className="font-montserrat flex gap-2 mt-4">
                             <span
                                 className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100 border border-primary-50">Etobicoke, ON</span>
                             <span
                                 className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100">Full Time</span>
                         </div>
-                        <Link href='/careers/'
-                              className="font-montserrat mt-6 text-secondary-800 flex items-center gap-3 hover:text-secondary-400">
-                            Apply<FaArrowRight/>
-                        </Link>
-
-                    </div>
-                    <div className="bg-primary-100 px-8 py-6 rounded-3xl border-t-4 border-secondary-400 shadow-lg">
-                        <h4 className="font-julius">Roofing Shingler</h4>
-                        <div className="font-montserrat flex gap-2 mt-4">
-                            <span
-                                className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100 border border-primary-50">Etobicoke, ON</span>
-                            <span
-                                className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100">Freelance, Full Time</span>
-                        </div>
-                        <Link href="/careers/"
+                        <Link href='https://ca.indeed.com/cmp/Skyluxe-Roofing-and-Sheet-Metal/jobs?jk=9da17381089a2b62&start=0&clearPrefilter=1'
                               className="font-montserrat mt-6 text-secondary-800 flex items-center gap-3 hover:text-secondary-400">
                             Apply<FaArrowRight/>
                         </Link>
@@ -63,9 +49,23 @@ const CareersPage = () => {
                             <span
                                 className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100 border border-primary-50">Etobicoke, ON</span>
                             <span
+                                className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100">Freelance, Full Time</span>
+                        </div>
+                        <Link href="https://ca.indeed.com/cmp/Skyluxe-Roofing-and-Sheet-Metal/jobs?jk=901a12d5e9aac5db&start=0&clearPrefilter=1"
+                              className="font-montserrat mt-6 text-secondary-800 flex items-center gap-3 hover:text-secondary-400">
+                            Apply<FaArrowRight/>
+                        </Link>
+
+                    </div>
+                    <div className="bg-primary-100 px-8 py-6 rounded-3xl border-t-4 border-secondary-400 shadow-lg">
+                        <h4 className="font-julius">Estimator</h4>
+                        <div className="font-montserrat flex gap-2 mt-4">
+                            <span
+                                className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100 border border-primary-50">Etobicoke, ON</span>
+                            <span
                                 className="flex items-center gap-1 rounded-full px-2 py-1 bg-secondary-100">Full Time, Permanent</span>
                         </div>
-                        <Link href="/careers/"
+                        <Link href="https://ca.indeed.com/cmp/Skyluxe-Roofing-and-Sheet-Metal/jobs?jk=d8ce8a60fa998fd5&start=0&clearPrefilter=1"
                               className="font-montserrat mt-6 text-secondary-800 flex items-center gap-3 hover:text-secondary-400">
                             Apply<FaArrowRight/>
                         </Link>

@@ -51,11 +51,11 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-primary-700 pt-8">
                     <div className="flex flex-col">
                         <h4 className="font-semibold text-lg mb-4">Services</h4>
-                        <Link href="/services/residential-roofing" className="mb-1 hover:underline">Residential Roofing</Link>
-                        <Link href="/services/ICI" className="mb-1 hover:underline">ICI Roofing</Link>
-                        <Link href="/services/architectural-cladding" className="mb-1 hover:underline">Architectural Cladding</Link>
-                        <Link href="/services/waterproofing" className="mb-1 hover:underline">Waterproofing</Link>
-                        <Link href="/services/repairs" className="mb-1 hover:underline">Repairs & Maintenance</Link>
+                        <Link href="/residential-roofing" className="mb-1 hover:underline">Residential Roofing</Link>
+                        <Link href="/ICI" className="mb-1 hover:underline">ICI Roofing</Link>
+                        <Link href="/architectural-cladding" className="mb-1 hover:underline">Architectural Cladding</Link>
+                        <Link href="/waterproofing" className="mb-1 hover:underline">Waterproofing</Link>
+                        <Link href="/repairs" className="mb-1 hover:underline">Repairs & Maintenance</Link>
                     </div>
 
                     <div className="flex flex-col">

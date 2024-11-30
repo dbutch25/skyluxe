@@ -22,7 +22,6 @@ export default function ContactForm() {
         setStatus("loading");
         setError(null);
 
-        // Basic validation
         if (!formData.email.includes("@")) {
             setError("Please enter a valid email address.");
             setStatus("error");
@@ -62,7 +61,7 @@ export default function ContactForm() {
 
 
     return (
-        <div className="container mx-auto py-10 px-4">
+        <div className="container mx-auto px-4">
             <form onSubmit={handleSubmit} className="plausible-event-name=ContactForm max-w-lg mx-auto shadow-md rounded font-montserrat bg-primary-50 px-8 pt-6 pb-8 mb-4">
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-primary-950 text-sm font-bold mb-2">

@@ -84,8 +84,14 @@ const ResidentRoofingPage = async () => {
                         priority
                     />
 
-                    <div className='absolute rounded-full bg-transparent p-2 text-white border-2 border-white shadow-lg inline-block animate-bounce bottom-6 left-6'>
-                        <FaArrowDown size="24"/>
+                    <div
+                        className="absolute inset-x-0 bottom-14 flex justify-center"
+                    >
+                        <div
+                            className="rounded-full bg-transparent p-2 text-white border-2 border-white shadow-lg animate-bounce"
+                        >
+                            <FaArrowDown size="35"/>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -94,7 +100,7 @@ const ResidentRoofingPage = async () => {
                     <h1 className="inline border-b-2 border-primary-800">{title}</h1>
                 </div>
                 <div className="py-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {residentialList?.map((section, index) => (
                             section?.items.map((item, i) => (
                                 <div key={`${index}-${i}`} className="flex items-center text-base text-gray-700">

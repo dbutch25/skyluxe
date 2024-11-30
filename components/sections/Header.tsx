@@ -106,13 +106,20 @@ export const Header = () => {
                                     item.subItems ? "lg:cursor-pointer" : ""
                                 }`}
                             >
-                                <div
-                                    className="relative z-10 flex items-center"
-                                    onClick={() => (item.subItems ? toggleSubMenu(index) : closeMenu())}
-                                >
-                                    <Link href={item.href}>{item.label}</Link>
+                                <div className="relative z-10 flex items-center">
+                                    <Link href={item.href} onClick={closeMenu}>
+                                        {item.label}
+                                    </Link>
                                     {item.subItems && (
-                                        <span className="ml-2">{openSubMenu === index ? "▲" : "▼"}</span>
+                                        <span
+                                            className="ml-2 cursor-pointer"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleSubMenu(index);
+                                            }}
+                                        >
+            {openSubMenu === index ? "▲" : "▼"}
+        </span>
                                     )}
                                 </div>
 

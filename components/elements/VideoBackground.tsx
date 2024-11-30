@@ -32,7 +32,7 @@ const VideoBackground = ({
                 ></div>
             )}
             <div
-                className="absolute inset-x-0 bottom-12 flex justify-center"
+                className="absolute inset-x-0 bottom-14 flex justify-center"
             >
                 <div
                     className="rounded-full bg-transparent p-2 text-white border-2 border-white shadow-lg animate-bounce"

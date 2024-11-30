@@ -26,11 +26,9 @@ export const HomeGallery: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            // Fetch data for small images
             const galleryData = await fetchHomeGalleryData();
             setGalleryItems(galleryData);
 
-            // Fetch data for the large image
             const largeGalleryData = await fetchHomeGalleryOneData();
             setLargeGalleryItem(largeGalleryData[0] || null);
         };
