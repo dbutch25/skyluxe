@@ -35,7 +35,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <head>
             <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
         </head>
-        <body className="bg-[rgb(255,253,245)] select-none" data-barba="wrapper">
+        <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
         {/* PageLoader will show until content is ready */}
         <PageLoader />
 
