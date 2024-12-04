@@ -89,6 +89,7 @@ export const ServiceSlider: React.FC = () => {
                                             <Link
                                                 href={service.serviceLink}
                                                 className="text-sm flex items-center text-secondary-900 border-b-2 border-secondary-900 hover:text-secondary-400 hover:border-secondary-400"
+                                                aria-label="Learn more about these services"
                                             >
                                                 Learn More
                                                 <FaArrowRight className="ml-2"/>
@@ -96,6 +97,7 @@ export const ServiceSlider: React.FC = () => {
                                             <Link
                                                 href={service.requestLink}
                                                 className="text-sm flex items-center text-secondary-900 border-b-2 border-secondary-900 hover:text-teal-800"
+                                                aria-label="Request a Quote if interested in these services"
                                             >
                                                 Request Quote
                                                 <FaArrowRight className="ml-2"/>

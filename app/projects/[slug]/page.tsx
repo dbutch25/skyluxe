@@ -70,7 +70,7 @@ const ProjectDetailPage = async ({ params }: { params: { slug: string } }) => {
                                     alt={project.title}
                                     width={600}
                                     height={400}
-                                    className="object-contain h-full w-full "
+                                    className="object-cover h-full w-full "
                                 />
                             </div>
                         )}

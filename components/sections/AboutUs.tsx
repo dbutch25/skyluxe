@@ -35,8 +35,11 @@ export const AboutUs = () => {
                     <div className="max-w-3xl text-primary-950 text-base font-montserrat">
                         <PortableText value={aboutUsData.content} />
                         <div className="flex justify-end">
-                            <Link href="/"
-                                  className="flex items-center pt-2.5 font-julius gap-3 text-lg text-secondary-900 hover:text-teal-800 font-julius-sans">
+                            <Link
+                                href="/"
+                                className="flex items-center pt-2.5 font-julius gap-3 text-lg text-secondary-900 hover:text-teal-800 font-julius-sans"
+                                aria-label="View more about our team"
+                            >
                                 Our Team
                                 <span
                                     className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-secondary-900 text-secondary-900 hover:border-secondary-500 hover:text-secondary-500">

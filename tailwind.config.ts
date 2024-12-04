@@ -43,7 +43,7 @@ const config: Config = {
   			scrollLeftSlow: 'scrollLeft 16s linear infinite'
   		},
   		fontSize: {
-  			sm: 'clamp(0.8rem, 0.17vw + 0.8rem, 1rem)',
+  			sm: 'clamp(0.9rem, 0.17vw + 0.9rem, 1rem)',
   			base: 'clamp(1rem, 0.34vw + 0.91rem, 1.19rem)',
   			lg: 'clamp(1.25rem, 0.61vw + 1.1rem, 1.58rem)',
   			xl: 'clamp(1.56rem, 1vw + 1.31rem, 2.11rem)',
