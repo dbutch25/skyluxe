@@ -130,6 +130,17 @@ const AboutPage = () => {
                         </div>
                         <div className="border-b pb-4">
                             <h3 className="text-xl font-julius text-primary-900">
+                                Ben Serino
+                            </h3>
+                            <h4 className="text-sm font-montserrat text-primary-800 pb-3">
+                                Waterproofing Operations
+                            </h4>
+                            <p className="text-primary-950 font-montserrat text-base">
+                                Ben brings over 20 years of experience in construction, combining technical expertise with strategic leadership. In addition Ben provides estimates, manages, and coordinates all waterproofing projects while overseeing their execution, driving business growth while ensuring quality across all operations. With a proven track record in sales and innovation, including pioneering the blindside waterproofing market, Ben focuses on delivering cutting-edge solutions and exceptional service. From managing client relations to ensuring compliance with industry standards, he is committed to upholding our reputation as a trusted partner in roofing and waterproofing.
+                            </p>
+                        </div>
+                        <div className="border-b pb-4">
+                            <h3 className="text-xl font-julius text-primary-900">
                                 Saul Navarro
                             </h3>
                             <h4 className="text-sm font-montserrat text-primary-800 pb-3">
