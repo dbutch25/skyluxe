@@ -167,7 +167,7 @@ const ProjectDetailPage = async ({ params }: { params: { slug: string } }) => {
                     </div>
                     )}
                     {(project.firstEmbed || project.secondEmbed) && (
-                        <div className="flex flex-col justify-center items-center md:flex-row gap-8">
+                        <div className="flex flex-col justify-center py-10 items-center md:flex-row gap-8">
                             {project.firstEmbed && (
                                 <div className="w-full md:w-1/2">
                                     <YouTubeEmbed videoId={project.firstEmbed} />
