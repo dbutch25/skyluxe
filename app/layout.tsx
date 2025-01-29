@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import PlausibleProvider from "next-plausible";
 import PageLoader from "@/components/elements/PageLoader"; // Import PageLoader
 import { LinkedInInsightTag } from "nextjs-linkedin-insight-tag";
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
@@ -45,6 +46,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <Header />
         <main data-barba="container" data-barba-namespace="home">
             {children}
+            <Analytics />
         </main>
         <Footer />
         </body>
