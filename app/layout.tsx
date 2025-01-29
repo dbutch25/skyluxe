@@ -4,6 +4,7 @@ import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
 import PlausibleProvider from "next-plausible";
 import PageLoader from "@/components/elements/PageLoader"; // Import PageLoader
+import { LinkedInInsightTag } from "nextjs-linkedin-insight-tag";
 
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
@@ -34,6 +35,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <html lang="en">
         <head>
             <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
+            <LinkedInInsightTag />
         </head>
         <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
         {/* PageLoader will show until content is ready */}
