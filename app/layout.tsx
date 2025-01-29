@@ -36,7 +36,6 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <html lang="en">
         <head>
             <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
-            <LinkedInInsightTag />
         </head>
         <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
         {/* PageLoader will show until content is ready */}
@@ -47,6 +46,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <main data-barba="container" data-barba-namespace="home">
             {children}
             <Analytics />
+            <LinkedInInsightTag />
         </main>
         <Footer />
         </body>
