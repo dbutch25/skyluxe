@@ -3,6 +3,7 @@
 import BgHomeVideo from "@/components/layouts/BgHomeVideo";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import Testimonials from "@/components/sections/Testimonials";
 
 const AboutUs = dynamic(() => import("@/components/sections/AboutUs"));
 const ServiceSlider = dynamic(() => import("@/components/sections/ServiceSlider"));
@@ -52,6 +53,14 @@ const Home = () => {
                 variants={sectionVariants}
             >
                 <HomeGallery />
+            </motion.div>
+            <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                variants={sectionVariants}
+            >
+                <Testimonials />
             </motion.div>
         </main>
     );

@@ -285,7 +285,7 @@ const ResidentialRoofing = () => {
                     </div>
                 </div>
             </div>
-            <div className="lg:pl-[20%] pb-24 border-b-2 border-primary-200">
+            <div className="lg:pl-[20%]">
                 <div className="below-md:container lg:px-[10%] pt-16 w-full max-w-full bg-primary-100 mx-auto relative">
                     <div className="text-left font-julius text-2xl">
                         <h2>Repairs & Maintenance</h2>

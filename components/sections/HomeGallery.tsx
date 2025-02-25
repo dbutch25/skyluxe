@@ -45,7 +45,7 @@ export const HomeGallery: React.FC = () => {
 
             <div className=" grid grid-cols-1 md:grid-cols-3 gap-10">
                 {largeGalleryItem && (
-                    <div className=" col-span-2 relative overflow-hidden rounded-lg">
+                    <div className="md:col-span-2 relative overflow-hidden rounded-lg">
                         <Link href={largeGalleryItem.slug}>
                             <Image
                                 src={largeGalleryItem.imageUrl}
@@ -63,14 +63,14 @@ export const HomeGallery: React.FC = () => {
 
                 <div className="flex flex-col gap-10">
                     {galleryItems.map((item) => (
-                        <div key={item._id} className="relative overflow-hidden rounded-lg shadow-lg flex-1">
+                        <div key={item._id} className="relative overflow-hidden rounded-lg shadow-lg ">
                             <Link href={item.slug}>
                                 <Image
                                     src={item.imageUrl}
                                     alt={item.title || 'Gallery image'}
                                     width={450}
                                     height={300}
-                                    className="w-full h-full md:w-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
+                                    className="w-full h-[280px] object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                                 />
                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-700 ease-in-out">
                                     <span className="border-b-2 border-primary-50 text-primary-50 text-xl font-julius">{item.title}</span>

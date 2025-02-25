@@ -6,7 +6,7 @@ import { images } from '@/constants';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-primary-50 text-primary-950 pt-20">
+        <footer className="bg-primary-50 text-primary-950 pt-20 border-t border-primary-700 shadow-xl">
             <div className="container mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
                     <div className="flex flex-col items-center">
