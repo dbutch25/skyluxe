@@ -59,15 +59,29 @@ export const getHomeVideoData = async () => {
 }
 
 export const fetchProjects = async () => {
-    const query = `*[_type == "projectPage"]{
-        _id,
-        title,
-        category[],
-        "imageUrl": image.asset->url,
-        "slug": slug.current
+    const query = `*[_type == "projectPage"] | order(order asc){
+      _id,
+      title,
+      category[],
+      "imageUrl": image.asset->url,
+      "slug": slug.current
     }`;
     return await client.fetch(query);
 };
+
+// export const fetchProjectList = async () => {
+//   const query = `*[_type == "projectList"][0] {
+//     projects[]->{
+//       title,
+//       slug,
+//       image
+//     }
+//   }`;
+//   return await client.fetch(query);
+
+// } 
+
+
 
 export const projectQuery = groq`
   *[_type == "project" && slug.current == $slug][0] {

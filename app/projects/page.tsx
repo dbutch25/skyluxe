@@ -14,12 +14,12 @@ interface Project {
     slug: string;
 }
 
-const categories = ["residential roofing", "waterproofing", "ICI", "architectural cladding"];
+const categories = [ "ICI", "architectural cladding", "residential roofing", "waterproofing" ];
 
 const ProjectsPage = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-    const [activeCategory, setActiveCategory] = useState<string>("residential roofing");
+    const [activeCategory, setActiveCategory] = useState<string>("ICI");
 
     useEffect(() => {
         const fetchData = async () => {

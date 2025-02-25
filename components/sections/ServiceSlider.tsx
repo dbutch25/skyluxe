@@ -19,13 +19,13 @@ interface Service {
     requestLink: string;
 }
 
-const categories = ["residential-roofing", "ICI-roofing", "repairs", "waterproofing", "architectural-cladding"];
+const categories = [ "ICI-roofing", "architectural-cladding", "residential-roofing",  "repairs", "waterproofing", ];
 
 
 
 export const ServiceSlider: React.FC = () => {
     const [services, setServices] = useState<Service[]>([]);
-    const [activeCategory, setActiveCategory] = useState<string>("residential-roofing");
+    const [activeCategory, setActiveCategory] = useState<string>("ICI-roofing");
 
     useEffect(() => {
         (async () => {
