@@ -43,16 +43,16 @@ export const HomeGallery: React.FC = () => {
                 <span>What We've Done</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className=" grid grid-cols-1 md:grid-cols-3 gap-10">
                 {largeGalleryItem && (
-                    <div className="col-span-2 relative overflow-hidden rounded-lg shadow-lg">
+                    <div className=" col-span-2 relative overflow-hidden rounded-lg">
                         <Link href={largeGalleryItem.slug}>
                             <Image
                                 src={largeGalleryItem.imageUrl}
                                 alt={largeGalleryItem.title || 'Gallery image'}
                                 width={800}
                                 height={600}
-                                className="w-full h-[300px] md:h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
+                                className="w-full h-[300px] md:h-[600px] object-cover transition-transform duration-300 ease-in-out transform hover:scale-110 rounded-lg"
                             />
                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-700 ease-in-out">
                                 <span className="border-b-2 border-primary-50 text-primary-50 text-xl font-julius">{largeGalleryItem.title}</span>

@@ -47,7 +47,7 @@ const ProjectDetailPage = async ({ params }: { params: { slug: string } }) => {
         }
 
         return (
-            <div className="project-detail-page">
+            <div className="project-detail-page md:pb-20">
                 <VideoBackground videoSrc={project.backgroundVideo} fallbackImage={project.fallbackImage} />
 
                 <section className="container">

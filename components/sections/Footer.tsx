@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
                                 alt="Logo"
                                 width={375}
                                 height={150}
-                                className="mb-4"
+                                className="mb-4 w-80"
                             />
                         </Link>
                     </div>
