@@ -21,6 +21,7 @@ const Testimonials = () => {
     </div>
   );
 }
+export default Testimonials;
 
 const testimonials = [
   {
@@ -67,4 +68,4 @@ const testimonials = [
   },
 ];
 
-export default Testimonials;
+
