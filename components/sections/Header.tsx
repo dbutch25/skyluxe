@@ -80,7 +80,7 @@ export const Header = () => {
         <>
             <header
                 className={`h-28 bg-primary-100 font-montserrat flex justify-between border-b-2 border-primary-4000 items-center px-6 w-full transition-all duration-300 ease-in-out ${
-                    isSticky ? "fixed top-0 z-20 bg-primary-50 shadow-lg" : "absolute z-15 opacity-95"
+                    isSticky ? "fixed top-0 z-20 bg-primary-50 shadow-lg" : "absolute z-10 opacity-95"
                 } ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
             >
                 <div className="px-10 flex justify-between w-full items-center py-3">
