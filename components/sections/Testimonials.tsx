@@ -13,7 +13,7 @@ const Testimonials = () => {
         <div className="rounded-md flex flex-col antialiased bg-primary-50 items-center justify-center relative overflow-hidden">
         <InfiniteMovingCards
             items={testimonials}
-            direction="right"
+            direction="left"
             speed="slow"
         />
         </div>
