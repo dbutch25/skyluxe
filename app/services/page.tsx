@@ -26,8 +26,7 @@ const ResidentialRoofing = () => {
                     <div className="text-base font-montserrat text-primary-950 pt-3">
                         <p>
                         Our residential roofing services cover new construction installations, roof replacements,
-                            and
-                            repairs bringing commercial grade expertise and materials to residential projects while
+                            and repairs bringing commercial grade expertise and materials to residential projects while
                             adhering
                             to industry standards for durability and aesthetics.
                         </p>
