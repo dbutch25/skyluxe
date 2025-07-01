@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
                         <Link href="tel:+16476295893" className="mb-2 hover:underline">
                             Phone: (647) 629 5893
                         </Link>
-                        <Link href="mailto:info@syluxeroofing.com" className="hover:underline">
+                        <Link href="mailto:info@skyluxeroofing.com" className="hover:underline">
                             Email: info@skyluxeroofing.com
                         </Link>
                     </div>
