@@ -2,9 +2,9 @@ import "./globals.css";
 import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
-import PlausibleProvider from "next-plausible";
-import PageLoader from "@/components/elements/PageLoader"; // Import PageLoader
+import PageLoader from "@/components/elements/PageLoader"; 
 import { LinkedInInsightTag } from "nextjs-linkedin-insight-tag";
+import { GoogleTagManager } from '@next/third-parties/google';
 
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
@@ -34,9 +34,9 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     return (
         <html lang="en">
         <head>
-            <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
         </head>
         <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
+        <GoogleTagManager gtmId={`${process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER}`} />
         {/* PageLoader will show until content is ready */}
         <PageLoader />
 
