@@ -34,35 +34,16 @@ export const metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
     return (
         <html lang="en">
-            <head>
-                <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
-
-                {/* ✅ Google Analytics + Google Ads */}
-                <Script
-                    src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"
-                    strategy="afterInteractive"
-                />
-                <Script id="ga-ads" strategy="afterInteractive">
-                    {`
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-
-                        // Google Ads
-                        gtag('config', 'AW-17526310370');
-                    `}
-                </Script>
-            </head>
             <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
                 <PageLoader />
 
                 <Header />
                 <main data-barba="container" data-barba-namespace="home">
                     {children}
-                    <LinkedInInsightTag />
                 </main>
                 <Footer />
-            </body>
+            </body>                    
+            <GoogleAnalytics gaId="G-6CN887D8NS" />
         </html>
     );
 };
