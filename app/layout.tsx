@@ -2,9 +2,10 @@ import "./globals.css";
 import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
-import PageLoader from "@/components/elements/PageLoader"; 
+import PlausibleProvider from "next-plausible";
+import PageLoader from "@/components/elements/PageLoader";
 import { LinkedInInsightTag } from "nextjs-linkedin-insight-tag";
-import { GoogleTagManager } from '@next/third-parties/google';
+import Script from "next/script"; // ✅ Import Next.js Script
 
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
@@ -33,21 +34,35 @@ export const metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
     return (
         <html lang="en">
-        <head>
-        </head>
-        <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
-        <GoogleTagManager gtmId={`${process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER}`} />
-        {/* PageLoader will show until content is ready */}
-        <PageLoader />
+            <head>
+                <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
 
-        {/* Main content */}
-        <Header />
-        <main data-barba="container" data-barba-namespace="home">
-            {children}
-            <LinkedInInsightTag />
-        </main>
-        <Footer />
-        </body>
+                {/* ✅ Google Analytics + Google Ads */}
+                <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"
+                    strategy="afterInteractive"
+                />
+                <Script id="ga-ads" strategy="afterInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+
+                        // Google Ads
+                        gtag('config', 'AW-17526310370');
+                    `}
+                </Script>
+            </head>
+            <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
+                <PageLoader />
+
+                <Header />
+                <main data-barba="container" data-barba-namespace="home">
+                    {children}
+                    <LinkedInInsightTag />
+                </main>
+                <Footer />
+            </body>
         </html>
     );
 };
