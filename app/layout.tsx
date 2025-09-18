@@ -32,6 +32,7 @@ export const metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
     return (
         <html lang="en">
+            <GoogleTagManager  gtmId="GTM-5FFZQZ8Q"/>
             <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
                 <PageLoader />
 
