@@ -3,7 +3,7 @@ import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
 import PageLoader from "@/components/elements/PageLoader";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
