@@ -3,7 +3,7 @@ import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
 import PageLoader from "@/components/elements/PageLoader";
-import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
+import Script from "next/script";
 
 export const metadata = {
     title: "Skyluxe Roofing & Sheet Metal",
@@ -32,7 +32,21 @@ export const metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
     return (
         <html lang="en">
-            <GoogleTagManager  gtmId="GTM-5FFZQZ8Q"/>
+            <head>
+                <Script
+                id="google-ads-tag"
+                strategy="afterInteractive"
+                src={`https://www.googletagmanager.com/gtag/js?id=AW-17526310370`}
+                />
+                <Script id="google-ads-init" strategy="afterInteractive">
+                {`
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', 'AW-17526310370');
+                `}
+                </Script>
+            </head>
             <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
                 <PageLoader />
 
@@ -42,7 +56,6 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
                 </main>
                 <Footer />
             </body>                    
-            <GoogleAnalytics gaId="G-6CN887D8NS" />
         </html>
     );
 };
