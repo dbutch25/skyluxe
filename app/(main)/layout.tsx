@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../globals.css";
 import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";

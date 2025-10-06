@@ -104,6 +104,8 @@ strong {
   display: flex;
   gap: 100px;
   animation: marquee-animation 30s linear infinite;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes marquee-animation {

@@ -1,26 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; 
 
-export default function RequestForm() {
+export default function LandingPageForm() {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         number: "",
-        serviceType: "",
         scopeOfWork: "",
     });
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [error, setError] = useState<string | null>(null);
-
-    const serviceOptions = [
-        "Residential Roofing",
-        "ICI Roofing",
-        "Repairs",
-        "Waterproofing",
-        "Architectural Cladding",
-        "Restoration"
-    ];
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -46,7 +38,7 @@ export default function RequestForm() {
         }
 
         try {
-            const response = await fetch("/api/request", {
+            const response = await fetch("/api/landing", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
@@ -58,7 +50,8 @@ export default function RequestForm() {
             }
 
             setStatus("success");
-            setFormData({ name: "", email: "", number: "", serviceType: "", scopeOfWork: "" });
+            setFormData({ name: "", email: "", number: "", scopeOfWork: "" });
+            router.push("/thank-you")
         } catch (err: unknown) {
             setStatus("error");
 
@@ -74,7 +67,7 @@ export default function RequestForm() {
         <div className="container mx-auto px-4 py-20">
             <form
                 onSubmit={handleSubmit}
-                className="max-w-3xl mx-auto shadow-md rounded font-montserrat bg-primary-50 px-8 pt-6 pb-8 mb-4"
+                className="max-w-3xl mx-auto shadow-md rounded-3xl font-montserrat bg-primary-50 px-8 pt-6 pb-8 mb-4"
             >
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-primary-950 text-sm font-bold mb-2">
@@ -119,28 +112,6 @@ export default function RequestForm() {
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="serviceType" className="block text-primary-950 text-sm font-bold mb-2">
-                        Type of Service
-                    </label>
-                    <select
-                        id="serviceType"
-                        name="serviceType"
-                        value={formData.serviceType}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border rounded bg-white"
-                    >
-                        <option value="" disabled>
-                            Select a service
-                        </option>
-                        {serviceOptions.map((service, index) => (
-                            <option key={index} value={service}>
-                                {service}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="mb-4">
                     <label htmlFor="scopeOfWork" className="block text-primary-950 text-sm font-bold mb-2">
                         Scope of Work
                     </label>
@@ -182,8 +153,6 @@ export default function RequestForm() {
                     )}
                     {status === "loading" ? "Sending..." : "Send"}
                 </button>
-
-                {status === "success" && <p className="mt-4 text-green-500">Email sent successfully!</p>}
                 {status === "error" && <p className="mt-4 text-red-500">Error: {error}</p>}
             </form>
         </div>
