@@ -12,7 +12,7 @@ const primaryFeatures = [
   {
     name: 'Flat Roof Installation',
     description:
-      'Expert flat roof installation with durable materials designed to protect your property for decades.',
+      'Expert flat roof installation with minimal slope a waterproof membrane to ensure your roof is protected from the elements.',
     href: '#',
     link:'Get a Free Quote',
     imageUrl:'/images/repairs.jpg'
@@ -29,7 +29,7 @@ const primaryFeatures = [
   {
     name: 'Industrial Roofing',
     description:
-      'Preferred choice for commercial properties with high exposure to weather conditions, safegaurding your assets with exceptional materials and an experiences team of professionals.',
+      'Preferred choice for commercial properties with high exposure to weather conditions, safegaurding your assets with exceptional materials and an experienced team.',
     href: '#',
     link: 'Request a Quote',
     imageUrl:'/images/repairs.jpg'
