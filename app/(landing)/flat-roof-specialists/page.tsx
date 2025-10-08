@@ -18,18 +18,18 @@ const primaryFeatures = [
     imageUrl:'/images/repairs.jpg'
   },
   {
-    name: 'Roof Repairs',
+    name: 'Roof Repairs & Maintenance',
     description:
-      'Reliable flat roof repairs & maintenance plans with upgrades to your commercial roof with modern designs & system for improved durability, efficiency, and protection.',
+      'Reliable flat roof repairs & maintenance plans with upgrades to your commercial roof with modern designs & systems for improved durability, efficiency, and protection.',
     href: '#',
     link: 'Book a Repair',
     imageUrl:'/images/LPTAB2.jpeg'
 
   },
   {
-    name: 'Maintenance',
+    name: 'Industrial Roofing',
     description:
-      'Affordable maintenance plans with upgrades to your commercial roof with modern designs & systmes for improved durability, efficiency, and protection',
+      'Preferred choice for commercial properties with high exposure to weather conditions, safegaurding your assets with exceptional materials and an experiences team of professionals.',
     href: '#',
     link: 'Request a Quote',
     imageUrl:'/images/repairs.jpg'

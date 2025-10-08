@@ -1,6 +1,7 @@
 import LandingPageHeader from "@/components/sections/LandingPageHeader";
 import Script from "next/script";
-import "../../globals.css";
+import "../globals.css";
+import GclidTracker from "@/components/elements/GclidTracker";
 
 export default function FlatRoofSpecialistLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,6 +22,7 @@ export default function FlatRoofSpecialistLayout({ children }: { children: React
         </Script>
       </head>
       <body className="bg-primary-50">
+        <GclidTracker />
         <LandingPageHeader />
         <main>{children}</main>
       </body>
