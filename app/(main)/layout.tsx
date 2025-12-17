@@ -3,6 +3,7 @@ import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import { ReactNode } from "react";
 import PageLoader from "@/components/elements/PageLoader";
+import PlausibleProvider from "next-plausible";
 import Script from "next/script";
 
 export const metadata = {
@@ -46,6 +47,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
                     gtag('config', 'AW-17526310370');
                 `}
                 </Script>
+                <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
             </head>
             <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
                 <PageLoader />
