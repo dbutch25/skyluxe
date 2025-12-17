@@ -47,7 +47,11 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
                     gtag('config', 'AW-17526310370');
                 `}
                 </Script>
-                <PlausibleProvider taggedEvents={true} domain="skyluxeroofing.com" />
+                <Script
+                    strategy="afterInteractive"
+                    data-domain="skyluxeroofing.com"
+                    src="https://plausible.io/js/script.js"
+                />
             </head>
             <body className="bg-[rgb(255,253,245)]" data-barba="wrapper">
                 <PageLoader />
