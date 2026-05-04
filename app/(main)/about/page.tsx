@@ -110,26 +110,6 @@ const AboutPage = () => {
                         </div>
                         <div className="border-b pb-4">
                             <h3 className="text-xl font-julius text-primary-900">
-                                Jerry Stasicki
-                            </h3>
-                            <h4 className="text-sm font-montserrat text-primary-800 pb-3">
-                                Vice President
-                            </h4>
-                            <p className="text-primary-950 font-montserrat text-base">Jerry estimates, consults, and
-                                manages all projects. Jerry is
-                                involved with the initial client consultation to determine the necessary details and
-                                requirements and then sends out proposals accordingly. He works directly with many
-                                builders
-                                and architects. He is also involved with the management of these projects to ensure that
-                                the
-                                initial proposal meets or exceeds all client’s and manufacturer’s expectations. With
-                                Jerry,
-                                you are promised an honest assessment of your property or build, detailed
-                                recommendations to
-                                address any issues, followed by a perfect execution</p>
-                        </div>
-                        <div className="border-b pb-4">
-                            <h3 className="text-xl font-julius text-primary-900">
                                 Ben Serino
                             </h3>
                             <h4 className="text-sm font-montserrat text-primary-800 pb-3">
