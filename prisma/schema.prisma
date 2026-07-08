@@ -1,0 +1,308 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+// ─── better-auth required tables ─────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          String    @default("admin")
+  twoFactorEnabled Boolean  @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  twoFactors    TwoFactor[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                   String    @id @default(cuid())
+  userId               String
+  accountId            String
+  providerId           String
+  accessToken          String?
+  refreshToken         String?
+  idToken              String?
+  accessTokenExpiresAt DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                String?
+  password             String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─── Home ────────────────────────────────────────────────────────────────────
+
+model HomeVideo {
+  id         String   @id @default(cuid())
+  videoLabel String?
+  videoUrl   String   // Cloudinary URL
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model AboutUsHome {
+  id        String   @id @default(cuid())
+  content   Json     // Tiptap JSON
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HomeGallery {
+  id         String   @id @default(cuid())
+  title      String
+  slug       String   @unique
+  imageUrl   String
+  isFeatured Boolean  @default(false) // true = the large left panel
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─── Service Carousel ────────────────────────────────────────────────────────
+
+model ServiceCarousel {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  serviceLink  String
+  requestLink  String
+  mainImageUrl String
+  category     String   // ICI-roofing | architectural-cladding | residential-roofing | repairs | waterproofing
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ─── Projects ────────────────────────────────────────────────────────────────
+
+/// Portfolio thumbnail shown on /projects listing page
+model ProjectPage {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  imageUrl  String
+  category  String[] // "ICI" | "architectural cladding" | "residential roofing" | "waterproofing"
+  order     Int      @default(0)
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Full project detail page
+model Project {
+  id                String      @id @default(cuid())
+  title             String
+  slug              String      @unique
+  backgroundVideoUrl String?
+  fallbackImageUrl  String?
+  content           String?
+  mainImageUrl      String?
+  listSections      Json?       // [{ title: string, items: string[] }]
+  extraContent      String?
+  extraImageUrl     String?
+  fullWidthImageUrl String?
+  centeredText      String?
+  images            String[]    // Cloudinary URLs
+  carouselImages    String[]    // Cloudinary URLs
+  firstEmbed        String?     // YouTube video ID
+  secondEmbed       String?
+  thirdEmbed        String?
+  projectPage       ProjectPage?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// ─── Service Pages ────────────────────────────────────────────────────────────
+
+model Repairs {
+  id            String   @id @default(cuid())
+  title         String
+  firstContent  String?
+  secondContent String?
+  firstImageUrl String?
+  firstImageAlt String?
+  thirdContent  String?
+  images        Json?    // [{ url: string, alt: string }]
+  listSections  Json?    // [{ items: string[] }]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Waterproofing {
+  id                  String   @id @default(cuid())
+  title               String
+  description         String?
+  accordionItems      Json?    // [{ accordionTitle: string, accordionContent: string }]
+  gallery             Json?    // [{ url: string, galleryAlt: string }]
+  manufacturersGallery Json?   // [{ url: string, manufacturerAlt: string }]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model ICIRoofing {
+  id              String   @id @default(cuid())
+  title           String
+  content         String?
+  firstTitle      String?
+  firstContent    String?
+  firstImageUrl   String?
+  firstImageAlt   String?
+  secondImageUrl  String?
+  secondImageAlt  String?
+  secondContent   String?
+  thirdContent    String?
+  secondTitle     String?
+  listSections    Json?    // [{ items: string[] }]
+  listItem        String?
+  galleryImages   Json?    // [{ url: string, alt: string }]
+  extraTitle      String?
+  carouselMImages Json?    // [{ url: string, alt: string }]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Cladding {
+  id              String   @id @default(cuid())
+  title           String
+  content         String?
+  listSections    Json?    // [{ items: string[] }]
+  galleryImages   Json?    // [{ url: string, alt: string }]
+  extraTitle      String?
+  extraContent    String?
+  carouselMImages Json?    // [{ url: string, alt: string }]
+  carouselADImages Json?   // [{ url: string, alt: string }]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Restoration {
+  id           String   @id @default(cuid())
+  title        String
+  introText    String?
+  heroImageUrl String?
+  heroImageAlt String?
+  galleryImages Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Residential {
+  id                   String   @id @default(cuid())
+  title                String
+  backgroundImageUrl   String?
+  backgroundImageAlt   String?
+  residentialList      Json?    // [{ items: string[] }]
+  firstTitle           String?
+  firstContent         String?
+  firstImageUrl        String?
+  firstImageAlt        String?
+  secondImageUrl       String?
+  secondImageAlt       String?
+  residentialImages    String[]
+  asphaltTitle         String?
+  asphaltFirstContent  String?
+  asphaltImageUrl      String?
+  asphaltImageAlt      String?
+  asphaltImages        String[]
+  cedarTitle           String?
+  cedarFirstContent    String?
+  cedarFirstImageUrl   String?
+  cedarFirstImageAlt   String?
+  cedarSecondImageUrl  String?
+  cedarSecondImageAlt  String?
+  cedarImages          String[]
+  metalsTitle          String?
+  metalsList           Json?    // [{ items: string[] }]
+  metalsContent        String?
+  metalsFirstImageUrl  String?
+  metalsFirstImageAlt  String?
+  metalsImages         String[]
+  guttersTitle         String?
+  guttersContent       String?
+  guttersFirstImageUrl  String?
+  guttersFirstImageAlt  String?
+  guttersSecondImageUrl String?
+  guttersSecondImageAlt String?
+  guttersImages        String[]
+  naturalTitle         String?
+  naturalContent       String?
+  naturalImages        String[]
+  syntheticTitle       String?
+  syntheticContent     String?
+  syntheticImageUrl    String?
+  syntheticImageAlt    String?
+  syntheticImages      String[]
+  skylightTitle        String?
+  skylightContent      String?
+  carouselMImages      Json?    // [{ url: string, alt: string }]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String
+  imgUrl    String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Careers ──────────────────────────────────────────────────────────────────
+
+model Career {
+  id        String   @id @default(cuid())
+  title     String
+  location  String
+  jobType   String   // "Full Time" | "Part Time" | "Contract" etc.
+  applyUrl  String
+  active    Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Two Factor Authentication
+
+model TwoFactor {
+  id          String  @id @default(cuid())
+  secret      String
+  backupCodes String
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
