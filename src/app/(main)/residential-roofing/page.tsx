@@ -70,7 +70,7 @@ export default async function ResidentialPage() {
     return raw
       .map((item: unknown) => {
         if (typeof item === "string") return item;
-        const obj = item as Record<string, unknown>;
+        const obj = item as { url?: string; image?: { asset?: { url?: string } } };
         return (obj?.url ?? obj?.image?.asset?.url ?? "") as string;
       })
       .filter(Boolean);

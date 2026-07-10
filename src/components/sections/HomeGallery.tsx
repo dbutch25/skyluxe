@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import type { GalleryItem } from "@/types";
+import { safeImageUrl } from "@/lib/utils";
 
 interface Props {
   galleryItems: GalleryItem[];
@@ -150,7 +151,7 @@ export default function HomeGallery({ galleryItems, largeGalleryItem }: Props) {
               >
                 <Link href={`/projects/${largeGalleryItem.slug}`} className="group block relative overflow-hidden aspect-4/3 md:h-120">
                   <Image
-                    src={largeGalleryItem.imageUrl}
+                    src={safeImageUrl(largeGalleryItem.imageUrl)}
                     alt={largeGalleryItem.title || "Skyluxe featured roofing project"}
                     fill
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
@@ -186,7 +187,7 @@ export default function HomeGallery({ galleryItems, largeGalleryItem }: Props) {
                 >
                   <Link href={`/projects/${item.slug}`} className="group block relative overflow-hidden h-55">
                     <Image
-                      src={item.imageUrl}
+                      src={safeImageUrl(item.imageUrl)}
                       alt={item.title || "Skyluxe roofing project"}
                       fill
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"

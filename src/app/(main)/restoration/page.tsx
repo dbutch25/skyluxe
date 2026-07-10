@@ -5,6 +5,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
 import Accordion from "@/components/elements/Accordion";
 import { images } from "@/constants";
+import { safeImageUrl } from "@/lib/utils";
 import { getRestorationPage } from "@/lib/data";
 import { BRAND_CONTACT } from "@/constants/brand";
 
@@ -211,7 +212,7 @@ export default async function RestorationPage() {
     // DB model not yet created — page renders with static content
   }
 
-  const heroImageUrl = cmsData?.heroImageUrl ?? images.about2;
+  const heroImageUrl = safeImageUrl(cmsData?.heroImageUrl, images.about2);
   const introText =
     cmsData?.introText ??
     "Buildings deteriorate. Mortar erodes, sealants fail, facades stain, and flashings corrode. Left unaddressed, what starts as minor weathering becomes major structural damage and costly interior repairs. Skyluxe provides comprehensive building envelope restoration — halting deterioration, renewing performance, and extending the life of your building for decades.";

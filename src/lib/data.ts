@@ -1,14 +1,28 @@
 /**
  * src/lib/data.ts
  *
- * Frontend data access layer — fetches from PostgreSQL via CMS API routes.
- * All types are imported from @/types. No type definitions here.
+ * Frontend data access layer — reads directly from PostgreSQL via Prisma.
  *
- * Usage:
- *   import { getHomeVideoData } from "@/lib/data"
- *   import type { HomeVideo } from "@/types"
+ * These functions run in Server Components (including at build time during
+ * static generation), so they must NOT fetch the app's own API routes over
+ * HTTP: there is no server listening during `next build`, which causes
+ * ECONNREFUSED prerender failures. Querying the database directly is faster,
+ * build-safe, and avoids the self-referential network hop. The /api/cms/*
+ * routes remain for authenticated CMS writes (POST/PUT/PATCH/DELETE).
+ *
+ * Reads are wrapped in `unstable_cache` (60s revalidate) to preserve the
+ * incremental-revalidation behaviour the previous `fetch(..., { next: {
+ * revalidate: 60 } })` calls provided.
+ *
+ * Prisma types `Json` columns as `JsonValue` and includes row timestamps.
+ * The `@/types` interfaces describe the narrower, UI-facing shape (e.g. Tiptap
+ * JSON as `object`, image arrays as typed records). We therefore cast each
+ * result to its declared type at the boundary — the same coercion the previous
+ * `res.json() as T` performed — after Zod-validated writes guarantee the shape.
  */
 
+import { unstable_cache } from "next/cache";
+import { db } from "@/lib/db";
 import type {
   HomeVideo,
   RestorationPage,
@@ -26,95 +40,119 @@ import type {
   ResidentialPage,
 } from "@/types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+const REVALIDATE_SECONDS = 60;
 
-async function apiFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}/api/cms${path}`, {
-    next: { revalidate: 60 },
+/**
+ * Wrap a DB read in Next's data cache with a shared revalidate window, casting
+ * the Prisma row(s) to the UI-facing type declared in `@/types`.
+ */
+function cachedRead<T>(key: string, query: () => Promise<unknown>) {
+  return unstable_cache(async () => (await query()) as T, [key], {
+    revalidate: REVALIDATE_SECONDS,
+    tags: [key],
   });
-  if (!res.ok) throw new Error(`API fetch failed: ${path}`);
-  return res.json();
 }
 
 // ─── Home ──────────────────────────────────────────────────────────────────────
 
-export async function getHomeVideoData(): Promise<HomeVideo | null> {
-  return apiFetch<HomeVideo | null>("/home-video");
-}
+export const getHomeVideoData = cachedRead<HomeVideo | null>(
+  "home-video",
+  () => db.homeVideo.findFirst()
+);
 
-export async function getAboutUsHomeData(): Promise<AboutUsHome | null> {
-  return apiFetch<AboutUsHome | null>("/about");
-}
+export const getAboutUsHomeData = cachedRead<AboutUsHome | null>(
+  "about",
+  () => db.aboutUsHome.findFirst()
+);
+
+const getHomeGallery = cachedRead<GalleryItem[]>(
+  "home-gallery",
+  () => db.homeGallery.findMany({ orderBy: { order: "asc" } })
+);
 
 export async function fetchHomeGalleryData(): Promise<GalleryItem[]> {
-  const items = await apiFetch<GalleryItem[]>("/home-gallery");
+  const items = await getHomeGallery();
   return items.filter((i) => !i.isFeatured);
 }
 
 export async function fetchHomeGalleryOneData(): Promise<GalleryItem[]> {
-  const items = await apiFetch<GalleryItem[]>("/home-gallery");
+  const items = await getHomeGallery();
   return items.filter((i) => i.isFeatured);
 }
 
 // ─── Services ─────────────────────────────────────────────────────────────────
 
-export async function getServiceCarouselData(): Promise<Service[]> {
-  return apiFetch<Service[]>("/services");
-}
+export const getServiceCarouselData = cachedRead<Service[]>(
+  "services",
+  () => db.serviceCarousel.findMany({ orderBy: { order: "asc" } })
+);
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
-export async function fetchProjects(): Promise<Project[]> {
-  return apiFetch<Project[]>("/project-pages");
-}
+export const fetchProjects = cachedRead<Project[]>(
+  "project-pages",
+  () => db.projectPage.findMany({ orderBy: { order: "asc" } })
+);
 
 export async function fetchProjectBySlug(
   slug: string
 ): Promise<ProjectDetail | null> {
-  const pages = await apiFetch<Array<{ slug: string; projectId?: string }>>(
-    "/project-pages"
-  );
-  const page = pages.find((p) => p.slug === slug);
+  const page = await db.projectPage.findUnique({ where: { slug } });
   if (!page?.projectId) return null;
-  return apiFetch<ProjectDetail>(`/projects/${page.projectId}`);
+  return db.project.findUnique({
+    where: { id: page.projectId },
+  }) as Promise<ProjectDetail | null>;
 }
 
 // ─── Service pages ────────────────────────────────────────────────────────────
 
-export async function getRepairsPage(): Promise<RepairsPage | null> {
-  return apiFetch<RepairsPage | null>("/repairs");
-}
+export const getRepairsPage = cachedRead<RepairsPage | null>(
+  "repairs",
+  () => db.repairs.findFirst()
+);
 
-export async function getWaterproofingPage(): Promise<WaterproofingPage | null> {
-  return apiFetch<WaterproofingPage | null>("/waterproofing");
-}
+export const getWaterproofingPage = cachedRead<WaterproofingPage | null>(
+  "waterproofing",
+  () => db.waterproofing.findFirst()
+);
 
-export async function getICIRoofingPage(): Promise<ICIRoofingPage | null> {
-  return apiFetch<ICIRoofingPage | null>("/ici");
-}
+export const getICIRoofingPage = cachedRead<ICIRoofingPage | null>(
+  "ici",
+  () => db.iCIRoofing.findFirst()
+);
 
-export async function getCladdingPage(): Promise<CladdingPage | null> {
-  return apiFetch<CladdingPage | null>("/cladding");
-}
+export const getCladdingPage = cachedRead<CladdingPage | null>(
+  "cladding",
+  () => db.cladding.findFirst()
+);
 
-export async function fetchResidentialData(): Promise<ResidentialPage | null> {
-  return apiFetch<ResidentialPage | null>("/residential");
-}
+export const fetchResidentialData = cachedRead<ResidentialPage | null>(
+  "residential",
+  () => db.residential.findFirst()
+);
 
 // ─── Testimonials ─────────────────────────────────────────────────────────────
 
-export async function getTestimonials(): Promise<Testimonial[]> {
-  return apiFetch<Testimonial[]>("/testimonials");
-}
+export const getTestimonials = cachedRead<Testimonial[]>(
+  "testimonials",
+  () => db.testimonial.findMany({ orderBy: { order: "asc" } })
+);
 
 // ─── Careers ──────────────────────────────────────────────────────────────────
 
+const getAllCareers = cachedRead<Career[]>(
+  "careers",
+  () => db.career.findMany({ orderBy: { order: "asc" } })
+);
+
 export async function getCareers(): Promise<Career[]> {
-  const all = await apiFetch<Career[]>("/careers");
+  const all = await getAllCareers();
   return all.filter((c) => c.active);
 }
+
 // ─── Restoration ──────────────────────────────────────────────────────────────
 
-export async function getRestorationPage(): Promise<RestorationPage | null> {
-  return apiFetch<RestorationPage | null>("/restoration");
-}
+export const getRestorationPage = cachedRead<RestorationPage | null>(
+  "restoration",
+  () => db.restoration.findFirst()
+);

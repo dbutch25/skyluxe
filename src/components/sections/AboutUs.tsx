@@ -192,9 +192,7 @@ export default function AboutUs({ data }: Props) {
 
             {html ? (
               <div
-                className="font-montserrat text-gray-600 text-base leading-relaxed mb-8
-                  [&>p]:mb-4 [&>p:last-child]:mb-0
-                  [&>strong]:text-secondary-800 [&>strong]:font-semibold"
+                className="font-montserrat text-gray-600 text-base leading-relaxed mb-8 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>strong]:text-secondary-800 [&>strong]:font-semibold"
                 dangerouslySetInnerHTML={{ __html: html }}
               />
             ) : (

@@ -5,11 +5,10 @@ import { RestorationSchema } from "@/lib/schemas";
 
 export async function GET() {
   try {
-    // @ts-expect-error — model added in next migration
     const data = await db.restoration.findFirst();
     return NextResponse.json(data ?? null);
   } catch {
-    // Model not yet in DB — return null so the page falls back to static content
+    // Return null so the page falls back to static content
     return NextResponse.json(null);
   }
 }
@@ -25,14 +24,10 @@ export async function PUT(request: NextRequest) {
         { status: 400 }
       );
     }
-    // @ts-expect-error — model added in next migration
     const existing = await db.restoration.findFirst();
-    // @ts-expect-error — model added in next migration
     const data = existing
-      ? // @ts-expect-error — model added in next migration
-        await db.restoration.update({ where: { id: existing.id }, data: parsed.data })
-      : // @ts-expect-error — model added in next migration
-        await db.restoration.create({ data: parsed.data });
+      ? await db.restoration.update({ where: { id: existing.id }, data: parsed.data })
+      : await db.restoration.create({ data: parsed.data });
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

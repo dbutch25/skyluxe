@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { FaAlignJustify, FaEnvelope, FaPhone } from "react-icons/fa";
 import { FaX, FaArrowRight } from "react-icons/fa6";
 import { images } from "@/constants";
+import { safeImageUrl } from "@/lib/utils";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 // Replace imageUrl values with real Cloudinary URLs once projects are in the CMS
@@ -293,7 +294,7 @@ function MegaMenu({
               style={{ minHeight: 260 }}
             >
               <Image
-                src={activeProject.imageUrl}
+                src={safeImageUrl(activeProject.imageUrl)}
                 alt={activeProject.title}
                 fill
                 className="object-cover"

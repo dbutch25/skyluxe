@@ -5,6 +5,7 @@ import VideoBackground from "@/components/elements/VideoBackground";
 import Carousel from "@/components/elements/Carousel";
 import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 import { fetchProjectBySlug } from "@/lib/data";
+import { safeImageUrl } from "@/lib/utils";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -19,8 +20,8 @@ export default async function ProjectDetailPage({ params }: Props) {
   return (
     <div className="md:pb-20">
       <VideoBackground
-        videoSrc={project.backgroundVideo}
-        fallbackImage={project.fallbackImage}
+        videoSrc={project.backgroundVideoUrl}
+        fallbackImage={project.fallbackImageUrl}
       />
 
       <section className="container">
@@ -31,13 +32,13 @@ export default async function ProjectDetailPage({ params }: Props) {
 
         {/* Main content + image */}
         <div className="flex flex-wrap md:flex-nowrap gap-10 py-10">
-          <div className={`text-base font-montserrat ${project.mainImage ? "w-full md:w-1/2" : "w-full"}`}>
+          <div className={`text-base font-montserrat ${project.mainImageUrl ? "w-full md:w-1/2" : "w-full"}`}>
             <p>{project.content as string}</p>
           </div>
-          {project.mainImage && (
+          {project.mainImageUrl && (
             <div className="w-full h-96 md:w-1/2 rounded-lg shadow-lg overflow-hidden">
               <Image
-                src={project.mainImage}
+                src={safeImageUrl(project.mainImageUrl)}
                 alt={project.title}
                 width={600}
                 height={400}
@@ -76,17 +77,17 @@ export default async function ProjectDetailPage({ params }: Props) {
         <span className="h-0.5 w-full bg-primary-400 block rounded-full" />
 
         {/* Extra content + image */}
-        {(project.extraImage || project.extraContent) && (
+        {(project.extraImageUrl || project.extraContent) && (
           <div className="flex flex-wrap md:flex-nowrap md:flex-row-reverse gap-8 py-10 md:py-20">
             {project.extraContent && (
               <div className="w-full md:w-1/2 text-base font-montserrat text-primary-950">
                 <p>{project.extraContent as string}</p>
               </div>
             )}
-            {project.extraImage && (
+            {project.extraImageUrl && (
               <div className="w-full h-96 md:w-1/2">
                 <Image
-                  src={project.extraImage}
+                  src={safeImageUrl(project.extraImageUrl)}
                   alt="Additional project image"
                   width={600}
                   height={400}
@@ -98,10 +99,10 @@ export default async function ProjectDetailPage({ params }: Props) {
         )}
 
         {/* Full-width image */}
-        {project.fullWidthImage && (
+        {project.fullWidthImageUrl && (
           <div className="py-10">
             <Image
-              src={project.fullWidthImage}
+              src={safeImageUrl(project.fullWidthImageUrl)}
               alt="Full width project image"
               width={1280}
               height={600}

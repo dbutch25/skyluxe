@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { safeImageUrl } from '@/lib/utils';
 import Link from 'next/link';
 import { FaArrowRight } from 'react-icons/fa';
 
@@ -18,7 +19,7 @@ export default function ServicePagesGallery({ images }: ServicePagesGalleryProps
                 {images.map((image, index) => (
                     <div key={index} className="relative w-full h-96">
                         <Image
-                            src={image.url}
+                            src={safeImageUrl(image.url)}
                             alt={image.alt ?? ""}
                             fill
                             className="rounded-lg object-cover"

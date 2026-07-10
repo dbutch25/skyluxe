@@ -9,6 +9,7 @@ import 'swiper/css/zoom';
 import 'swiper/css/free-mode';
 import { Navigation, Thumbs, FreeMode, Zoom } from 'swiper/modules';
 import Image from 'next/image';
+import { safeImageUrl } from '@/lib/utils';
 import type { Swiper as SwiperCore } from 'swiper';
 
 interface CarouselProps {
@@ -33,7 +34,7 @@ export default function Carousel({ images = [] }: CarouselProps) {
                     <SwiperSlide key={index} className="flex justify-center items-center">
                         <div className="swiper-zoom-container">
                             <Image
-                                src={image}
+                                src={safeImageUrl(image)}
                                 alt={`Carousel image ${index + 1}`}
                                 width={800}
                                 height={600}
@@ -57,7 +58,7 @@ export default function Carousel({ images = [] }: CarouselProps) {
                     <SwiperSlide key={index} className="cursor-pointer">
                         <div className="relative w-full h-24">
                             <Image
-                                src={image}
+                                src={safeImageUrl(image)}
                                 alt={`Thumbnail ${index + 1}`}
                                 fill
                                 className="rounded-md object-cover"

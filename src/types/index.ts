@@ -178,6 +178,15 @@ export interface CladdingPage {
   carouselADImages?: CloudinaryImage[];
 }
 
+export interface RestorationPage {
+  id: string;
+  title: string;
+  introText?: string;
+  heroImageUrl?: string;
+  heroImageAlt?: string;
+  galleryImages?: CloudinaryImage[];
+}
+
 export interface ResidentialPage {
   id: string;
   title: string;
