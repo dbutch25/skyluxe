@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { FaArrowRight, FaPhone } from "react-icons/fa";
-import { BRAND_CREDENTIALS, BRAND_CONTACT } from "@/constants/brand";
+import { BRAND_CONTACT } from "@/constants/brand";
 
 export default function HomeCTA() {
   const ref = useRef<HTMLElement>(null);
@@ -120,24 +120,6 @@ export default function HomeCTA() {
               {BRAND_CONTACT.phone}
             </Link>
           </div>
-        </div>
-
-        {/* Bottom credentials strip — credentials only, no number stats */}
-        <div
-          className="border-t border-white/20 mt-12 pt-8 flex flex-wrap gap-6 justify-center lg:justify-start transition-all duration-700 ease-out"
-          style={{
-            opacity: visible ? 1 : 0,
-            transitionDelay: "300ms",
-          }}
-        >
-          {BRAND_CREDENTIALS.map((item: string) => (
-            <div key={item} className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0" />
-              <span className="font-montserrat text-white/60 text-xs">
-                {item}
-              </span>
-            </div>
-          ))}
         </div>
       </div>
     </section>

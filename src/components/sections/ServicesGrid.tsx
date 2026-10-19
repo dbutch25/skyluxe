@@ -525,17 +525,6 @@ export default function ServicesGrid({ services }: Props) {
                 </span>
               </h2>
             </div>
-
-            <Link
-              href="/services"
-              className="group hidden sm:inline-flex items-center gap-2 font-montserrat text-sm text-secondary-700 hover:text-secondary-900 transition-colors duration-300 mt-4 sm:mt-0"
-            >
-              View all services
-              <FaArrowRight
-                size={10}
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </Link>
           </div>
         </div>
       </div>
@@ -554,13 +543,6 @@ export default function ServicesGrid({ services }: Props) {
             Not sure which service you need?
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 font-montserrat text-xs text-secondary-700 border-b border-secondary-700 pb-0.5 hover:text-secondary-900 transition-colors duration-300"
-            >
-              Browse all services <FaArrowRight size={9} />
-            </Link>
-            <span className="text-gray-200 hidden sm:block">|</span>
             <Link
               href="/quote"
               className="inline-flex items-center gap-2 font-montserrat text-xs font-medium text-white bg-secondary-800 hover:bg-secondary-700 px-5 py-2 uppercase tracking-widest transition-colors duration-300"
