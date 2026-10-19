@@ -30,12 +30,12 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // Fonts: self + Google Fonts
       "font-src 'self' https://fonts.gstatic.com",
-      // Images: self + data URIs + Cloudinary + Google avatars
-      "img-src 'self' data: blob: https://res.cloudinary.com https://lh3.googleusercontent.com https://api.qrserver.com",
+      // Images: self + data URIs + Cloudinary + Google avatars + OSM map tiles
+      "img-src 'self' data: blob: https://imagedelivery.net https://res.cloudinary.com https://lh3.googleusercontent.com https://api.qrserver.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org",
       // Media: self + Cloudinary videos
-      "media-src 'self' https://res.cloudinary.com",
+      "media-src 'self' https://media.skyluxeroofing.com https://res.cloudinary.com",
       // API connections
-      "connect-src 'self' https://accelerate.prisma-data.net https://plausible.io",
+      "connect-src 'self' https://accelerate.prisma-data.net https://plausible.io https://*.tile.openstreetmap.org https://upload.imagedelivery.net",
       // Frames: YouTube embeds + Google Maps
       "frame-src https://www.youtube.com https://www.google.com",
       // Block object/embed tags
@@ -58,8 +58,19 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Resize at Cloudflare/Cloudinary instead of Vercel's image optimizer.
+    // See src/lib/image-loader.ts.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     remotePatterns: [
       {
+        protocol: "https",
+        hostname: "imagedelivery.net",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        // Legacy — keep until every record is migrated off Cloudinary
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",

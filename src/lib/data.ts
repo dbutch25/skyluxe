@@ -30,7 +30,7 @@ import type {
   GalleryItem,
   Service,
   Project,
-  ProjectDetail,
+  ProjectFull,
   Testimonial,
   Career,
   RepairsPage,
@@ -38,6 +38,9 @@ import type {
   ICIRoofingPage,
   CladdingPage,
   ResidentialPage,
+  Post,
+  PostSummary,
+  CharitySpotlight,
 } from "@/types";
 
 const REVALIDATE_SECONDS = 60;
@@ -91,17 +94,52 @@ export const getServiceCarouselData = cachedRead<Service[]>(
 
 export const fetchProjects = cachedRead<Project[]>(
   "project-pages",
-  () => db.projectPage.findMany({ orderBy: { order: "asc" } })
+  () =>
+    db.projectPage.findMany({
+      where: { published: true },
+      orderBy: { order: "asc" },
+    })
 );
 
 export async function fetchProjectBySlug(
   slug: string
-): Promise<ProjectDetail | null> {
-  const page = await db.projectPage.findUnique({ where: { slug } });
-  if (!page?.projectId) return null;
-  return db.project.findUnique({
-    where: { id: page.projectId },
-  }) as Promise<ProjectDetail | null>;
+): Promise<ProjectFull | null> {
+  const page = await db.projectPage.findFirst({
+    where: { slug, published: true },
+    include: { project: true },
+  });
+  return (page as ProjectFull | null) ?? null;
+}
+
+/**
+ * Admin preview: any project by ProjectPage id, published or not.
+ * Not cached, so edits show up straight away. Callers must check the session.
+ */
+export async function fetchProjectForPreview(
+  id: string
+): Promise<ProjectFull | null> {
+  const page = await db.projectPage.findUnique({
+    where: { id },
+    include: { project: true },
+  });
+  return (page as ProjectFull | null) ?? null;
+}
+
+/**
+ * Related projects: same service, excluding the current project. Falls back to
+ * any other projects when nothing matches, so the section is never empty on a
+ * small portfolio.
+ */
+export async function fetchRelatedProjects(
+  slug: string,
+  service?: string | null
+): Promise<Project[]> {
+  const all = await fetchProjects();
+  const others = all.filter((p) => p.slug !== slug);
+  const matched = service
+    ? others.filter((p) => p.service === service)
+    : [];
+  return (matched.length > 0 ? matched : others).slice(0, 3);
 }
 
 // ─── Service pages ────────────────────────────────────────────────────────────
@@ -155,4 +193,50 @@ export async function getCareers(): Promise<Career[]> {
 export const getRestorationPage = cachedRead<RestorationPage | null>(
   "restoration",
   () => db.restoration.findFirst()
+);
+
+// ─── News & Charity ───────────────────────────────────────────────────────────
+
+/** Fields for cards and lists; leaves out the post body. */
+const postSummarySelect = {
+  id: true,
+  title: true,
+  slug: true,
+  category: true,
+  excerpt: true,
+  coverImageUrl: true,
+  coverImageAlt: true,
+  published: true,
+  publishedAt: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
+
+/** Every published post, newest first (cached under the "posts" tag). */
+export const fetchPublishedPosts = cachedRead<PostSummary[]>("posts", () =>
+  db.post.findMany({
+    where: { published: true },
+    orderBy: { publishedAt: "desc" },
+    select: postSummarySelect,
+  })
+);
+
+export async function fetchLatestPosts(limit = 3): Promise<PostSummary[]> {
+  const all = await fetchPublishedPosts();
+  return all.slice(0, limit);
+}
+
+/** One published post by slug; shares the "posts" tag so edits show at once. */
+export function fetchPostBySlug(slug: string): Promise<Post | null> {
+  return unstable_cache(
+    async () =>
+      (await db.post.findFirst({ where: { slug, published: true } })) as Post | null,
+    ["post", slug],
+    { revalidate: REVALIDATE_SECONDS, tags: ["posts"] }
+  )();
+}
+
+export const getCharitySpotlight = cachedRead<CharitySpotlight | null>(
+  "charity",
+  () => db.charitySpotlight.findFirst()
 );

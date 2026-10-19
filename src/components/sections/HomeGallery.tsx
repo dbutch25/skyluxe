@@ -138,7 +138,7 @@ export default function HomeGallery({ galleryItems, largeGalleryItem }: Props) {
 
         {/* Gallery grid */}
         {hasContent ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
 
             {largeGalleryItem && (
               <div
@@ -174,7 +174,7 @@ export default function HomeGallery({ galleryItems, largeGalleryItem }: Props) {
               </div>
             )}
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
               {galleryItems.slice(0, 2).map((item, i) => (
                 <div
                   key={item.id ?? i}

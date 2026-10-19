@@ -203,31 +203,13 @@ export default function AboutUs({ data }: Props) {
                   and better outcomes for clients who trust us with their most valuable assets.
                 </p>
                 <p>
-                  As a GAF Master Elite Contractor — a designation held by fewer than 3% of
-                  roofers in North America — we&apos;re authorized to offer the strongest
+                  As a GAF Master Elite Contractor, a designation held by fewer than 3% of
+                  roofers in North America. We&apos;re authorized to offer the strongest
                   warranties in the industry. Every project is delivered on time, on budget,
                   and built to last.
                 </p>
               </div>
             )}
-
-            <div className="border-t border-primary-100 pt-6 mb-8">
-              <div className="flex gap-10">
-                <div>
-                  <div className="font-julius text-primary-950 text-3xl">200<span className="text-secondary-600">+</span></div>
-                  <div className="font-montserrat text-gray-400 text-xs uppercase tracking-wider mt-1">Projects completed</div>
-                </div>
-                <div>
-                  <div className="font-julius text-primary-950 text-3xl">15<span className="text-secondary-600">+</span></div>
-                  <div className="font-montserrat text-gray-400 text-xs uppercase tracking-wider mt-1">Years experience</div>
-                </div>
-                <div>
-                  <div className="font-julius text-primary-950 text-3xl">10<span className="text-secondary-600">yr</span></div>
-                  <div className="font-montserrat text-gray-400 text-xs uppercase tracking-wider mt-1">Workmanship warranty</div>
-                </div>
-              </div>
-            </div>
-
             <Link
               href="/about"
               className="group inline-flex items-center gap-3 font-montserrat text-sm font-medium text-primary-950 uppercase tracking-widest border-b-2 border-secondary-600 pb-1 hover:text-secondary-700 hover:border-secondary-400 transition-colors duration-300"

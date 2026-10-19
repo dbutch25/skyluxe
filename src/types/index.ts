@@ -35,7 +35,8 @@ export type ServiceCategory =
   | "architectural-cladding"
   | "residential-roofing"
   | "repairs"
-  | "waterproofing";
+  | "waterproofing"
+  | "restoration";
 
 export interface Service {
   id: string;
@@ -45,6 +46,7 @@ export interface Service {
   requestLink: string;
   mainImageUrl: string;
   category: ServiceCategory | string;
+  points?: string[];
   order: number;
 }
 
@@ -54,7 +56,8 @@ export type ProjectCategory =
   | "ICI"
   | "architectural cladding"
   | "residential roofing"
-  | "waterproofing";
+  | "waterproofing"
+  | "restoration";
 
 export interface Project {
   id: string;
@@ -62,7 +65,16 @@ export interface Project {
   slug: string;
   imageUrl?: string;
   category: ProjectCategory[] | string[];
+  sector?: string | null;   // "ICI" | "Residential" (card badge)
+  service?: string | null;  // filter axis on /projects
+  systems?: string[];       // roof systems used, e.g. ["SBS", "Standing Seam"]
+  year?: number | null;     // completion year
+  city?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   order: number;
+  published?: boolean;      // false = draft, hidden from the public site
+  projectId?: string | null;
 }
 
 export interface ListSection {
@@ -70,10 +82,57 @@ export interface ListSection {
   items: string[];
 }
 
+export interface Fact {
+  label: string;
+  value: string;
+}
+
+/** Optional standout block: a signature element or a warranty. */
+export interface Highlight {
+  label?: string;
+  title: string;
+  body?: string;
+  imageUrl?: string;
+}
+
+/** A headed "In detail" section. */
+export interface Chapter {
+  title: string;
+  body: string[];
+  items?: string[];
+  imageUrl?: string;
+}
+
+export interface ProjectVideo {
+  id: string;
+  title?: string;
+  body?: string;
+  vertical?: boolean; // YouTube Short (9:16) vs regular (16:9)
+}
+
 export interface ProjectDetail {
   id: string;
   title: string;
   slug: string;
+  subtitle?: string | null;      // hero line under the title
+  blurb?: string | null;         // Overview lead paragraph (+ meta description)
+  overview?: string[];           // Overview paragraphs after the lead
+  facts?: Fact[] | null;         // Facts strip (City/Area are added automatically)
+  highlight?: Highlight | null;
+  chapters?: Chapter[] | null;   // "In detail"
+  video?: ProjectVideo | null;   // feature video (separate from drone)
+  sequenceCaptions?: string[];   // one caption per sequence stage
+  overviewImages?: Record<string, string> | null; // overview photo picks per slot (see lib/overview-layout.ts)
+  photos?: string[];             // the project's photo library, in upload order
+  skipPhotos?: string[];         // library photos never placed automatically
+  underConstruction?: boolean;
+  area?: string | null;
+  scope?: string | null;
+  challenge?: string | null;
+  solution?: string | null;
+  droneImageUrl?: string | null;
+  droneVideoId?: string | null;
+  droneDuration?: string | null;
   backgroundVideoUrl?: string;
   fallbackImageUrl?: string;
   content?: string;
@@ -197,4 +256,46 @@ export interface ResidentialPage {
   firstImageUrl?: string;
   firstImageAlt?: string;
   [key: string]: unknown;
+}
+
+/** A project page joined with its detail record — what /projects/[slug] renders. */
+export interface ProjectFull extends Project {
+  project: ProjectDetail | null;
+}
+
+// ─── News & Charity ───────────────────────────────────────────────────────────
+
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  excerpt: string;
+  content: object | null;
+  coverImageUrl: string | null;
+  coverImageAlt: string | null;
+  published: boolean;
+  publishedAt: string | Date | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+
+/** Card-sized post (no body) for lists and the homepage. */
+export type PostSummary = Omit<Post, "content">;
+
+export interface CharitySpotlight {
+  id: string;
+  enabled: boolean;
+  label: string;
+  title: string;
+  body: string;
+  imageUrl: string | null;
+  imageAlt: string | null;
+  nextEvent: string | null;
+  raisedToDate: string | null;
+  venue: string | null;
+  causeTitle: string | null;
+  causeBody: string | null;
+  recapLink: string | null;
+  donateLink: string | null;
 }

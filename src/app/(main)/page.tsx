@@ -4,14 +4,19 @@ import StatsStrip from "@/components/sections/StatsStrip";
 import AboutUs from "@/components/sections/AboutUs";
 import ServicesGrid from "@/components/sections/ServicesGrid";
 import HomeGallery from "@/components/sections/HomeGallery";
+import ProjectsMap from "@/components/sections/ProjectsMap";
 import Testimonials from "@/components/sections/Testimonials";
 import HomeCTA from "@/components/sections/HomeCTA";
+import NewsAndCharity from "@/components/sections/NewsAndCharity";
 import {
   getHomeVideoData,
   getAboutUsHomeData,
   getServiceCarouselData,
   fetchHomeGalleryData,
   fetchHomeGalleryOneData,
+  fetchProjects,
+  fetchLatestPosts,
+  getCharitySpotlight,
 } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -30,13 +35,25 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [videoData, aboutUsData, services, galleryItems, largeGalleryItems] =
+  const [
+    videoData,
+    aboutUsData,
+    services,
+    galleryItems,
+    largeGalleryItems,
+    projects,
+    latestPosts,
+    charity,
+  ] =
     await Promise.all([
       getHomeVideoData(),
       getAboutUsHomeData(),
       getServiceCarouselData(),
       fetchHomeGalleryData(),
       fetchHomeGalleryOneData(),
+      fetchProjects(),
+      fetchLatestPosts(3),
+      getCharitySpotlight(),
     ]);
 
   return (
@@ -110,10 +127,16 @@ export default async function Home() {
           largeGalleryItem={largeGalleryItems[0] ?? null}
         />
 
-        {/* 6. Testimonials — with star ratings */}
+        {/* 6. Projects map — interactive GTA map with project pins */}
+        <ProjectsMap projects={projects} />
+
+        {/* 7. News & charity — community spotlight + latest 3 posts */}
+        <NewsAndCharity charity={charity} posts={latestPosts} />
+
+        {/* 8. Testimonials — with star ratings */}
         <Testimonials />
 
-        {/* 7. CTA banner */}
+        {/* 9. CTA banner */}
         <HomeCTA />
       </main>
     </>

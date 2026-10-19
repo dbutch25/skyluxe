@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/session";
 import { ProjectSchema } from "@/lib/schemas";
+import { toPrismaJson } from "@/lib/prisma-json";
 
 interface Params { params: Promise<{ id: string }> }
 
@@ -21,7 +22,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     if (!parsed.success) {
       return NextResponse.json({ error: "Validation failed", details: parsed.error.flatten() }, { status: 400 });
     }
-    const data = await db.project.update({ where: { id }, data: parsed.data });
+    const data = await db.project.update({ where: { id }, data: toPrismaJson(parsed.data) });
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

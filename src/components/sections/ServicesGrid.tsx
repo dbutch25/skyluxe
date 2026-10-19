@@ -18,7 +18,7 @@ const FALLBACK_SERVICES: Service[] = [
     id: "1",
     title: "ICI Roofing",
     description:
-      "Skyluxe is a full-service ICI roofing contractor serving property managers, institutions, general contractors, and building owners across the GTA. We specialize in roof replacements, new construction, and maintenance — delivering every project on time, on budget, and built to last.",
+      "Skyluxe is a full-service ICI roofing contractor serving property managers, institutions, general contractors, and building owners across the GTA. We specialize in roof replacements, new construction, and maintenance, delivering every project within budget.",
     serviceLink: "/ICI",
     requestLink: "/quote",
     mainImageUrl: "",
@@ -29,7 +29,7 @@ const FALLBACK_SERVICES: Service[] = [
     id: "2",
     title: "Residential Roofing",
     description:
-      "Your home deserves the same level of care we bring to our largest commercial projects. We install and replace all major residential roofing systems, from architectural shingles and natural slate to standing seam metal — backed by GAF Golden Pledge warranty.",
+      "Your home deserves the same level of care we bring to our largest commercial projects. We install and replace all major residential roofing systems, from architectural shingles and natural slate to standing seam metal, backed by our GAF Golden Pledge warranty.",
     serviceLink: "/residential-roofing",
     requestLink: "/quote",
     mainImageUrl: "",
@@ -40,7 +40,7 @@ const FALLBACK_SERVICES: Service[] = [
     id: "3",
     title: "Architectural Cladding",
     description:
-      "Transform your building envelope with custom cladding systems. Skyluxe designs and installs ACM panels, zinc, copper, and standing seam facades trusted by architects and developers across the GTA — combining striking aesthetics with superior weather performance.",
+      "Transform your building envelope with custom cladding systems. Skyluxe designs and installs ACM panels, zinc, copper, and standing seam facades trusted by architects and developers across the GTA, we combine striking aesthetics with superior weather performance.",
     serviceLink: "/architectural-cladding",
     requestLink: "/quote",
     mainImageUrl: "",
@@ -69,9 +69,20 @@ const FALLBACK_SERVICES: Service[] = [
     category: "repairs",
     order: 4,
   },
+   {
+    id: "6",
+    title: "Restoration",
+    description:
+      "Mortar erodes, sealants fail, and flashings corrode when left unaddressed, minor weathering becomes major structural damage. Our restoration division delivers complete building envelope restoration, from masonry repointing and caulking replacement to facade cleaning and coating systems, on everything from heritage churches to modern curtain wall towers.",
+    serviceLink: "/restoration",
+    requestLink: "/quote",
+    mainImageUrl: "",
+    category: "restoration",
+    order: 5,
+  },
 ];
 
-// ─── Key points per service — shown as bullet list ────────────────────────────
+// ─── Fallback key points per service (used when a service has none in the CMS) ─
 
 const SERVICE_POINTS: Record<string, string[]> = {
   "ICI-roofing": [
@@ -210,7 +221,11 @@ function ServiceRow({
     ? service.mainImageUrl
     : CATEGORY_IMAGES[service.category] ?? images.serviceHero;
 
-  const points = SERVICE_POINTS[service.category] ?? [];
+  // Points from the CMS; the hardcoded list is only a fallback
+  const points =
+    service.points && service.points.length > 0
+      ? service.points
+      : SERVICE_POINTS[service.category] ?? [];
   const serviceNumber = String(index + 1).padStart(2, "0");
 
   useEffect(() => {
@@ -421,6 +436,15 @@ function ServiceRow({
   );
 }
 
+// ─── Heading count, e.g. "Six Services." ──────────────────────────────────────
+
+const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+
+function countLabel(n: number): string {
+  const word = NUMBER_WORDS[n] ?? String(n);
+  return `${word} Service${n === 1 ? "" : "s"}.`;
+}
+
 // ─── Main section ─────────────────────────────────────────────────────────────
 
 export default function ServicesGrid({ services }: Props) {
@@ -494,7 +518,7 @@ export default function ServicesGrid({ services }: Props) {
                 className="font-julius text-primary-950 leading-tight"
                 style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
               >
-                Five Services.
+                {countLabel(displayServices.length)}
                 <br />
                 <span className="text-secondary-800">
                   One Standard of Excellence.

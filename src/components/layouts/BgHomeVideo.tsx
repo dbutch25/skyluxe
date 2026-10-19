@@ -1,19 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState, useEffect } from "react";
-import { FaArrowDown, FaArrowRight, FaPhone } from "react-icons/fa";
+import { FaArrowDown } from "react-icons/fa";
 import { images } from "@/constants";
 import type { HomeVideo } from "@/types";
+import { videoUrl } from "@/lib/utils";
 
 interface Props {
   video: HomeVideo | null;
 }
 
+// Used until the video reports its real size, and for the fallback image
+const DEFAULT_ASPECT = 16 / 9;
+
 export default function BgHomeVideo({ video }: Props) {
   const [videoError, setVideoError] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [aspect, setAspect] = useState(DEFAULT_ASPECT);
 
   useEffect(() => {
     // Trigger entrance animation after mount
@@ -21,13 +25,38 @@ export default function BgHomeVideo({ video }: Props) {
     return () => clearTimeout(t);
   }, []);
 
+  const showVideo = !!video?.videoUrl && !videoError;
+
   return (
     <section
-      className="relative w-full h-screen min-h-150 overflow-hidden"
+      // Height follows the video's own shape so the full width is always visible.
+      // Capped at the screen height on wide desktops (crops top/bottom only, never the sides).
+      // Below lg the hero starts under the 112px header so the header doesn't cover it.
+      className="relative w-full overflow-hidden bg-primary-950 mt-28 lg:mt-0"
+      style={{ height: `min(calc(100vw / ${aspect}), 100svh)` }}
       aria-label="Skyluxe Roofing — hero section"
     >
       {/* ── Background media ── */}
-      {!video || videoError || !video.videoUrl ? (
+      {showVideo ? (
+        <video
+          className="pointer-events-none absolute inset-0 w-full h-full object-cover"
+          src={videoUrl(video.videoUrl)}
+          poster={images.homeImage}
+          autoPlay
+          controls={false}
+          loop
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          disableRemotePlayback
+          onLoadedMetadata={(e) => {
+            const { videoWidth, videoHeight } = e.currentTarget;
+            if (videoWidth && videoHeight) setAspect(videoWidth / videoHeight);
+          }}
+          onError={() => setVideoError(true)}
+        />
+      ) : (
         <Image
           src={images.homeImage}
           alt="Skyluxe Roofing commercial roofing project in the Greater Toronto Area"
@@ -36,20 +65,9 @@ export default function BgHomeVideo({ video }: Props) {
           priority
           sizes="100vw"
         />
-      ) : (
-        <video
-          className="pointer-events-none absolute inset-0 w-full h-full object-cover"
-          src={video.videoUrl}
-          autoPlay
-          controls={false}
-          loop
-          muted
-          playsInline
-          onError={() => setVideoError(true)}
-        />
       )}
 
-      {/* ── Gradient overlay — bottom-heavy for text legibility ── */}
+      {/* ── Gradient overlay — bottom-heavy ── */}
       <div className="absolute inset-0 bg-linear-to-t from-primary-950/85 via-primary-950/30 to-primary-950/10" />
 
       {/* ── Accent line — left edge ── */}
@@ -62,86 +80,12 @@ export default function BgHomeVideo({ video }: Props) {
         }}
       />
 
-      {/* ── Hero content ── */}
-      <div className="absolute inset-0 flex flex-col justify-end px-6 sm:px-10 lg:px-16 pb-24 lg:pb-28 max-w-7xl mx-auto">
+      {/* Visually hidden H1: the home page needs one for SEO and screen readers */}
+      <h1 className="sr-only">Skyluxe Roofing: Toronto Roofing Done Right</h1>
 
-        {/* Eyebrow label */}
-        <div
-          className="flex items-center gap-3 mb-5 transition-all duration-700 ease-out"
-          style={{
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(20px)",
-            transitionDelay: "200ms",
-          }}
-        >
-          <span className="h-px w-10 bg-secondary-400" />
-          <span className="text-secondary-300 font-montserrat text-xs tracking-[0.2em] uppercase">
-            GAF Master Elite · Knudson Certified
-          </span>
-        </div>
-
-        {/* H1 */}
-        <h1
-          className="font-julius text-white leading-tight mb-6 transition-all duration-700 ease-out"
-          style={{
-            fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(24px)",
-            transitionDelay: "350ms",
-          }}
-        >
-          Roofing Built
-          <br />
-          <span className="text-secondary-300">To Last.</span>
-        </h1>
-
-        {/* Sub */}
-        <p
-          className="font-montserrat text-white/80 font-light max-w-xl mb-10 leading-relaxed transition-all duration-700 ease-out"
-          style={{
-            fontSize: "clamp(1rem, 1.5vw, 1.125rem)",
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(20px)",
-            transitionDelay: "450ms",
-          }}
-        >
-          Industrial, commercial, and residential roofing for the Greater Toronto
-          Area. Precision craftsmanship. Unmatched warranties.
-        </p>
-
-        {/* CTAs */}
-        <div
-          className="flex flex-wrap gap-4 transition-all duration-700 ease-out"
-          style={{
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(20px)",
-            transitionDelay: "550ms",
-          }}
-        >
-          <Link
-            href="/quote"
-            className="group inline-flex items-center gap-3 bg-secondary-800 hover:bg-secondary-700 text-white font-montserrat text-sm font-medium uppercase tracking-widest px-7 py-4 transition-all duration-300"
-          >
-            Request A Free Quote
-            <FaArrowRight
-              size={12}
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </Link>
-
-          <Link
-            href="tel:+16476295893"
-            className="group inline-flex items-center gap-3 border border-white/40 hover:border-white text-white font-montserrat text-sm font-medium uppercase tracking-widest px-7 py-4 transition-all duration-300 hover:bg-white/10"
-          >
-            <FaPhone size={12} className="text-secondary-300" />
-            (647) 629 5893
-          </Link>
-        </div>
-      </div>
-
-      {/* ── Scroll indicator ── */}
+      {/* ── Scroll indicator (hidden on phones, where the hero is short) ── */}
       <div
-        className="absolute inset-x-0 bottom-7 flex justify-center transition-all duration-700 ease-out"
+        className="absolute inset-x-0 bottom-7 hidden sm:flex justify-center transition-all duration-700 ease-out"
         style={{
           opacity: loaded ? 1 : 0,
           transitionDelay: "800ms",

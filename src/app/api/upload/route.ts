@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { uploadToCloudinary } from "@/lib/cloudinary";
+import { uploadImage, uploadVideo } from "@/lib/cloudflare";
 import { requireAuth } from "@/lib/session";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
@@ -76,8 +76,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Also verify the declared type matches the actual bytes
-    const declaredMime = file.type.split(";")[0].trim();
     const isVideo = detectedMime.startsWith("video/");
 
     // Sanitize folder name to prevent path traversal
@@ -86,19 +84,18 @@ export async function POST(request: NextRequest) {
       .replace(/\.\.+/g, "")
       .slice(0, 100);
 
-    const result = await uploadToCloudinary(buffer, {
-      folder: safeFolder || "skyluxe",
-      resourceType: isVideo ? "video" : "image",
-    });
+    const safeName = (file.name || "upload").replace(/[^\w.\-]/g, "_").slice(0, 120);
+
+    const result = isVideo
+      ? await uploadVideo(buffer, safeName)
+      : await uploadImage(buffer, safeName, safeFolder || "skyluxe");
 
     return NextResponse.json(
       {
-        url: result.secure_url,
-        publicId: result.public_id,
-        width: result.width,
-        height: result.height,
-        format: result.format,
-        resourceType: result.resource_type,
+        url: result.url,
+        publicId: result.id,
+        resourceType: result.resourceType,
+        thumbnailUrl: result.thumbnailUrl,
       },
       {
         headers: { "X-RateLimit-Remaining": String(remaining) },

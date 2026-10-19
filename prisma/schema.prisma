@@ -15,12 +15,10 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   role          String    @default("admin")
-  twoFactorEnabled Boolean  @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-  twoFactors    TwoFactor[]
 }
 
 model Session {
@@ -91,6 +89,7 @@ model HomeGallery {
 
 // ─── Service Carousel ────────────────────────────────────────────────────────
 
+/// Homepage "What We Do" services section (formerly a slider; table name kept)
 model ServiceCarousel {
   id           String   @id @default(cuid())
   title        String
@@ -98,7 +97,8 @@ model ServiceCarousel {
   serviceLink  String
   requestLink  String
   mainImageUrl String
-  category     String   // ICI-roofing | architectural-cladding | residential-roofing | repairs | waterproofing
+  category     String   // ICI-roofing | architectural-cladding | residential-roofing | repairs | waterproofing | restoration
+  points       String[] @default([]) // bullet list shown under the description on the homepage
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -112,8 +112,16 @@ model ProjectPage {
   title     String
   slug      String   @unique
   imageUrl  String
-  category  String[] // "ICI" | "architectural cladding" | "residential roofing" | "waterproofing"
+  category  String[]
+  sector    String?  // "ICI" | "Residential" — shown as the card badge
+  service   String?  // one of the five service labels — the filter axis
+  systems   String[] // any of "TPO" | "SBS" | "EPDM" | "ACM" | "Standing Seam" | "Hot Rubber"
+  year      Int?     // completion year, shown in card meta
+  city      String?
+  latitude  Float?
+  longitude Float?
   order     Int      @default(0)
+  published Boolean  @default(false) // drafts are hidden from the public site
   project   Project? @relation(fields: [projectId], references: [id])
   projectId String?  @unique
   createdAt DateTime @default(now())
@@ -125,20 +133,42 @@ model Project {
   id                String      @id @default(cuid())
   title             String
   slug              String      @unique
+  blurb             String?     // hero sub-paragraph
+  area              String?     // e.g. "48,000 sq ft" — shown in the glance line
+  scope             String?     // Scope paragraph
+  challenge         String?     // "The challenge" column
+  solution          String?     // "What we did" column
+  droneImageUrl     String?     // drone block still / poster frame
+  droneVideoId      String?     // YouTube id for the drone walkthrough
+  droneDuration     String?     // e.g. "2:14"
   backgroundVideoUrl String?
   fallbackImageUrl  String?
   content           String?
   mainImageUrl      String?
-  listSections      Json?       // [{ title: string, items: string[] }]
+  listSections      Json?       // assemblies: [{ title: string, items: string[] }]
   extraContent      String?
   extraImageUrl     String?
   fullWidthImageUrl String?
   centeredText      String?
-  images            String[]    // Cloudinary URLs
-  carouselImages    String[]    // Cloudinary URLs
+  images            String[]    // gallery — Cloudinary URLs
+  carouselImages    String[]    // sequence — 5 Cloudinary URLs, one per stage
   firstEmbed        String?     // YouTube video ID
   secondEmbed       String?
   thirdEmbed        String?
+
+  // Flexible project page (see components/sections/ProjectDetailView.tsx)
+  subtitle          String?     // hero line under the title
+  overview          String[]    @default([]) // Overview paragraphs after the lead (blurb)
+  underConstruction Boolean     @default(false)
+  facts             Json?       // [{ label, value }]
+  highlight         Json?       // { label?, title, body?, imageUrl? }
+  chapters          Json?       // [{ title, body: string[], items?: string[], imageUrl? }]
+  video             Json?       // { id, title?, body?, vertical? }
+  sequenceCaptions  String[]    @default([])
+  overviewImages    Json?       // { [slotId]: imageUrl | "none" }, see src/lib/overview-layout.ts
+  photos            String[]    @default([]) // this project's photo library, in upload order
+  skipPhotos        String[]    @default([]) // library photos never placed automatically
+
   projectPage       ProjectPage?
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
@@ -297,12 +327,41 @@ model Career {
   updatedAt DateTime @updatedAt
 }
 
-// Two Factor Authentication
+// ─── News & Charity ───────────────────────────────────────────────────────────
 
-model TwoFactor {
-  id          String  @id @default(cuid())
-  secret      String
-  backupCodes String
-  userId      String
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+/// Blog / news posts — /news and the homepage "Recent Posts" grid
+model Post {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  category      String    // Project Update | Community | Roofing Tips | Company News
+  excerpt       String    // short summary for cards and SEO description
+  content       Json?     // Tiptap JSON
+  coverImageUrl String?
+  coverImageAlt String?
+  published     Boolean   @default(false)
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([published, publishedAt])
+}
+
+/// Homepage charity spotlight (single row)
+model CharitySpotlight {
+  id           String   @id @default(cuid())
+  enabled      Boolean  @default(true)
+  label        String   @default("Annual Charity Golf Tournament")
+  title        String
+  body         String
+  imageUrl     String?
+  imageAlt     String?
+  nextEvent    String?  // free text, e.g. "June 12, 2027"
+  raisedToDate String?  // free text, e.g. "$48,000"
+  venue        String?
+  causeTitle   String?
+  causeBody    String?
+  recapLink    String?
+  donateLink   String?
+  updatedAt    DateTime @updatedAt
 }

@@ -54,6 +54,13 @@ export default function ImageUpload({
     if (file) handleFile(file);
   };
 
+  // Cloudinary serves videos under a /video/upload/ path; also match common
+  // video extensions. Video URLs must render in a <video>, not next/image.
+  const isVideo =
+    !!value &&
+    (/\/video\/upload\//.test(value) ||
+      /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(value));
+
   return (
     <div className={className}>
       {label && (
@@ -64,17 +71,28 @@ export default function ImageUpload({
 
       {value ? (
         <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 group">
-          <Image
-            src={value}
-            alt="Uploaded"
-            fill
-            className="object-cover"
-            sizes="400px"
-          />
+          {isVideo ? (
+            <video
+              src={value}
+              className="w-full h-full object-cover"
+              controls
+              muted
+              playsInline
+              preload="metadata"
+            />
+          ) : (
+            <Image
+              src={value}
+              alt="Uploaded"
+              fill
+              className="object-cover"
+              sizes="400px"
+            />
+          )}
           <button
             type="button"
             onClick={() => onChange("")}
-            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
           >
             <X size={14} />
           </button>

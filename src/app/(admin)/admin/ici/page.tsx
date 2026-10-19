@@ -1,74 +1,180 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ImageUpload from "@/components/admin/ImageUpload";
-import MultiImageUpload from "@/components/admin/MultiImageUpload";
-import { Plus, Trash2 } from "lucide-react";
+import {
+  AdminSection,
+  TextField,
+  ImageField,
+  GalleryField,
+  ChecklistField,
+  RawJsonField,
+  SaveBar,
+  type ImageItem,
+  type ListSection,
+} from "@/components/admin/Fields";
+
+const FOLDER = "skyluxe/ici";
 
 export default function ICIRoofingAdminPage() {
   const [form, setForm] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showJson, setShowJson] = useState(false);
 
   useEffect(() => {
-    fetch("/api/cms/ici").then(r=>r.json()).then(d => { if (d) setForm(d); });
+    fetch("/api/cms/ici")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d) setForm(d);
+      });
   }, []);
 
-  const set = (key: string, val: unknown) => setForm(f => ({...f, [key]: val}));
+  const set = (key: string, val: unknown) => setForm((f) => ({ ...f, [key]: val }));
 
   const save = async () => {
     setSaving(true);
-    await fetch("/api/cms/ici", { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2000);
+    await fetch("/api/cms/ici", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
-  const TextField = ({ label, field, rows = 1 }: { label:string; field:string; rows?:number }) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">{label}</label>
-      {rows > 1 ? (
-        <textarea value={form[field] as string ?? ""} onChange={e => set(field, e.target.value)} rows={rows} className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat resize-none" />
-      ) : (
-        <input value={form[field] as string ?? ""} onChange={e => set(field, e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat" />
-      )}
-    </div>
-  );
-
-  const ImageField = ({ label, urlKey, altKey, folder }: { label:string; urlKey:string; altKey:string; folder:string }) => (
-    <div className="border rounded-lg p-4">
-      <p className="text-sm font-julius text-primary-950 mb-2">{label}</p>
-      <ImageUpload value={form[urlKey] as string} onChange={v => set(urlKey, v)} folder={folder} />
-      <input value={form[altKey] as string ?? ""} onChange={e => set(altKey, e.target.value)} placeholder="Alt text" className="mt-2 w-full px-3 py-1.5 border rounded text-sm font-montserrat" />
-    </div>
-  );
+  const str = (k: string) => (form[k] as string) ?? "";
+  const listSections = (form.listSections as ListSection[]) ?? [];
+  const gallery = (form.galleryImages as ImageItem[]) ?? [];
+  const manufacturers = (form.carouselMImages as ImageItem[]) ?? [];
 
   return (
     <div className="max-w-4xl space-y-6">
       <h1 className="text-3xl font-julius text-primary-950">ICI Roofing</h1>
 
-      <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-        <h2 className="font-julius text-primary-950 mb-4">Content</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <TextField label="Title" field="title" />
-          <TextField label="Content" field="content" rows={3} />
+      <AdminSection title="Hero">
+        <div className="space-y-4">
+          <TextField
+            label="Title"
+            value={str("title")}
+            onChange={(v) => set("title", v)}
+            placeholder="ICI Roofing"
+          />
+          <TextField
+            label="Intro Content"
+            value={str("content")}
+            onChange={(v) => set("content", v)}
+            rows={3}
+            placeholder="Short introduction shown in the hero section."
+          />
         </div>
-      </section>
+      </AdminSection>
 
-      <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-        <h2 className="font-julius text-primary-950 mb-4">All Fields (JSON)</h2>
-        <p className="text-xs text-gray-400 font-montserrat mb-3">Advanced: edit all fields as JSON</p>
-        <textarea
-          value={JSON.stringify(form, null, 2)}
-          onChange={e => { try { setForm(JSON.parse(e.target.value)); } catch {} }}
-          rows={20}
-          className="w-full px-3 py-2 border rounded-lg text-xs font-mono resize-none"
+      <AdminSection title="Feature Section 1">
+        <div className="space-y-4">
+          <TextField
+            label="Heading"
+            value={str("firstTitle")}
+            onChange={(v) => set("firstTitle", v)}
+          />
+          <TextField
+            label="Paragraph 1"
+            value={str("firstContent")}
+            onChange={(v) => set("firstContent", v)}
+            rows={3}
+          />
+          <TextField
+            label="Paragraph 2"
+            value={str("secondContent")}
+            onChange={(v) => set("secondContent", v)}
+            rows={3}
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <ImageField
+              label="First Image"
+              url={str("firstImageUrl")}
+              alt={str("firstImageAlt")}
+              onUrl={(v) => set("firstImageUrl", v)}
+              onAlt={(v) => set("firstImageAlt", v)}
+              folder={FOLDER}
+            />
+            <ImageField
+              label="Second Image"
+              url={str("secondImageUrl")}
+              alt={str("secondImageAlt")}
+              onUrl={(v) => set("secondImageUrl", v)}
+              onAlt={(v) => set("secondImageAlt", v)}
+              folder={FOLDER}
+            />
+          </div>
+        </div>
+      </AdminSection>
+
+      <AdminSection title="Technical Capabilities Section">
+        <div className="space-y-4">
+          <TextField
+            label="Heading"
+            value={str("secondTitle")}
+            onChange={(v) => set("secondTitle", v)}
+            placeholder="We Specialize In"
+          />
+          <TextField
+            label="Intro Paragraph"
+            value={str("thirdContent")}
+            onChange={(v) => set("thirdContent", v)}
+            rows={3}
+          />
+        </div>
+      </AdminSection>
+
+      <ChecklistField
+        title="Systems We Specialize In"
+        sections={listSections}
+        onChange={(v) => set("listSections", v)}
+        help="The numbered systems checklist. Each item becomes one entry."
+      />
+
+      <AdminSection title="Extra List Item">
+        <TextField
+          label="Additional item (appended to the checklist)"
+          value={str("listItem")}
+          onChange={(v) => set("listItem", v)}
         />
-      </section>
+      </AdminSection>
 
-      <div className="flex justify-end">
-        <button onClick={save} disabled={saving} className="px-6 py-2.5 bg-gray-800 text-white rounded-lg font-montserrat text-sm font-medium hover:bg-primary-800 disabled:opacity-50">
-          {saving ? "Saving..." : saved ? "Saved!" : "Save Changes"}
-        </button>
-      </div>
+      <GalleryField
+        title="Project Gallery"
+        items={gallery}
+        onChange={(v) => set("galleryImages", v)}
+        folder={FOLDER}
+        help="Photos shown in the project gallery grid on the page."
+      />
+
+      <AdminSection title="Manufacturers">
+        <TextField
+          label="Section Title"
+          value={str("extraTitle")}
+          onChange={(v) => set("extraTitle", v)}
+          placeholder="Trusted Manufacturers"
+        />
+      </AdminSection>
+
+      <GalleryField
+        title="Manufacturer Logos"
+        items={manufacturers}
+        onChange={(v) => set("carouselMImages", v)}
+        folder={FOLDER}
+        help="Logos shown in the scrolling Manufacturers marquee."
+      />
+
+      <RawJsonField
+        form={form}
+        setForm={setForm}
+        open={showJson}
+        onToggle={() => setShowJson((v) => !v)}
+      />
+
+      <SaveBar saving={saving} saved={saved} onSave={save} />
     </div>
   );
 }

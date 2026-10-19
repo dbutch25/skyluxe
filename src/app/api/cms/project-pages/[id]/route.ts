@@ -34,7 +34,16 @@ export async function DELETE(_: NextRequest, { params }: Params) {
   try {
     await requireAuth();
     const { id } = await params;
-    await db.projectPage.delete({ where: { id } });
+
+    const page = await db.projectPage.findUnique({ where: { id }, select: { projectId: true } });
+    if (!page) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+    // Remove the listing card and its detail page together, so the detail
+    // page doesn't linger and keep holding the slug.
+    await db.$transaction([
+      db.projectPage.delete({ where: { id } }),
+      ...(page.projectId ? [db.project.delete({ where: { id: page.projectId } })] : []),
+    ]);
     return NextResponse.json({ success: true });
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

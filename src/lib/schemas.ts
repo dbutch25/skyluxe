@@ -7,6 +7,8 @@ const cloudinaryUrl = z
   .url()
   .refine(
     (url) =>
+      url.startsWith("https://imagedelivery.net") ||
+      url.startsWith("https://media.skyluxeroofing.com") ||
       url.startsWith("https://res.cloudinary.com") ||
       url.startsWith("https://lh3.googleusercontent.com") ||
       url === "",
@@ -54,7 +56,8 @@ export const ServiceCarouselSchema = z.object({
   description: z.string().min(1).max(1000),
   serviceLink: z.string().min(1).max(200),
   requestLink: z.string().min(1).max(200),
-  mainImageUrl: z.string().url(),
+  // Empty = homepage falls back to a default image for the category
+  mainImageUrl: z.string().url().or(z.literal("")).default(""),
   category: z.enum([
     "ICI-roofing",
     "architectural-cladding",
@@ -63,39 +66,136 @@ export const ServiceCarouselSchema = z.object({
     "waterproofing",
     "restoration",
   ]),
+  points: z.array(z.string().trim().min(1).max(120)).max(8).default([]),
   order: z.number().int().min(0).default(0),
 });
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
+/**
+ * Option lists for project fields. Admin forms, Zod validation and (later) the
+ * document import all read from these, so a value can only be added in one place.
+ */
+export const PROJECT_CATEGORIES = [
+  "ICI",
+  "architectural cladding",
+  "residential roofing",
+  "waterproofing",
+  "restoration",
+] as const;
+
+export const PROJECT_SERVICES = [
+  "ICI Roofing",
+  "Residential Roofing",
+  "Architectural Cladding",
+  "Waterproofing",
+  "Repairs & Maintenance",
+  "Restoration",
+] as const;
+
+export const PROJECT_SECTORS = ["ICI", "Residential"] as const;
+
+export const PROJECT_SYSTEMS = [
+  "TPO",
+  "SBS",
+  "EPDM",
+  "ACM",
+  "Standing Seam",
+  "Hot Rubber",
+] as const;
+
+const slugField = z
+  .string()
+  .min(1)
+  .max(200)
+  .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens");
+
+/** Optional text that also accepts null, since that's what Prisma returns for empty columns. */
+const optionalText = (max: number) => z.string().max(max).nullish();
+
+/** Same as cloudinaryUrl, but tolerates null coming back from the database. */
+const optionalImageUrl = cloudinaryUrl.nullable();
+
 export const ProjectPageSchema = z.object({
   title: z.string().min(1).max(200),
-  slug: z
-    .string()
-    .min(1)
-    .max(200)
-    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens"),
+  slug: slugField,
   imageUrl: z.string().url().or(z.literal("")).optional(),
-  category: z
-    .array(
-      z.enum(["ICI", "architectural cladding", "residential roofing", "waterproofing"])
-    )
-    .default([]),
+  category: z.array(z.enum(PROJECT_CATEGORIES)).default([]),
+  sector: z.enum(PROJECT_SECTORS).nullish(),
+  service: z.enum(PROJECT_SERVICES).nullish(),
+  systems: z.array(z.enum(PROJECT_SYSTEMS)).default([]),
+  year: z
+    .number()
+    .int()
+    .min(1950)
+    .max(new Date().getFullYear() + 1)
+    .nullish(),
+  city: optionalText(120),
+  latitude: z.number().min(-90).max(90).nullish(),
+  longitude: z.number().min(-180).max(180).nullish(),
   order: z.number().int().min(0).default(0),
-  projectId: z.string().cuid().optional().nullable(),
+  published: z.boolean().optional(),
+  projectId: z.string().cuid().nullish(),
 });
 
 export const ProjectSchema = z.object({
   title: z.string().min(1).max(200),
-  slug: z
-    .string()
-    .min(1)
-    .max(200)
-    .regex(/^[a-z0-9-]+$/),
-  backgroundVideoUrl: z.string().url().or(z.literal("")).optional(),
-  fallbackImageUrl: cloudinaryUrl,
-  content: z.string().max(10000).optional(),
-  mainImageUrl: cloudinaryUrl,
+  slug: slugField,
+
+  // Hero + write-up
+  subtitle: optionalText(200),
+  blurb: optionalText(1000),
+  overview: z.array(z.string().min(1).max(3000)).max(12).optional(),
+  underConstruction: z.boolean().optional(),
+
+  // Flexible blocks (Json columns; null clears them, see toPrismaJson)
+  facts: z
+    .array(z.object({ label: z.string().min(1).max(60), value: z.string().min(1).max(200) }))
+    .max(12)
+    .nullish(),
+  highlight: z
+    .object({
+      label: z.string().max(60).optional(),
+      title: z.string().min(1).max(200),
+      body: z.string().max(2000).optional(),
+      imageUrl: z.string().url().optional(),
+    })
+    .nullish(),
+  chapters: z
+    .array(
+      z.object({
+        title: z.string().min(1).max(200),
+        body: z.array(z.string().min(1).max(5000)).max(10),
+        items: z.array(z.string().min(1).max(500)).max(40).optional(),
+        imageUrl: z.string().url().optional(),
+      })
+    )
+    .max(12)
+    .nullish(),
+  video: z
+    .object({
+      id: z.string().min(1).max(60),
+      title: z.string().max(200).optional(),
+      body: z.string().max(1000).optional(),
+      vertical: z.boolean().optional(),
+    })
+    .nullish(),
+  sequenceCaptions: z.array(z.string().max(300)).max(5).optional(),
+  // Project photo library and the photos left out of automatic placement.
+  photos: z.array(z.string().url()).max(500).optional(),
+  skipPhotos: z.array(z.string().url()).max(500).optional(),
+
+  // Overview photo picks: slot id → image URL, or "none" to leave the slot empty.
+  overviewImages: z
+    .record(z.string().max(40), z.union([z.string().url(), z.literal("none")]))
+    .nullish(),
+  area: optionalText(120),
+  scope: optionalText(5000),
+  challenge: optionalText(5000),
+  solution: optionalText(5000),
+
+  // Scope of work. Json columns accept null here; API routes convert it to
+  // Prisma.JsonNull with toPrismaJson() so clearing a block really clears it.
   listSections: z
     .array(
       z.object({
@@ -103,16 +203,28 @@ export const ProjectSchema = z.object({
         items: z.array(z.string().min(1).max(500)),
       })
     )
-    .optional(),
-  extraContent: z.string().max(10000).optional(),
-  extraImageUrl: cloudinaryUrl,
-  fullWidthImageUrl: cloudinaryUrl,
-  centeredText: z.string().max(5000).optional(),
+    .nullish(),
+
+  // Media
   images: z.array(z.string().url()).max(20).optional(),
   carouselImages: z.array(z.string().url()).max(50).optional(),
-  firstEmbed: z.string().max(20).optional(),
-  secondEmbed: z.string().max(20).optional(),
-  thirdEmbed: z.string().max(20).optional(),
+  droneImageUrl: optionalImageUrl,
+  droneVideoId: optionalText(60),
+  droneDuration: optionalText(20),
+
+  // Legacy fields: kept so older records still validate, but no longer
+  // rendered on the public detail page or shown in the editor.
+  backgroundVideoUrl: z.string().url().or(z.literal("")).nullish(),
+  fallbackImageUrl: optionalImageUrl,
+  content: optionalText(10000),
+  mainImageUrl: optionalImageUrl,
+  extraContent: optionalText(10000),
+  extraImageUrl: optionalImageUrl,
+  fullWidthImageUrl: optionalImageUrl,
+  centeredText: optionalText(5000),
+  firstEmbed: optionalText(20),
+  secondEmbed: optionalText(20),
+  thirdEmbed: optionalText(20),
 });
 
 // ─── Service Pages ────────────────────────────────────────────────────────────
@@ -239,4 +351,56 @@ export const RestorationSchema = z.object({
   heroImageUrl: z.string().url().or(z.literal('')).optional(),
   heroImageAlt: z.string().max(200).optional(),
   galleryImages: z.array(imageItem).max(30).optional(),
+});
+
+// ─── News & Charity ───────────────────────────────────────────────────────────
+
+export const POST_CATEGORIES = [
+  "Project Update",
+  "Community",
+  "Roofing Tips",
+  "Company News",
+] as const;
+
+/** Internal path ("/news/recap") or full https URL; empty clears it. */
+const linkField = z
+  .string()
+  .trim()
+  .max(500)
+  .refine((v) => v === "" || v.startsWith("/") || /^https?:\/\//.test(v), {
+    message: "Use a page path like /news/my-post or a full https:// link",
+  });
+
+export const PostSchema = z.object({
+  title: z.string().trim().min(1).max(200),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(120)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and dashes only"),
+  category: z.enum(POST_CATEGORIES),
+  excerpt: z.string().trim().min(1).max(300),
+  content: z.record(z.unknown()).nullable().optional(), // Tiptap JSON
+  coverImageUrl: z.string().url().or(z.literal("")).optional(),
+  coverImageAlt: z.string().max(200).optional(),
+  published: z.boolean().default(false),
+  // ISO date string; set automatically when first published if empty
+  publishedAt: z.string().datetime().nullable().optional(),
+});
+
+export const CharitySpotlightSchema = z.object({
+  enabled: z.boolean(),
+  label: z.string().trim().max(100),
+  title: z.string().trim().min(1).max(200),
+  body: z.string().trim().min(1).max(2000),
+  imageUrl: z.string().url().or(z.literal("")).optional(),
+  imageAlt: z.string().max(200).optional(),
+  nextEvent: z.string().trim().max(60).optional(),
+  raisedToDate: z.string().trim().max(60).optional(),
+  venue: z.string().trim().max(100).optional(),
+  causeTitle: z.string().trim().max(150).optional(),
+  causeBody: z.string().trim().max(600).optional(),
+  recapLink: linkField.optional(),
+  donateLink: linkField.optional(),
 });
