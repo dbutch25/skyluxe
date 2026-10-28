@@ -21,13 +21,14 @@ const EMPTY_FORM = {
   imageUrl: "",
   category: [] as string[],
   sector: "",
-  service: "",
+  services: [] as string[],
   systems: [] as string[],
   year: "",
   city: "",
   latitude: "",
   longitude: "",
   order: 0,
+  hasDetailPage: true,
 };
 
 /** "" → null, anything else → number (NaN is caught by the API's validation). */
@@ -51,7 +52,6 @@ export default function ProjectsAdminPage() {
     const payload = {
       ...form,
       sector: form.sector || null,
-      service: form.service || null,
       year: toNumberOrNull(form.year),
       city: form.city.trim() || null,
       latitude: toNumberOrNull(form.latitude),
@@ -132,11 +132,18 @@ export default function ProjectsAdminPage() {
             <div className="p-4">
               <div className="flex items-start justify-between gap-2 mb-1">
                 <h3 className="font-julius text-primary-950 text-sm">{p.title}</h3>
-                {!p.published && (
-                  <span className="shrink-0 text-[10px] font-montserrat font-semibold uppercase tracking-wide rounded px-1.5 py-0.5 bg-gray-100 text-gray-500">
-                    Draft
-                  </span>
-                )}
+                <div className="flex shrink-0 gap-1">
+                  {p.hasDetailPage === false && (
+                    <span className="text-[10px] font-montserrat font-semibold uppercase tracking-wide rounded px-1.5 py-0.5 bg-blue-50 text-blue-700">
+                      Map pin
+                    </span>
+                  )}
+                  {!p.published && (
+                    <span className="text-[10px] font-montserrat font-semibold uppercase tracking-wide rounded px-1.5 py-0.5 bg-gray-100 text-gray-500">
+                      Draft
+                    </span>
+                  )}
+                </div>
               </div>
               <p className="text-xs text-gray-400 font-montserrat mb-2">{p.slug}</p>
               <div className="flex flex-wrap gap-1 mb-3">
@@ -151,15 +158,17 @@ export default function ProjectsAdminPage() {
                   href={`/admin/projects/${p.id}`}
                   className="flex items-center gap-1 text-xs text-primary-950 hover:text-secondary-600 font-montserrat transition-colors"
                 >
-                  <Pencil size={12} /> Edit Detail
+                  <Pencil size={12} /> Edit
                 </Link>
-                <Link
-                  href={`/projects/preview/${p.id}`}
-                  target="_blank"
-                  className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 font-montserrat transition-colors"
-                >
-                  <ExternalLink size={12} /> Preview
-                </Link>
+                {p.hasDetailPage !== false && (
+                  <Link
+                    href={`/projects/preview/${p.id}`}
+                    target="_blank"
+                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 font-montserrat transition-colors"
+                  >
+                    <ExternalLink size={12} /> Preview
+                  </Link>
+                )}
                 <button
                   onClick={() => handleDelete(p.id)}
                   className="ml-auto text-red-400 hover:text-red-600 transition-colors"
@@ -178,6 +187,25 @@ export default function ProjectsAdminPage() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-julius text-primary-950 mb-5">New Project</h2>
 
+            <div className="mb-5 grid grid-cols-2 gap-2">
+              {[
+                { value: true, title: "Full project", text: "Detail page, /projects card and map pin" },
+                { value: false, title: "Map pin", text: "Homepage map only: photo, title and city" },
+              ].map((o) => (
+                <button
+                  key={o.title}
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, hasDetailPage: o.value }))}
+                  className={`rounded-lg border p-3 text-left font-montserrat transition-colors ${
+                    form.hasDetailPage === o.value ? "border-gray-800 bg-gray-50" : "border-gray-200 hover:border-gray-400"
+                  }`}
+                >
+                  <span className="block text-sm font-medium text-gray-800">{o.title}</span>
+                  <span className="mt-0.5 block text-xs text-gray-500">{o.text}</span>
+                </button>
+              ))}
+            </div>
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">Title</label>
@@ -195,18 +223,22 @@ export default function ProjectsAdminPage() {
                   className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat"
                 />
               </div>
-              <ChipsField
-                label="Categories"
-                options={PROJECT_CATEGORIES}
-                values={form.category}
-                onChange={(v) => setForm((f) => ({ ...f, category: v }))}
-              />
-              <ChipsField
-                label="Roof systems"
-                options={PROJECT_SYSTEMS}
-                values={form.systems}
-                onChange={(v) => setForm((f) => ({ ...f, systems: v }))}
-              />
+              {form.hasDetailPage && (
+                <>
+                  <ChipsField
+                    label="Categories"
+                    options={PROJECT_CATEGORIES}
+                    values={form.category}
+                    onChange={(v) => setForm((f) => ({ ...f, category: v }))}
+                  />
+                  <ChipsField
+                    label="Roof systems"
+                    options={PROJECT_SYSTEMS}
+                    values={form.systems}
+                    onChange={(v) => setForm((f) => ({ ...f, systems: v }))}
+                  />
+                </>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">Display Order</label>
                 <input
@@ -217,43 +249,39 @@ export default function ProjectsAdminPage() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">
-                  Service <span className="text-gray-400 font-normal">(drives the filter chips on /projects)</span>
-                </label>
-                <select
-                  value={form.service}
-                  onChange={(e) => setForm((f) => ({ ...f, service: e.target.value }))}
-                  className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat bg-white"
-                >
-                  <option value="">— none —</option>
-                  {PROJECT_SERVICES.map((s) => (<option key={s} value={s}>{s}</option>))}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">Sector</label>
-                  <select
-                    value={form.sector}
-                    onChange={(e) => setForm((f) => ({ ...f, sector: e.target.value }))}
-                    className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat bg-white"
-                  >
-                    <option value="">—</option>
-                    {PROJECT_SECTORS.map((s) => (<option key={s} value={s}>{s}</option>))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">Year</label>
-                  <input
-                    value={form.year}
-                    onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
-                    placeholder="2025"
-                    inputMode="numeric"
-                    className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat"
+              {form.hasDetailPage && (
+                <>
+                  <ChipsField
+                    label="Services (first selected = main service)"
+                    options={PROJECT_SERVICES}
+                    values={form.services}
+                    onChange={(v) => setForm((f) => ({ ...f, services: v }))}
                   />
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">Sector</label>
+                      <select
+                        value={form.sector}
+                        onChange={(e) => setForm((f) => ({ ...f, sector: e.target.value }))}
+                        className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat bg-white"
+                      >
+                        <option value="">—</option>
+                        {PROJECT_SECTORS.map((s) => (<option key={s} value={s}>{s}</option>))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">Year</label>
+                      <input
+                        value={form.year}
+                        onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
+                        placeholder="2025"
+                        inputMode="numeric"
+                        className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">City / Area</label>
@@ -267,7 +295,10 @@ export default function ProjectsAdminPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">
-                  Map Location <span className="text-gray-400 font-normal">(optional — pin on the homepage GTA map)</span>
+                  Map Location{" "}
+                  <span className="text-gray-400 font-normal">
+                    {form.hasDetailPage ? "(optional — pin on the homepage GTA map)" : "(needed for the pin to appear)"}
+                  </span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <input
@@ -298,7 +329,9 @@ export default function ProjectsAdminPage() {
             </div>
 
             <p className="mt-4 text-xs text-gray-400 font-montserrat">
-              New projects start as drafts. Publish them from the editor once the photos are in.
+              {form.hasDetailPage
+                ? "New projects start as drafts. Publish them from the editor once the photos are in."
+                : "Map pins start as drafts. Publish them from the editor to show them on the homepage map."}
             </p>
 
             {error && (
@@ -311,7 +344,7 @@ export default function ProjectsAdminPage() {
                 disabled={saving || !form.title || !form.slug}
                 className="flex-1 py-2.5 bg-gray-800 text-white rounded-lg font-montserrat text-sm font-medium hover:bg-primary-800 transition-colors disabled:opacity-50"
               >
-                {saving ? "Creating..." : "Create Project"}
+                {saving ? "Creating..." : form.hasDetailPage ? "Create Project" : "Create Map Pin"}
               </button>
               <button
                 onClick={() => { setShowNew(false); setError(""); }}

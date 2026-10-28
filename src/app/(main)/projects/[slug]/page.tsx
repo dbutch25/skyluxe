@@ -24,6 +24,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const project = await fetchProjectBySlug(slug); // published only
   if (!project) notFound();
 
-  const related = await fetchRelatedProjects(slug, project.service);
+  const related = await fetchRelatedProjects(slug, project.services);
   return <ProjectDetailView project={project} related={related} />;
 }

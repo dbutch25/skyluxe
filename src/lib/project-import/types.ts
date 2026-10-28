@@ -12,7 +12,7 @@ export interface DraftCard {
   slug: string;
   city: string;
   sector: string;
-  service: string;
+  services: string[]; // first = main service
   category: string[];
   systems: string[];
   year: string; // kept as a string while editing

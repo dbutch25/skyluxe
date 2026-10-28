@@ -29,7 +29,9 @@ export const ExtractedProjectSchema = z.object({
   area: nullableText("Roof area as written, e.g. '48,000 sq ft'. Only if stated."),
 
   sector: z.enum(PROJECT_SECTORS).nullable().describe("Residential for homes; ICI for commercial, industrial or institutional."),
-  service: z.enum(PROJECT_SERVICES).nullable().describe("The single best-fitting service."),
+  services: z
+    .array(z.enum(PROJECT_SERVICES))
+    .describe("Every service the project covers, the main one first (the one most of the work falls under)."),
   categories: z.array(z.enum(PROJECT_CATEGORIES)).describe("Every category that applies."),
   systems: z.array(z.enum(PROJECT_SYSTEMS)).describe("Every roof system installed."),
 
@@ -80,7 +82,7 @@ Facts: title, city, year, area and the assembly lists come only from the documen
 
 Assembly lists: copy each list of layers/products with its heading. Keep product names, sizes and specs exactly as written.
 
-Classification (sector, service, categories, systems) uses only the allowed values. Mapping hints:
+Classification (sector, services, categories, systems) uses only the allowed values. Mapping hints:
 - modified bitumen, SBS, torch-on, Soprema Sopralene/Sopraply → SBS
 - standing seam, snap-lock or mechanically seamed metal panels → Standing Seam
 - thermoplastic / TPO membrane → TPO
@@ -124,7 +126,7 @@ function normalizeEnums(raw: unknown): unknown {
   return {
     ...x,
     sector: fix(x.sector, PROJECT_SECTORS),
-    service: fix(x.service, PROJECT_SERVICES),
+    services: fixAll(x.services, PROJECT_SERVICES),
     categories: fixAll(x.categories, PROJECT_CATEGORIES),
     systems: fixAll(x.systems, PROJECT_SYSTEMS),
   };
@@ -163,7 +165,7 @@ function sourcesFor(x: Extracted): Record<string, FieldSource> {
   const groups: Record<Exclude<FieldSource, "missing">, (keyof Extracted)[]> = {
     // year is left out on purpose: it isn't shown on the site, so a missing year isn't flagged
     document: ["title", "city", "area", "listSections", "facts", "videoUrl"],
-    inferred: ["sector", "service", "categories", "systems", "underConstruction"],
+    inferred: ["sector", "services", "categories", "systems", "underConstruction"],
     written: ["subtitle", "lead", "overview", "highlight", "chapters"],
   };
   const out: Record<string, FieldSource> = {};
@@ -230,7 +232,7 @@ export async function extractProject(fileName: string, documentHtml: string): Pr
       slug: await uniqueSlug(slugify(title)),
       city: x.city ?? "",
       sector: x.sector ?? "",
-      service: x.service ?? "",
+      services: [...new Set(x.services)],
       category: x.categories,
       systems: x.systems,
       year: x.year?.toString() ?? "",

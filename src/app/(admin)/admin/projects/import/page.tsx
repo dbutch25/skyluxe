@@ -156,15 +156,12 @@ function DraftForm({
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <Sourced kind={kind("city")}>
               <TextField label="City / Area" value={card.city} onChange={(v) => onCard("city", v)} />
             </Sourced>
             <Sourced kind={kind("sector")}>
               <SelectField label="Sector" value={card.sector} options={PROJECT_SECTORS} onChange={(v) => onCard("sector", v)} />
-            </Sourced>
-            <Sourced kind={kind("service")}>
-              <SelectField label="Service" value={card.service} options={PROJECT_SERVICES} onChange={(v) => onCard("service", v)} />
             </Sourced>
             <Sourced kind={kind("year")}>
               <TextField
@@ -176,6 +173,9 @@ function DraftForm({
             </Sourced>
           </div>
 
+          <Sourced kind={kind("services")}>
+            <ChipsField label="Services (first selected = main service)" options={PROJECT_SERVICES} values={card.services} onChange={(v) => onCard("services", v)} />
+          </Sourced>
           <Sourced kind={kind("category")}>
             <ChipsField label="Categories" options={PROJECT_CATEGORIES} values={card.category} onChange={(v) => onCard("category", v)} />
           </Sourced>
@@ -357,7 +357,7 @@ export default function ProjectImportPage() {
             category: card.category,
             systems: card.systems,
             sector: card.sector || null,
-            service: card.service || null,
+            services: card.services,
             year: card.year ? Number(card.year) : null,
             city: blankToNull(card.city),
           },

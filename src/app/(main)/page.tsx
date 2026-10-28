@@ -14,7 +14,7 @@ import {
   getServiceCarouselData,
   fetchHomeGalleryData,
   fetchHomeGalleryOneData,
-  fetchProjects,
+  fetchMapProjects,
   fetchLatestPosts,
   getCharitySpotlight,
 } from "@/lib/data";
@@ -51,7 +51,7 @@ export default async function Home() {
       getServiceCarouselData(),
       fetchHomeGalleryData(),
       fetchHomeGalleryOneData(),
-      fetchProjects(),
+      fetchMapProjects(),
       fetchLatestPosts(3),
       getCharitySpotlight(),
     ]);

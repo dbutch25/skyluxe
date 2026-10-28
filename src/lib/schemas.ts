@@ -1,4 +1,10 @@
 import { z } from "zod";
+import {
+  PROJECT_CATEGORIES,
+  PROJECT_SECTORS,
+  PROJECT_SERVICES,
+  PROJECT_SYSTEMS,
+} from "@/lib/project-options";
 
 // ─── Shared ───────────────────────────────────────────────────────────────────
 
@@ -72,37 +78,13 @@ export const ServiceCarouselSchema = z.object({
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
-/**
- * Option lists for project fields. Admin forms, Zod validation and (later) the
- * document import all read from these, so a value can only be added in one place.
- */
-export const PROJECT_CATEGORIES = [
-  "ICI",
-  "architectural cladding",
-  "residential roofing",
-  "waterproofing",
-  "restoration",
-] as const;
-
-export const PROJECT_SERVICES = [
-  "ICI Roofing",
-  "Residential Roofing",
-  "Architectural Cladding",
-  "Waterproofing",
-  "Repairs & Maintenance",
-  "Restoration",
-] as const;
-
-export const PROJECT_SECTORS = ["ICI", "Residential"] as const;
-
-export const PROJECT_SYSTEMS = [
-  "TPO",
-  "SBS",
-  "EPDM",
-  "ACM",
-  "Standing Seam",
-  "Hot Rubber",
-] as const;
+// Option lists live in lib/project-options.ts.
+export {
+  PROJECT_CATEGORIES,
+  PROJECT_SECTORS,
+  PROJECT_SERVICES,
+  PROJECT_SYSTEMS,
+} from "@/lib/project-options";
 
 const slugField = z
   .string()
@@ -122,7 +104,8 @@ export const ProjectPageSchema = z.object({
   imageUrl: z.string().url().or(z.literal("")).optional(),
   category: z.array(z.enum(PROJECT_CATEGORIES)).default([]),
   sector: z.enum(PROJECT_SECTORS).nullish(),
-  service: z.enum(PROJECT_SERVICES).nullish(),
+  // Every service the project covers; the first is its main service.
+  services: z.array(z.enum(PROJECT_SERVICES)).default([]),
   systems: z.array(z.enum(PROJECT_SYSTEMS)).default([]),
   year: z
     .number()
@@ -135,6 +118,8 @@ export const ProjectPageSchema = z.object({
   longitude: z.number().min(-180).max(180).nullish(),
   order: z.number().int().min(0).default(0),
   published: z.boolean().optional(),
+  // false = map pin only: shown on the homepage map, no detail page or /projects card.
+  hasDetailPage: z.boolean().optional(),
   projectId: z.string().cuid().nullish(),
 });
 

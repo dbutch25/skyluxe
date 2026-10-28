@@ -66,7 +66,7 @@ export interface Project {
   imageUrl?: string;
   category: ProjectCategory[] | string[];
   sector?: string | null;   // "ICI" | "Residential" (card badge)
-  service?: string | null;  // filter axis on /projects
+  services?: string[];      // every service covered; the first is the main one (filters + related)
   systems?: string[];       // roof systems used, e.g. ["SBS", "Standing Seam"]
   year?: number | null;     // completion year
   city?: string | null;
@@ -74,6 +74,7 @@ export interface Project {
   longitude?: number | null;
   order: number;
   published?: boolean;      // false = draft, hidden from the public site
+  hasDetailPage?: boolean;  // false = map pin only: homepage map, no /projects card or detail page
   projectId?: string | null;
 }
 

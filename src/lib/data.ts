@@ -92,8 +92,19 @@ export const getServiceCarouselData = cachedRead<Service[]>(
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
+/** Published projects with a detail page: the /projects grid and related projects. */
 export const fetchProjects = cachedRead<Project[]>(
   "project-pages",
+  () =>
+    db.projectPage.findMany({
+      where: { published: true, hasDetailPage: true },
+      orderBy: { order: "asc" },
+    })
+);
+
+/** Everything published, including map-only pins: the homepage map. */
+export const fetchMapProjects = cachedRead<Project[]>(
+  "project-map",
   () =>
     db.projectPage.findMany({
       where: { published: true },
@@ -105,7 +116,7 @@ export async function fetchProjectBySlug(
   slug: string
 ): Promise<ProjectFull | null> {
   const page = await db.projectPage.findFirst({
-    where: { slug, published: true },
+    where: { slug, published: true, hasDetailPage: true },
     include: { project: true },
   });
   return (page as ProjectFull | null) ?? null;
@@ -126,19 +137,24 @@ export async function fetchProjectForPreview(
 }
 
 /**
- * Related projects: same service, excluding the current project. Falls back to
- * any other projects when nothing matches, so the section is never empty on a
- * small portfolio.
+ * Related projects: other projects sharing a service, those sharing the main
+ * service first. Falls back to any other projects when nothing matches, so the
+ * section is never empty on a small portfolio.
  */
 export async function fetchRelatedProjects(
   slug: string,
-  service?: string | null
+  services: string[] = []
 ): Promise<Project[]> {
   const all = await fetchProjects();
   const others = all.filter((p) => p.slug !== slug);
-  const matched = service
-    ? others.filter((p) => p.service === service)
-    : [];
+  const [main] = services;
+  const matched = others
+    .filter((p) => p.services?.some((s) => services.includes(s)))
+    .sort(
+      (a, b) =>
+        Number(b.services?.includes(main) ?? false) -
+        Number(a.services?.includes(main) ?? false)
+    );
   return (matched.length > 0 ? matched : others).slice(0, 3);
 }
 

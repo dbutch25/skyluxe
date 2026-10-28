@@ -5,16 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Project } from "@/types";
 import { safeImageUrl } from "@/lib/utils";
+import { PROJECT_SERVICES } from "@/lib/project-options";
 
-const SERVICES = [
-  "All",
-  "ICI Roofing",
-  "Residential Roofing",
-  "Architectural Cladding",
-  "Waterproofing",
-  "Repairs & Maintenance",
-  "Restoration",
-] as const;
+const SERVICES = ["All", ...PROJECT_SERVICES] as const;
 
 const STATS = [
   { value: "240+", label: "Projects delivered" },
@@ -30,7 +23,7 @@ function chunkFive<T>(list: T[]): T[][] {
 }
 
 function meta(p: Project) {
-  return [p.city, p.service].filter(Boolean).join(" · ");
+  return p.city ?? "";
 }
 
 /** Editorial project card. `feature` drives the larger image + type scale. */
@@ -58,17 +51,6 @@ function ProjectCard({
           sizes={feature ? "(max-width: 1024px) 100vw, 62vw" : "(max-width: 1024px) 100vw, 33vw"}
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
         />
-        {showBadge && project.category?.[0] && (
-          <span
-            className={`pointer-events-none absolute bg-primary-950/80 backdrop-blur-[6px] font-montserrat font-semibold uppercase text-white ${
-              feature
-                ? "top-4 left-4 px-3 py-1.75 text-[10.5px] tracking-[0.18em]"
-                : "top-3.5 left-3.5 px-2.75 py-1.5 text-[10px] tracking-[0.18em]"
-            }`}
-          >
-            {project.category[0]}
-          </span>
-        )}
       </div>
 
       <div
@@ -112,7 +94,7 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
     () =>
       service === "All"
         ? projects
-        : projects.filter((p) => p.service === service),
+        : projects.filter((p) => p.services?.includes(service)),
     [projects, service]
   );
 

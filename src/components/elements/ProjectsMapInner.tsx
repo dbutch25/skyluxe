@@ -83,12 +83,15 @@ export default function ProjectsMapInner({ projects }: Props) {
               <p className="font-julius text-primary-950 text-sm leading-tight mb-2">
                 {project.title}
               </p>
-              <Link
-                href={`/projects/${project.slug}`}
-                className="inline-flex items-center gap-1 font-montserrat text-xs font-semibold text-secondary-800 hover:text-secondary-900"
-              >
-                View Project →
-              </Link>
+              {/* Map pins (no detail page) show the photo, city and title only. */}
+              {project.hasDetailPage !== false && (
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="inline-flex items-center gap-1 font-montserrat text-xs font-semibold text-secondary-800 hover:text-secondary-900"
+                >
+                  View Project →
+                </Link>
+              )}
             </div>
           </Popup>
         </Marker>

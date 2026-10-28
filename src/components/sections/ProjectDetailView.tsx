@@ -83,6 +83,9 @@ export default function ProjectDetailView({ project, related, draft = false }: P
   // Facts strip: city + area from their own fields, then any custom facts.
   const facts: Fact[] = [
     ...(project.city ? [{ label: "Location", value: project.city }] : []),
+    ...(project.services?.length
+      ? [{ label: project.services.length > 1 ? "Services" : "Service", value: project.services.join(" · ") }]
+      : []),
     ...(detail?.area ? [{ label: "Area", value: detail.area }] : []),
     ...(((detail?.facts as Fact[] | null | undefined) ?? []).filter((f) => f.label && f.value)),
   ].filter((f, i, all) => all.findIndex((x) => x.label.toLowerCase() === f.label.toLowerCase()) === i);
@@ -410,7 +413,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
       {gallery.length > 0 && (
         <section className="bg-[rgb(255,253,245)] text-primary-950 px-6 lg:px-12 pt-16 pb-24">
           <div className="mx-auto max-w-7xl">
-            <SectionHead title="On site" right={project.service} />
+            <SectionHead title="On site" right={project.services?.join(" · ")} />
             <div
               className="grid grid-cols-[repeat(auto-fit,minmax(min(230px,100%),1fr))] gap-4"
               style={{ gridAutoRows: "clamp(180px, 24vw, 236px)" }}
@@ -460,7 +463,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                     <div className="min-w-0">
                       <h3 className="font-julius text-[19px] tracking-tight">{p.title}</h3>
                       <p className="mt-1.5 font-montserrat text-[13px] text-[#8A9299]">
-                        {[p.city, p.service].filter(Boolean).join(" · ")}
+                        {p.city}
                       </p>
                     </div>
                     <span className="shrink-0 whitespace-nowrap font-montserrat text-[10.5px] font-semibold uppercase tracking-[0.14em] text-secondary-300">

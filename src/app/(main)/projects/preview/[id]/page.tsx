@@ -24,8 +24,9 @@ export default async function ProjectPreviewPage({ params }: PageProps) {
 
   const { id } = await params;
   const project = await fetchProjectForPreview(id);
-  if (!project) notFound();
+  // Map pins have no detail page to preview.
+  if (!project || !project.hasDetailPage) notFound();
 
-  const related = await fetchRelatedProjects(project.slug, project.service);
+  const related = await fetchRelatedProjects(project.slug, project.services);
   return <ProjectDetailView project={project} related={related} draft={!project.published} />;
 }

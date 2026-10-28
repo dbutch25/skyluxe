@@ -60,13 +60,14 @@ interface CardForm {
   imageUrl: string;
   category: string[];
   sector: string;
-  service: string;
+  services: string[];
   systems: string[];
   year: string;
   city: string;
   latitude: string;
   longitude: string;
   published: boolean;
+  hasDetailPage: boolean;
 }
 
 type DetailForm = Partial<ProjectDetail>;
@@ -77,13 +78,14 @@ const toCardForm = (p: Partial<Project>): CardForm => ({
   imageUrl: p.imageUrl ?? "",
   category: (p.category as string[] | undefined) ?? [],
   sector: p.sector ?? "",
-  service: p.service ?? "",
+  services: p.services ?? [],
   systems: p.systems ?? [],
   year: p.year?.toString() ?? "",
   city: p.city ?? "",
   latitude: p.latitude?.toString() ?? "",
   longitude: p.longitude?.toString() ?? "",
   published: p.published ?? false,
+  hasDetailPage: p.hasDetailPage ?? true,
 });
 
 const blankToNull = (v: string | null | undefined) => (v && v.trim() !== "" ? v.trim() : null);
@@ -161,14 +163,23 @@ export default function ProjectEditor() {
         imageUrl: card.imageUrl,
         category: card.category,
         sector: card.sector || null,
-        service: card.service || null,
+        services: card.services,
         systems: card.systems,
         year: toNumberOrNull(card.year),
         city: blankToNull(card.city),
         latitude: toNumberOrNull(card.latitude),
         longitude: toNumberOrNull(card.longitude),
         published: card.published,
+        hasDetailPage: card.hasDetailPage,
       });
+
+      // Map pins have no detail page. An existing detail record is kept (just
+      // hidden), so switching the detail page back on restores its content.
+      if (!card.hasDetailPage) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+        return;
+      }
 
       // 2. Detail page (title/slug mirrored from the card so they never drift)
       const plan = planProjectPhotos(card.imageUrl, detail);
@@ -260,15 +271,19 @@ export default function ProjectEditor() {
         </Link>
         <div className="flex-1 min-w-0">
           <h1 className="text-3xl font-julius text-primary-950 truncate">{card.title || "Project"}</h1>
-          <p className="text-gray-400 font-montserrat text-xs mt-1">/projects/{card.slug}</p>
+          <p className="text-gray-400 font-montserrat text-xs mt-1">
+            {card.hasDetailPage ? `/projects/${card.slug}` : "Map pin · homepage map only"}
+          </p>
         </div>
-        <Link
-          href={`/projects/preview/${id}`}
-          target="_blank"
-          className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 font-montserrat"
-        >
-          <ExternalLink size={12} /> Preview
-        </Link>
+        {card.hasDetailPage && (
+          <Link
+            href={`/projects/preview/${id}`}
+            target="_blank"
+            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 font-montserrat"
+          >
+            <ExternalLink size={12} /> Preview
+          </Link>
+        )}
         <label className="flex items-center gap-2 cursor-pointer select-none font-montserrat text-sm">
           <input
             type="checkbox"
@@ -285,31 +300,82 @@ export default function ProjectEditor() {
 
       {card.published && !card.imageUrl && (
         <p className="mb-6 text-sm text-amber-700 font-montserrat bg-amber-50 border border-amber-100 rounded-lg px-4 py-3">
-          This project is set to published but has no thumbnail, so its card on /projects will be blank. Add one below.
+          {card.hasDetailPage
+            ? "This project is set to published but has no thumbnail, so its card on /projects will be blank. Add one below."
+            : "This map pin is set to published but has no photo, so its map popup will show a placeholder. Add one below."}
+        </p>
+      )}
+      {card.published && !card.hasDetailPage && (!card.latitude.trim() || !card.longitude.trim()) && (
+        <p className="mb-6 text-sm text-amber-700 font-montserrat bg-amber-50 border border-amber-100 rounded-lg px-4 py-3">
+          This map pin has no coordinates, so it won&apos;t appear on the map. Add a latitude and longitude below.
         </p>
       )}
       {!card.published && (
         <p className="mb-6 text-sm text-gray-600 font-montserrat bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
-          Draft: hidden from the public site. Use Preview to check it, then switch to Published and save.
+          {card.hasDetailPage
+            ? "Draft: hidden from the public site. Use Preview to check it, then switch to Published and save."
+            : "Draft: this pin is hidden from the homepage map. Switch to Published and save to show it."}
         </p>
       )}
 
       <ProjectPhotosProvider
-        library={plan.library}
-        skipped={detail.skipPhotos ?? []}
-        usage={plan.usage}
+        {...(card.hasDetailPage
+          ? {
+              library: plan.library,
+              skipped: detail.skipPhotos ?? [],
+              usage: plan.usage,
+              onLibraryChange: (next: string[]) => setD("photos", next),
+              onSkippedChange: (next: string[]) => setD("skipPhotos", next),
+              onRemove: removePhoto,
+            }
+          : {
+              // Map pins have no photo library: the picker just offers the
+              // current photo, and a new upload becomes the pin's photo.
+              library: card.imageUrl ? [card.imageUrl] : [],
+              skipped: [],
+              usage: new Map<string, string[]>(),
+              onLibraryChange: (next: string[]) => setC("imageUrl", next[next.length - 1] ?? ""),
+              onSkippedChange: () => {},
+              onRemove: () => setC("imageUrl", ""),
+            })}
         folder={FOLDER}
-        onLibraryChange={(next) => setD("photos", next)}
-        onSkippedChange={(next) => setD("skipPhotos", next)}
-        onRemove={removePhoto}
       >
       <div className="space-y-6">
-        <PhotoLibrary />
+        {/* ── Page type ── */}
+        <AdminSection title="Page Type">
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { value: true, title: "Full project", text: "Detail page, /projects card and map pin with a “View project” link." },
+              { value: false, title: "Map pin", text: "Homepage map only: photo, title and city, with no link or detail page." },
+            ].map((o) => (
+              <button
+                key={o.title}
+                type="button"
+                onClick={() => setC("hasDetailPage", o.value)}
+                className={`rounded-lg border p-3 text-left font-montserrat transition-colors ${
+                  card.hasDetailPage === o.value ? "border-gray-800 bg-gray-50" : "border-gray-200 hover:border-gray-400"
+                }`}
+              >
+                <span className="block text-sm font-medium text-gray-800">{o.title}</span>
+                <span className="mt-0.5 block text-xs text-gray-500">{o.text}</span>
+              </button>
+            ))}
+          </div>
+          {!card.hasDetailPage && detail.id && (
+            <Hint>This project already has detail page content. It&apos;s kept, just hidden, and comes back if you switch to Full project.</Hint>
+          )}
+        </AdminSection>
+
+        {card.hasDetailPage && <PhotoLibrary />}
 
         {/* ── Listing card ── */}
         <AdminSection
-          title="Listing Card"
-          help="Shown on /projects, the homepage map and related projects. The thumbnail is also the hero image on the detail page."
+          title={card.hasDetailPage ? "Listing Card" : "Map Pin"}
+          help={
+            card.hasDetailPage
+              ? "Shown on /projects, the homepage map and related projects. The thumbnail is also the hero image on the detail page."
+              : "Shown in the pin's popup on the homepage map."
+          }
         >
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -331,149 +397,173 @@ export default function ProjectEditor() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <SelectField label="Sector" value={card.sector} options={PROJECT_SECTORS} onChange={(v) => setC("sector", v)} />
-              <SelectField label="Service" value={card.service} options={PROJECT_SERVICES} onChange={(v) => setC("service", v)} />
-              <TextField label="Year completed" value={card.year} onChange={(v) => setC("year", v.replace(/\D/g, "").slice(0, 4))} placeholder="2025" />
-            </div>
-            <Hint>Service drives the filter chips on /projects and the related projects. Service and city also form the &quot;At a glance&quot; line.</Hint>
+            {card.hasDetailPage && (
+              <>
+                <div>
+                  <ChipsField label="Services" options={PROJECT_SERVICES} values={card.services} onChange={(v) => setC("services", v)} />
+                  <Hint>
+                    {card.services.length ? <>Main service: <strong>{card.services[0]}</strong>. </> : null}
+                    The project appears under every service selected here on /projects. The first one you select is the main service, used first for related projects. To change it, deselect all and select the main one first.
+                  </Hint>
+                </div>
 
-            <div>
-              <ChipsField label="Categories" options={PROJECT_CATEGORIES} values={card.category} onChange={(v) => setC("category", v)} />
-              <Hint>The first category selected appears in the breadcrumb above the title.</Hint>
-            </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <SelectField label="Sector" value={card.sector} options={PROJECT_SECTORS} onChange={(v) => setC("sector", v)} />
+                  <TextField label="Year completed" value={card.year} onChange={(v) => setC("year", v.replace(/\D/g, "").slice(0, 4))} placeholder="2025" />
+                </div>
 
-            <ChipsField label="Roof systems" options={PROJECT_SYSTEMS} values={card.systems} onChange={(v) => setC("systems", v)} />
+                <div>
+                  <ChipsField label="Categories" options={PROJECT_CATEGORIES} values={card.category} onChange={(v) => setC("category", v)} />
+                  <Hint>The first category selected appears in the breadcrumb above the title.</Hint>
+                </div>
+
+                <ChipsField label="Roof systems" options={PROJECT_SYSTEMS} values={card.systems} onChange={(v) => setC("systems", v)} />
+              </>
+            )}
 
             <div className="grid grid-cols-3 gap-4">
               <TextField label="City / Area" value={card.city} onChange={(v) => setC("city", v)} placeholder="Vaughan" />
               <TextField label="Latitude" value={card.latitude} onChange={(v) => setC("latitude", v)} placeholder="43.84" />
               <TextField label="Longitude" value={card.longitude} onChange={(v) => setC("longitude", v)} placeholder="-79.50" />
             </div>
-            <Hint>Coordinates place a pin on the homepage map. Leave blank to keep the project off the map. For homes, a nearby intersection is safer than the exact address.</Hint>
+            <Hint>
+              {card.hasDetailPage
+                ? "Coordinates place a pin on the homepage map. Leave blank to keep the project off the map."
+                : "Coordinates are required for the pin to appear on the map."}{" "}
+              Tip: right-click a spot in Google Maps and click the coordinates to copy them. For homes, a nearby intersection is safer than the exact address.
+            </Hint>
 
-            <PhotoSlot label="Thumbnail / Hero image" value={card.imageUrl} onChange={(v) => setC("imageUrl", v)} hint="Shown on /projects and as the large photo at the top of the page." />
+            <PhotoSlot
+              label={card.hasDetailPage ? "Thumbnail / Hero image" : "Pin photo"}
+              value={card.imageUrl}
+              onChange={(v) => setC("imageUrl", v)}
+              hint={card.hasDetailPage ? "Shown on /projects and as the large photo at the top of the page." : "Shown in the map popup."}
+            />
           </div>
         </AdminSection>
 
-        {/* ── Hero + write-up ── */}
-        <AdminSection title="Hero" help="The title comes from the listing card.">
-          <div className="space-y-4">
-            <TextField label="Subtitle" value={detail.subtitle ?? ""} onChange={(v) => setD("subtitle", v)} placeholder="Luxury roofing & Passive House building envelope" />
-            <label className="flex items-center gap-2 text-sm font-montserrat text-gray-700">
-              <input type="checkbox" checked={!!detail.underConstruction} onChange={(e) => setD("underConstruction", e.target.checked)} />
-              Under construction (shows a tag in the hero)
-            </label>
-          </div>
-        </AdminSection>
+        {card.hasDetailPage && (
+          <>
+            {/* ── Hero + write-up ── */}
+            <AdminSection title="Hero" help="The title comes from the listing card.">
+              <div className="space-y-4">
+                <TextField label="Subtitle" value={detail.subtitle ?? ""} onChange={(v) => setD("subtitle", v)} placeholder="Luxury roofing & Passive House building envelope" />
+                <label className="flex items-center gap-2 text-sm font-montserrat text-gray-700">
+                  <input type="checkbox" checked={!!detail.underConstruction} onChange={(e) => setD("underConstruction", e.target.checked)} />
+                  Under construction (shows a tag in the hero)
+                </label>
+              </div>
+            </AdminSection>
 
-        <FactsField facts={detail.facts ?? []} onChange={(v) => setD("facts", v)} />
+            <FactsField facts={detail.facts ?? []} onChange={(v) => setD("facts", v)} />
 
-        <AdminSection title="Overview" help="Lead paragraph, then any further paragraphs.">
-          <div className="space-y-4">
-            <div>
-              <TextField label="Lead" rows={3} value={detail.blurb ?? ""} onChange={(v) => setD("blurb", v)} />
-              <Hint>The large first paragraph. Also used as the page&apos;s search description.</Hint>
-            </div>
-            <div>
-              <p className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">More paragraphs</p>
-              <StringListField rows={4} values={detail.overview ?? []} onChange={(v) => setD("overview", v)} addLabel="Add paragraph" />
-            </div>
-            <div>
-              <TextField label="Area" value={detail.area ?? ""} onChange={(v) => setD("area", v)} placeholder="48,000 sq ft" />
-              <Hint>Shown in the &quot;At a glance&quot; box between city and service.</Hint>
-            </div>
-            {(detail.scope || detail.challenge || detail.solution) && !detail.overview?.length && (
-              <Hint>This project still uses the old Scope / Challenge / What we did fields. They show as Overview paragraphs until you add paragraphs above.</Hint>
-            )}
-          </div>
-        </AdminSection>
-
-        <OverviewImagesField
-          slots={plan.overviewSlots}
-          overrides={detail.overviewImages}
-          resolved={plan.overview}
-          onChange={(v) => setD("overviewImages", v)}
-        />
-
-        {/* ── Systems installed ── */}
-        <ChecklistField
-          title="Scope of Work"
-          help='One group per trade or assembly, e.g. "Roofing" and "Architectural cladding". Empty items are removed on save.'
-          sections={detail.listSections ?? []}
-          onChange={(v) => setD("listSections", v)}
-          withTitles
-        />
-
-        <HighlightField value={detail.highlight} onChange={(v) => setD("highlight", v)} />
-
-        <ChaptersField chapters={detail.chapters ?? []} onChange={(v) => setD("chapters", v)} />
-
-        {/* ── On site gallery (automatic) ── */}
-        <AdminSection
-          title="On Site Gallery"
-          help="Filled automatically: every project photo not used anywhere else, in Project Photos order. To leave one out, use the eye button in Project Photos. The first photo is displayed tall."
-        >
-          {plan.onSite.length === 0 ? (
-            <Hint>No photos left over. The On site section is hidden until there are some.</Hint>
-          ) : (
-            <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
-              {plan.onSite.map((url) => (
-                <div key={url} className="relative aspect-4/3 overflow-hidden rounded bg-gray-100">
-                  <Image src={url} alt="" fill sizes="140px" className="object-cover" />
+            <AdminSection title="Overview" help="Lead paragraph, then any further paragraphs.">
+              <div className="space-y-4">
+                <div>
+                  <TextField label="Lead" rows={3} value={detail.blurb ?? ""} onChange={(v) => setD("blurb", v)} />
+                  <Hint>The large first paragraph. Also used as the page&apos;s search description.</Hint>
                 </div>
-              ))}
-            </div>
-          )}
-        </AdminSection>
-
-        {/* ── Sequence ── */}
-        <AdminSection title="Sequence" help="One photo per stage of the job. The section appears once any stage has a photo.">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {SEQUENCE_STAGES.map((stage, i) => (
-              <div key={stage} className="space-y-2">
-                <PhotoSlot label={`${i + 1}. ${stage}`} value={sequence[i]} onChange={(v) => setStage(i, v)} />
-                {sequence[i] && (
-                  <TextField
-                    label="Caption"
-                    value={detail.sequenceCaptions?.[i] ?? ""}
-                    onChange={(v) => {
-                      const next = Array.from({ length: SEQUENCE_STAGES.length }, (_, j) => detail.sequenceCaptions?.[j] ?? "");
-                      next[i] = v;
-                      setD("sequenceCaptions", next);
-                    }}
-                  />
+                <div>
+                  <p className="block text-sm font-medium text-gray-700 mb-1 font-montserrat">More paragraphs</p>
+                  <StringListField rows={4} values={detail.overview ?? []} onChange={(v) => setD("overview", v)} addLabel="Add paragraph" />
+                </div>
+                <div>
+                  <TextField label="Area" value={detail.area ?? ""} onChange={(v) => setD("area", v)} placeholder="48,000 sq ft" />
+                  <Hint>Shown in the &quot;At a glance&quot; box between city and service.</Hint>
+                </div>
+                {(detail.scope || detail.challenge || detail.solution) && !detail.overview?.length && (
+                  <Hint>This project still uses the old Scope / Challenge / What we did fields. They show as Overview paragraphs until you add paragraphs above.</Hint>
                 )}
               </div>
-            ))}
-          </div>
-          {sequenceHasGap && (
-            <p className="text-xs text-amber-600 font-montserrat mt-3">
-              Some stages are empty. On save, the later photos move up to fill the gaps, so stage names may not match. Fill the stages in order to avoid this.
-            </p>
-          )}
-        </AdminSection>
+            </AdminSection>
 
-        {/* ── Drone ── */}
-        <AdminSection title="Drone Walkthrough" help="The section only appears when a poster image is set.">
-          <div className="space-y-4">
-            <PhotoSlot label="Poster image" value={detail.droneImageUrl} onChange={(v) => setD("droneImageUrl", v || null)} />
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <TextField
-                  label="YouTube video"
-                  value={detail.droneVideoId ?? ""}
-                  onChange={(v) => setD("droneVideoId", v)}
-                  placeholder="Paste a YouTube link or video ID"
-                />
-                <Hint>Full links are converted to the video ID on save.</Hint>
+            <OverviewImagesField
+              slots={plan.overviewSlots}
+              overrides={detail.overviewImages}
+              resolved={plan.overview}
+              onChange={(v) => setD("overviewImages", v)}
+            />
+
+            {/* ── Systems installed ── */}
+            <ChecklistField
+              title="Scope of Work"
+              help='One group per trade or assembly, e.g. "Roofing" and "Architectural cladding". Empty items are removed on save.'
+              sections={detail.listSections ?? []}
+              onChange={(v) => setD("listSections", v)}
+              withTitles
+            />
+
+            <HighlightField value={detail.highlight} onChange={(v) => setD("highlight", v)} />
+
+            <ChaptersField chapters={detail.chapters ?? []} onChange={(v) => setD("chapters", v)} />
+
+            {/* ── On site gallery (automatic) ── */}
+            <AdminSection
+              title="On Site Gallery"
+              help="Filled automatically: every project photo not used anywhere else, in Project Photos order. To leave one out, use the eye button in Project Photos. The first photo is displayed tall."
+            >
+              {plan.onSite.length === 0 ? (
+                <Hint>No photos left over. The On site section is hidden until there are some.</Hint>
+              ) : (
+                <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+                  {plan.onSite.map((url) => (
+                    <div key={url} className="relative aspect-4/3 overflow-hidden rounded bg-gray-100">
+                      <Image src={url} alt="" fill sizes="140px" className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </AdminSection>
+
+            {/* ── Sequence ── */}
+            <AdminSection title="Sequence" help="One photo per stage of the job. The section appears once any stage has a photo.">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {SEQUENCE_STAGES.map((stage, i) => (
+                  <div key={stage} className="space-y-2">
+                    <PhotoSlot label={`${i + 1}. ${stage}`} value={sequence[i]} onChange={(v) => setStage(i, v)} />
+                    {sequence[i] && (
+                      <TextField
+                        label="Caption"
+                        value={detail.sequenceCaptions?.[i] ?? ""}
+                        onChange={(v) => {
+                          const next = Array.from({ length: SEQUENCE_STAGES.length }, (_, j) => detail.sequenceCaptions?.[j] ?? "");
+                          next[i] = v;
+                          setD("sequenceCaptions", next);
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
-              <TextField label="Duration" value={detail.droneDuration ?? ""} onChange={(v) => setD("droneDuration", v)} placeholder="2:14" />
-            </div>
-          </div>
-        </AdminSection>
+              {sequenceHasGap && (
+                <p className="text-xs text-amber-600 font-montserrat mt-3">
+                  Some stages are empty. On save, the later photos move up to fill the gaps, so stage names may not match. Fill the stages in order to avoid this.
+                </p>
+              )}
+            </AdminSection>
 
-        <FeatureVideoField value={detail.video} onChange={(v) => setD("video", v)} />
+            {/* ── Drone ── */}
+            <AdminSection title="Drone Walkthrough" help="The section only appears when a poster image is set.">
+              <div className="space-y-4">
+                <PhotoSlot label="Poster image" value={detail.droneImageUrl} onChange={(v) => setD("droneImageUrl", v || null)} />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <TextField
+                      label="YouTube video"
+                      value={detail.droneVideoId ?? ""}
+                      onChange={(v) => setD("droneVideoId", v)}
+                      placeholder="Paste a YouTube link or video ID"
+                    />
+                    <Hint>Full links are converted to the video ID on save.</Hint>
+                  </div>
+                  <TextField label="Duration" value={detail.droneDuration ?? ""} onChange={(v) => setD("droneDuration", v)} placeholder="2:14" />
+                </div>
+              </div>
+            </AdminSection>
+
+            <FeatureVideoField value={detail.video} onChange={(v) => setD("video", v)} />
+          </>
+        )}
 
         {error && (
           <p className="text-sm text-red-600 font-montserrat bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>
