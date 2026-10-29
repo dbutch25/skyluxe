@@ -10,8 +10,11 @@
  * "components created during render" bug.
  */
 
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import ImageUpload from "@/components/admin/ImageUpload";
-import { Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Plus, Trash2, Upload } from "lucide-react";
+import { uploadPhotos, type UploadProgress } from "@/lib/photo-upload";
 
 export interface ImageItem {
   url: string;
@@ -121,70 +124,146 @@ export function ImageField({
 
 // ─── Gallery of {url, alt} items ──────────────────────────────────────────────
 
+/**
+ * Gallery editor with bulk upload: drop or select many photos at once. Photos
+ * are resized and stripped of location data in the browser, then uploaded
+ * straight to Cloudflare (see lib/photo-upload.ts).
+ */
 export function GalleryField({
   title,
   items,
   onChange,
   folder,
   help,
+  withAlt = true,
 }: {
   title: string;
   items: ImageItem[];
   onChange: (next: ImageItem[]) => void;
   folder: string;
   help?: string;
+  /** Show an alt-text box per image. Off where the database only stores URLs. */
+  withAlt?: boolean;
 }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const [progress, setProgress] = useState<UploadProgress | null>(null);
+  // Uploads finish after other edits may have happened; append to the latest list.
+  const itemsRef = useRef(items);
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
+  const uploading = !!progress && progress.done < progress.total;
+
+  const upload = async (files: File[]) => {
+    if (!files.length || uploading) return;
+    try {
+      const urls = await uploadPhotos(files, { folder, onProgress: setProgress });
+      if (urls.length) onChange([...itemsRef.current, ...urls.map((url) => ({ url, alt: "" }))]);
+    } catch (err) {
+      setProgress({ done: files.length, total: files.length, failed: [err instanceof Error ? err.message : "Upload failed"] });
+    }
+  };
+
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= items.length) return;
+    const next = [...items];
+    [next[i], next[j]] = [next[j], next[i]];
+    onChange(next);
+  };
+
   return (
-    <AdminSection
-      title={title}
-      help={help}
-      action={
-        <button
-          onClick={() => onChange([...items, { url: "", alt: "" }])}
-          className="flex items-center gap-1 text-xs text-secondary-700 hover:text-secondary-900 font-montserrat"
+    <AdminSection title={title} help={help}>
+      <div className="space-y-4">
+        <div
+          onClick={() => !uploading && inputRef.current?.click()}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragging(true);
+          }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragging(false);
+            upload(Array.from(e.dataTransfer.files));
+          }}
+          className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors ${
+            dragging ? "border-secondary-500 bg-secondary-50" : "border-gray-300 bg-white hover:border-gray-400"
+          } ${uploading ? "cursor-wait opacity-70" : ""}`}
         >
-          <Plus size={14} /> Add Image
-        </button>
-      }
-    >
-      {items.length === 0 && (
-        <p className="text-sm text-gray-400 font-montserrat py-4 text-center border border-dashed rounded-lg">
-          No images yet — click “Add Image” to upload.
-        </p>
-      )}
-      <div className="space-y-3">
-        {items.map((img, i) => (
-          <div key={i} className="border rounded-lg p-4">
-            <ImageUpload
-              value={img.url}
-              onChange={(v) =>
-                onChange(items.map((x, idx) => (idx === i ? { ...x, url: v } : x)))
-              }
-              folder={folder}
-            />
-            <div className="mt-2 flex items-center gap-2">
-              <input
-                value={img.alt}
-                onChange={(e) =>
-                  onChange(
-                    items.map((x, idx) =>
-                      idx === i ? { ...x, alt: e.target.value } : x
-                    )
-                  )
-                }
-                placeholder="Alt text"
-                className="flex-1 px-3 py-1.5 border rounded text-sm font-montserrat"
-              />
-              <button
-                onClick={() => onChange(items.filter((_, idx) => idx !== i))}
-                className="text-red-400 hover:text-red-600"
-                aria-label="Remove image"
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
+          <Upload size={18} className="mb-1.5 text-gray-400" />
+          <p className="font-montserrat text-sm text-gray-700">Drop images here, or click to choose. Select as many as you like.</p>
+          <input
+            ref={inputRef}
+            type="file"
+            multiple
+            accept="image/*,.heic,.heif"
+            className="hidden"
+            onChange={(e) => {
+              upload(Array.from(e.target.files ?? []));
+              e.target.value = "";
+            }}
+          />
+        </div>
+
+        {progress && progress.total > 0 && (
+          <div className="space-y-1 font-montserrat text-xs">
+            <p className={uploading ? "text-gray-600" : "text-green-700"}>
+              {uploading ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Loader2 size={12} className="animate-spin" /> Uploading {progress.done} of {progress.total}…
+                </span>
+              ) : (
+                `Uploaded ${progress.total - progress.failed.length} of ${progress.total}. Remember to save.`
+              )}
+            </p>
+            {progress.failed.length > 0 && <p className="text-red-600">Couldn&apos;t upload: {progress.failed.join(", ")}</p>}
           </div>
-        ))}
+        )}
+
+        {items.length === 0 ? (
+          <p className="text-sm text-gray-400 font-montserrat text-center">No images yet.</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+            {items.map((img, i) => (
+              <div key={`${img.url}-${i}`} className="rounded-lg border border-gray-200 bg-white p-1.5">
+                <div className="relative aspect-4/3 overflow-hidden rounded bg-gray-100">
+                  {img.url ? (
+                    <Image src={img.url} alt={img.alt} fill sizes="200px" className="object-cover" />
+                  ) : (
+                    <span className="absolute inset-0 flex items-center justify-center text-xs text-gray-400 font-montserrat">Empty</span>
+                  )}
+                  <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-0.5 font-montserrat text-[10px] text-white">{i + 1}</span>
+                </div>
+                {withAlt && (
+                  <input
+                    value={img.alt}
+                    onChange={(e) => onChange(items.map((x, idx) => (idx === i ? { ...x, alt: e.target.value } : x)))}
+                    placeholder="Alt text"
+                    className="mt-1.5 w-full px-2 py-1 border rounded text-xs font-montserrat"
+                  />
+                )}
+                <div className="mt-1 flex items-center gap-1 text-gray-400">
+                  <button type="button" onClick={() => move(i, -1)} aria-label="Move earlier" className="hover:text-gray-700">
+                    <ChevronLeft size={14} />
+                  </button>
+                  <button type="button" onClick={() => move(i, 1)} aria-label="Move later" className="hover:text-gray-700">
+                    <ChevronRight size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onChange(items.filter((_, idx) => idx !== i))}
+                    aria-label="Remove image"
+                    className="ml-auto text-red-400 hover:text-red-600"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </AdminSection>
   );

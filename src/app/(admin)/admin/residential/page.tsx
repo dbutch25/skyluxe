@@ -38,22 +38,41 @@ export default function ResidentialAdminPage() {
       });
   }, []);
 
+  const [error, setError] = useState("");
+
   const set = (key: string, val: unknown) => setForm((f) => ({ ...f, [key]: val }));
 
   const save = async () => {
     setSaving(true);
-    await fetch("/api/cms/residential", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setError("");
+    try {
+      const res = await fetch("/api/cms/residential", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Save failed. Nothing was changed; try again.");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const str = (k: string) => (form[k] as string) ?? "";
   const gallery = (k: string) => (form[k] as ImageItem[]) ?? [];
+
+  // The system galleries are stored as plain lists of image URLs, while the
+  // gallery editor works with { url, alt } items. Convert both ways.
+  const urlGallery = (k: string): ImageItem[] =>
+    ((form[k] as unknown[]) ?? [])
+      .map((x) => (typeof x === "string" ? x : (x as ImageItem)?.url ?? ""))
+      .filter(Boolean)
+      .map((url) => ({ url, alt: "" }));
+  const setUrlGallery = (k: string, items: ImageItem[]) =>
+    set(k, items.map((i) => i.url).filter(Boolean));
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -85,9 +104,11 @@ export default function ResidentialAdminPage() {
         <GalleryField
           key={field}
           title={`${label} — Gallery`}
-          items={gallery(field)}
-          onChange={(v) => set(field, v)}
+          items={urlGallery(field)}
+          onChange={(v) => setUrlGallery(field, v)}
           folder={FOLDER}
+          withAlt={false}
+          help="Shown as a slider on the page; visitors can click a photo to view it full screen."
         />
       ))}
 
@@ -105,6 +126,10 @@ export default function ResidentialAdminPage() {
         open={showJson}
         onToggle={() => setShowJson((v) => !v)}
       />
+
+      {error && (
+        <p className="text-sm text-red-600 font-montserrat bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>
+      )}
 
       <SaveBar saving={saving} saved={saved} onSave={save} />
     </div>

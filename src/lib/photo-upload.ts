@@ -6,6 +6,8 @@
  *   - the longest edge is capped at 3200px, which keeps files well under
  *     Cloudflare's 10 MB limit while staying sharp on large screens.
  * Files then go directly to Cloudflare through one-time upload URLs.
+ *
+ * Images with transparency (logos) are uploaded unchanged so they keep it.
  */
 
 const MAX_EDGE = 3200;
@@ -13,11 +15,30 @@ const JPEG_QUALITY = 0.88;
 const CONCURRENCY = 4;
 const URL_BATCH = 50; // matches the API route's limit
 
+/** True when any pixel is see-through. Checked on a small copy, so it's quick. */
+function hasTransparency(bitmap: ImageBitmap): boolean {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return false;
+  ctx.drawImage(bitmap, 0, 0, size, size);
+  const { data } = ctx.getImageData(0, 0, size, size);
+  for (let i = 3; i < data.length; i += 4) if (data[i] < 255) return true;
+  return false;
+}
+
 /** Re-encodes a photo without metadata. Falls back to the original file if the browser can't decode it (e.g. HEIC outside Safari). */
 export async function preparePhoto(file: File): Promise<Blob> {
   if (file.type === "image/svg+xml" || file.type === "image/gif") return file;
   try {
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    // Logos and cut-outs: JPEG would turn the transparent areas black.
+    if ((file.type === "image/png" || file.type === "image/webp") && hasTransparency(bitmap)) {
+      bitmap.close();
+      return file;
+    }
     const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(bitmap.width * scale);

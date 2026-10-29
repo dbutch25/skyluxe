@@ -5,6 +5,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { Marquee } from "@/components/elements/Marquee";
 import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
+import GallerySlider from "@/components/elements/GallerySlider";
 import { fetchResidentialData } from "@/lib/data";
 import { BRAND_CONTACT } from "@/constants/brand";
 import { images } from "@/constants";
@@ -28,31 +29,15 @@ const SYSTEMS = [
   { id: "skylights", label: "Skylights", num: "08" },
 ];
 
-// ─── Small image grid shown per system when no CMS gallery available ──────────
+// ─── Per-system gallery: slider, click to view full screen ──────────────────
 function SystemImageGrid({ urls, alts }: { urls: string[]; alts?: string[] }) {
   if (!urls.length) return null;
   return (
-    <div
-      className={`grid gap-3 ${
-        urls.length === 1
-          ? "grid-cols-1"
-          : urls.length === 2
-          ? "grid-cols-2"
-          : "grid-cols-2 sm:grid-cols-3"
-      }`}
-    >
-      {urls.slice(0, 6).map((url, i) => (
-        <div key={i} className="relative overflow-hidden aspect-4/3">
-          <Image
-            src={url}
-            alt={alts?.[i] ?? `Skyluxe residential roofing project ${i + 1}`}
-            fill
-            className="object-cover hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 640px) 50vw, 33vw"
-          />
-        </div>
-      ))}
-    </div>
+    <GallerySlider
+      images={urls.map((url, i) => ({ url, alt: alts?.[i] ?? `Skyluxe residential roofing project ${i + 1}` }))}
+      sizes="(max-width: 1024px) 100vw, 50vw"
+      label="Residential roofing photos"
+    />
   );
 }
 

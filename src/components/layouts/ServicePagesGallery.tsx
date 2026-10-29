@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import { safeImageUrl } from '@/lib/utils';
+import GallerySlider from '@/components/elements/GallerySlider';
 import Link from 'next/link';
 import { FaArrowRight } from 'react-icons/fa';
 
@@ -12,22 +11,17 @@ interface ServicePagesGalleryProps {
     images: GalleryImage[];
 }
 
+
 export default function ServicePagesGallery({ images }: ServicePagesGalleryProps) {
     return (
         <div className="container py-20 mx-auto text-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {images.map((image, index) => (
-                    <div key={index} className="relative w-full h-96">
-                        <Image
-                            src={safeImageUrl(image.url)}
-                            alt={image.alt ?? ""}
-                            fill
-                            className="rounded-lg object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                    </div>
-                ))}
-            </div>
+            {/* One image at a time; click to view full screen */}
+            <GallerySlider
+                images={images}
+                aspect="aspect-4/3 sm:aspect-video"
+                sizes="(max-width: 1280px) 100vw, 1200px"
+                className="mx-auto max-w-5xl rounded-lg"
+            />
 
             <div className="pt-2.5 flex justify-end">
                 <Link href="/projects" className="flex items-center pt-2.5 font-julius gap-3 text-lg text-secondary-900 hover:text-teal-800">
