@@ -7,6 +7,13 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import {
+  categoryLabel,
+  DEFAULT_SERVICES,
+  SERVICE_CATEGORIES,
+  serviceImage,
+  servicePoints,
+} from "@/lib/service-defaults";
 import Link from "next/link";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { Plus, Trash2, Pencil, X, ArrowUp, ArrowDown, ExternalLink } from "lucide-react";
@@ -23,14 +30,6 @@ interface Service {
   order: number;
 }
 
-const CATEGORIES = [
-  { value: "ICI-roofing", label: "ICI Roofing" },
-  { value: "residential-roofing", label: "Residential Roofing" },
-  { value: "architectural-cladding", label: "Architectural Cladding" },
-  { value: "waterproofing", label: "Waterproofing" },
-  { value: "repairs", label: "Repairs & Maintenance" },
-  { value: "restoration", label: "Restoration" },
-];
 
 const MAX_POINTS = 8;
 const MAX_DESCRIPTION = 1000;
@@ -46,8 +45,6 @@ const empty: Omit<Service, "id"> = {
   order: 0,
 };
 
-const categoryLabel = (value: string) =>
-  CATEGORIES.find((c) => c.value === value)?.label ?? value.replace(/-/g, " ");
 
 export default function ServicesAdminPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -56,6 +53,7 @@ export default function ServicesAdminPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reordering, setReordering] = useState(false);
+  const [seeding, setSeeding] = useState(false);
 
   const load = () =>
     fetch("/api/cms/services")
@@ -119,6 +117,32 @@ export default function ServicesAdminPage() {
       setSaved(false);
       setEditing(null);
     }, 1000);
+  };
+
+  /** Saves the built-in defaults as real services so they can be edited. */
+  const addDefaults = async () => {
+    setSeeding(true);
+    try {
+      for (const [i, d] of DEFAULT_SERVICES.entries()) {
+        await fetch("/api/cms/services", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: d.title,
+            description: d.description,
+            serviceLink: d.serviceLink,
+            requestLink: d.requestLink,
+            mainImageUrl: "",
+            category: d.category,
+            points: servicePoints(d).points,
+            order: i,
+          }),
+        });
+      }
+      await load();
+    } finally {
+      setSeeding(false);
+    }
   };
 
   const del = async (id: string) => {
@@ -194,12 +218,12 @@ export default function ServicesAdminPage() {
               {String(i + 1).padStart(2, "0")}
             </span>
 
+            {/* The photo the homepage actually shows (own, or the category default) */}
             <div className="relative w-24 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
-              {s.mainImageUrl ? (
-                <Image src={s.mainImageUrl} alt={s.title} fill className="object-cover" sizes="96px" />
-              ) : (
-                <span className="absolute inset-0 flex items-center justify-center text-[10px] text-gray-400 font-montserrat text-center px-1">
-                  Default image
+              <Image src={serviceImage(s).url} alt={s.title} fill className="object-cover" sizes="96px" />
+              {serviceImage(s).isDefault && (
+                <span className="absolute bottom-0 inset-x-0 bg-black/55 text-[9px] text-white font-montserrat text-center py-0.5">
+                  Default photo
                 </span>
               )}
             </div>
@@ -212,7 +236,9 @@ export default function ServicesAdminPage() {
                   {categoryLabel(s.category)}
                 </span>
                 <span className="text-xs text-gray-400 font-montserrat">
-                  {s.points.length} bullet point{s.points.length === 1 ? "" : "s"}
+                  {servicePoints(s).points.length}
+                  {servicePoints(s).isDefault ? " default" : ""} bullet point
+                  {servicePoints(s).points.length === 1 ? "" : "s"}
                 </span>
               </div>
             </div>
@@ -253,9 +279,21 @@ export default function ServicesAdminPage() {
         ))}
 
         {services.length === 0 && (
-          <p className="text-sm text-gray-400 font-montserrat bg-white rounded-xl border border-dashed border-gray-200 p-8 text-center">
-            No services yet. The homepage is showing its built-in default services until you add one.
-          </p>
+          <div className="bg-white rounded-xl border border-dashed border-gray-200 p-8 text-center font-montserrat">
+            <p className="text-sm text-gray-500">
+              No services saved yet, so the homepage is showing its {DEFAULT_SERVICES.length} built-in default services.
+            </p>
+            <p className="mt-1 text-xs text-gray-400">
+              Add them here to edit them. Adding even one service replaces all the defaults on the homepage.
+            </p>
+            <button
+              onClick={addDefaults}
+              disabled={seeding}
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-gray-800 text-white rounded-lg text-sm hover:bg-primary-800 transition-colors disabled:opacity-50"
+            >
+              <Plus size={16} /> {seeding ? "Adding…" : `Add the ${DEFAULT_SERVICES.length} default services`}
+            </button>
+          </div>
         )}
       </div>
 
@@ -290,7 +328,7 @@ export default function ServicesAdminPage() {
                     onChange={(e) => setEditing((v) => ({ ...v, category: e.target.value }))}
                     className="w-full px-3 py-2 border rounded-lg text-sm font-montserrat"
                   >
-                    {CATEGORIES.map((c) => (
+                    {SERVICE_CATEGORIES.map((c) => (
                       <option key={c.value} value={c.value}>
                         {c.label}
                       </option>
@@ -329,6 +367,22 @@ export default function ServicesAdminPage() {
                 <p className="text-xs text-gray-400 font-montserrat mb-2">
                   Short highlights shown under the description. Leave empty to use the default list for the category.
                 </p>
+                {points.length === 0 && (
+                  <div className="mb-2 rounded-lg bg-gray-50 border border-gray-100 px-3 py-2">
+                    <p className="text-xs text-gray-500 font-montserrat mb-1">The homepage will show these defaults:</p>
+                    <ul className="list-disc pl-4 text-xs text-gray-500 font-montserrat space-y-0.5">
+                      {servicePoints({ points: [], category: editing.category ?? "ICI-roofing" }).points.map((p) => (
+                        <li key={p}>{p}</li>
+                      ))}
+                    </ul>
+                    <button
+                      onClick={() => setPoints([...servicePoints({ points: [], category: editing.category ?? "ICI-roofing" }).points])}
+                      className="mt-2 text-xs text-secondary-700 hover:text-secondary-900 font-montserrat"
+                    >
+                      Edit these
+                    </button>
+                  </div>
+                )}
                 <div className="space-y-2">
                   {points.map((point, i) => (
                     <div key={i} className="flex items-center gap-2">

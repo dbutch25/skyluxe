@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/session";
 import { ServiceCarouselSchema } from "@/lib/schemas";
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Validation failed", details: parsed.error.flatten() }, { status: 400 });
     }
     const data = await db.serviceCarousel.create({ data: parsed.data });
+    revalidateTag("services", { expire: 0 }); // homepage shows changes straight away
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

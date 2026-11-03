@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/session";
 import { ServiceCarouselSchema } from "@/lib/schemas";
@@ -22,6 +23,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       return NextResponse.json({ error: "Validation failed", details: parsed.error.flatten() }, { status: 400 });
     }
     const data = await db.serviceCarousel.update({ where: { id }, data: parsed.data });
+    revalidateTag("services", { expire: 0 }); // homepage shows changes straight away
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")
@@ -35,6 +37,7 @@ export async function DELETE(_: NextRequest, { params }: Params) {
     await requireAuth();
     const { id } = await params;
     await db.serviceCarousel.delete({ where: { id } });
+    revalidateTag("services", { expire: 0 }); // homepage shows changes straight away
     return NextResponse.json({ success: true });
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

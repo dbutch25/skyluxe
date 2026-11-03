@@ -4,135 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { images } from "@/constants";
+import { categoryLabel, DEFAULT_SERVICES, serviceImage, servicePoints } from "@/lib/service-defaults";
 import type { Service } from "@/types";
 
 interface Props {
   services: Service[];
 }
-
-// ─── Fallback data ─────────────────────────────────────────────────────────────
-
-const FALLBACK_SERVICES: Service[] = [
-  {
-    id: "1",
-    title: "ICI Roofing",
-    description:
-      "Skyluxe is a full-service ICI roofing contractor serving property managers, institutions, general contractors, and building owners across the GTA. We specialize in roof replacements, new construction, and maintenance, delivering every project within budget.",
-    serviceLink: "/ICI",
-    requestLink: "/quote",
-    mainImageUrl: "",
-    category: "ICI-roofing",
-    order: 0,
-  },
-  {
-    id: "2",
-    title: "Residential Roofing",
-    description:
-      "Your home deserves the same level of care we bring to our largest commercial projects. We install and replace all major residential roofing systems, from architectural shingles and natural slate to standing seam metal, backed by our GAF Golden Pledge warranty.",
-    serviceLink: "/residential-roofing",
-    requestLink: "/quote",
-    mainImageUrl: "",
-    category: "residential-roofing",
-    order: 1,
-  },
-  {
-    id: "3",
-    title: "Architectural Cladding",
-    description:
-      "Transform your building envelope with custom cladding systems. Skyluxe designs and installs ACM panels, zinc, copper, and standing seam facades trusted by architects and developers across the GTA, we combine striking aesthetics with superior weather performance.",
-    serviceLink: "/architectural-cladding",
-    requestLink: "/quote",
-    mainImageUrl: "",
-    category: "architectural-cladding",
-    order: 2,
-  },
-  {
-    id: "4",
-    title: "Waterproofing",
-    description:
-      "Water intrusion is one of the most damaging issues a building can face. Our waterproofing division handles everything from below-grade foundation systems and blindside applications to plaza decks, parkade coatings, and complete building envelope restoration.",
-    serviceLink: "/waterproofing",
-    requestLink: "/quote",
-    mainImageUrl: "",
-    category: "waterproofing",
-    order: 3,
-  },
-  {
-    id: "5",
-    title: "Repairs & Maintenance",
-    description:
-      "Don't wait for a small leak to become a major problem. Skyluxe offers 24/7 emergency repair response alongside comprehensive preventative maintenance programs. Our certified technicians diagnose issues fast using infrared moisture testing and restore your roof to peak performance.",
-    serviceLink: "/repairs",
-    requestLink: "/quote",
-    mainImageUrl: "",
-    category: "repairs",
-    order: 4,
-  },
-   {
-    id: "6",
-    title: "Restoration",
-    description:
-      "Mortar erodes, sealants fail, and flashings corrode when left unaddressed, minor weathering becomes major structural damage. Our restoration division delivers complete building envelope restoration, from masonry repointing and caulking replacement to facade cleaning and coating systems, on everything from heritage churches to modern curtain wall towers.",
-    serviceLink: "/restoration",
-    requestLink: "/quote",
-    mainImageUrl: "",
-    category: "restoration",
-    order: 5,
-  },
-];
-
-// ─── Fallback key points per service (used when a service has none in the CMS) ─
-
-const SERVICE_POINTS: Record<string, string[]> = {
-  "ICI-roofing": [
-    "SBS, TPO, EPDM & BUR systems",
-    "New construction & reroof replacement",
-    "GAF Master Elite certified",
-    "Project management from assessment to handover",
-  ],
-  "residential-roofing": [
-    "Architectural shingles, slate & metal",
-    "GAF Golden Pledge warranty available",
-    "Custom flat roof systems",
-    "Full site cleanup & final walkthrough",
-  ],
-  "architectural-cladding": [
-    "ACM composite panels & standing seam",
-    "Zinc, copper & custom metal facades",
-    "Rainscreen & concealed fastener systems",
-    "Works directly with architects & GCs",
-  ],
-  "waterproofing": [
-    "Below-grade foundation systems",
-    "Plaza decks & parkade coatings",
-    "Building envelope restoration",
-    "Blindside waterproofing specialists",
-  ],
-  "repairs": [
-    "24/7 emergency leak response",
-    "Infrared moisture detection",
-    "All major roofing systems serviced",
-    "Semi-annual preventative programs",
-  ],
-  "restoration": [
-    "Masonry repair & repointing",
-    "Caulking & sealant replacement",
-    "Facade cleaning & coating systems",
-    "Heritage & modern buildings",
-  ],
-};
-
-// ─── Fallback image per category ─────────────────────────────────────────────
-
-const CATEGORY_IMAGES: Record<string, string> = {
-  "ICI-roofing": images.serviceHero,
-  "residential-roofing": images.homeImage,
-  "architectural-cladding": images.about2,
-  "waterproofing": images.about1,
-  "repairs": images.knudson1,
-  "restoration": images.about2,
-};
 
 // ─── SVG icon per category ────────────────────────────────────────────────────
 
@@ -213,19 +90,9 @@ function ServiceRow({
   const [visible, setVisible] = useState(false);
   const isEven = index % 2 === 0;
 
-  // Image: use the real one if available, else fallback per category
-  const hasRealImage =
-    service.mainImageUrl &&
-    !service.mainImageUrl.includes("placeholder");
-  const imageUrl = hasRealImage
-    ? service.mainImageUrl
-    : CATEGORY_IMAGES[service.category] ?? images.serviceHero;
-
-  // Points from the CMS; the hardcoded list is only a fallback
-  const points =
-    service.points && service.points.length > 0
-      ? service.points
-      : SERVICE_POINTS[service.category] ?? [];
+  // Image and bullets: the service's own, or the defaults for its category
+  const imageUrl = serviceImage(service).url;
+  const { points } = servicePoints(service);
   const serviceNumber = String(index + 1).padStart(2, "0");
 
   useEffect(() => {
@@ -295,7 +162,7 @@ function ServiceRow({
             className={`absolute top-6 ${isEven ? "left-6" : "right-6"}`}
           >
             <span className="bg-secondary-800/90 text-white font-montserrat text-xs uppercase tracking-widest px-3 py-1.5">
-              {service.category.replace(/-/g, " ")}
+              {categoryLabel(service.category)}
             </span>
           </div>
         </div>
@@ -450,7 +317,7 @@ function countLabel(n: number): string {
 export default function ServicesGrid({ services }: Props) {
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerVisible, setHeaderVisible] = useState(false);
-  const displayServices = services.length > 0 ? services : FALLBACK_SERVICES;
+  const displayServices = services.length > 0 ? services : DEFAULT_SERVICES;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
