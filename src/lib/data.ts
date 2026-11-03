@@ -23,6 +23,7 @@
 
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
+import { buildNavServices, type NavMenuContent, type NavService } from "@/lib/nav-menu";
 import type {
   HomeVideo,
   RestorationPage,
@@ -91,6 +92,14 @@ export const getServiceCarouselData = cachedRead<Service[]>(
 );
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+/** Services dropdown content for the header (saved in Admin → Navigation). */
+export const fetchNavServices = cachedRead<NavService[]>("nav-menu", async () => {
+  const row = await db.navMenu.findFirst();
+  return buildNavServices((row?.services as NavMenuContent | undefined) ?? null);
+});
 
 /** Published projects with a detail page: the /projects grid and related projects. */
 export const fetchProjects = cachedRead<Project[]>(

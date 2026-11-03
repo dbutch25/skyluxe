@@ -108,7 +108,10 @@ export async function uploadPhotos(
         body.append("file", prepared, name);
         const res = await fetch(targets[i].uploadURL, { method: "POST", body });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        results[i] = targets[i].url;
+        // Use the delivery address Cloudflare reports for the uploaded image.
+        const data = await res.json().catch(() => null);
+        const variants: string[] = data?.result?.variants ?? [];
+        results[i] = variants.find((v) => v.endsWith("/public")) ?? variants[0] ?? targets[i].url;
       } catch {
         progress.failed.push(file.name);
       }

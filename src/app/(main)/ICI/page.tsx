@@ -230,7 +230,7 @@ export default async function ICIPage() {
             </div>
             <h2 className="font-julius text-primary-950 text-2xl mb-8">ICI Projects Across the GTA</h2>
           </div>
-          <ServicePagesGallery images={galleryImages}/>
+          <ServicePagesGallery images={galleryImages} layout="masonry"/>
         </section>
       )}
 

@@ -366,3 +366,10 @@ model CharitySpotlight {
   donateLink   String?
   updatedAt    DateTime @updatedAt
 }
+
+// Services dropdown in the main navigation (one row). See src/lib/nav-menu.ts.
+model NavMenu {
+  id        String   @id @default(cuid())
+  services  Json     // { [serviceId]: { description, items: [{ title, imageUrl, href, materials }] } }
+  updatedAt DateTime @updatedAt
+}

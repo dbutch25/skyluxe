@@ -17,6 +17,7 @@ import {
   Briefcase,
   Newspaper,
   HeartHandshake,
+  Menu,
   LogOut,
 } from "lucide-react";
 
@@ -24,6 +25,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/home", label: "Home Page", icon: Home },
   { href: "/admin/services", label: "Homepage Services", icon: Layers },
+  { href: "/admin/navigation", label: "Navigation", icon: Menu },
   { href: "/admin/projects", label: "Projects", icon: FolderOpen },
   { href: "/admin/repairs", label: "Repairs", icon: Wrench },
   { href: "/admin/waterproofing", label: "Waterproofing", icon: Droplets },

@@ -8,132 +8,10 @@ import { FaAlignJustify, FaEnvelope, FaPhone } from "react-icons/fa";
 import { FaX, FaArrowRight } from "react-icons/fa6";
 import { images } from "@/constants";
 import { safeImageUrl } from "@/lib/utils";
+import { NAV_MATERIALS_PER_ITEM, type NavItem, type NavService } from "@/lib/nav-menu";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
-// Replace imageUrl values with real Cloudinary URLs once projects are in the CMS
-
-const SERVICES = [
-  {
-    id: "ici",
-    label: "ICI Roofing",
-    href: "/ICI",
-    description: "Industrial, commercial & institutional roofing systems",
-    projects: [
-      {
-        title: "Commercial Flat Roof",
-        slug: "commercial-flat-roof",
-        imageUrl: "/images/serviceHero.jpg",
-        materials: ["SBS Modified Bitumen", "TPO Membrane", "EPDM", "BUR System"],
-      },
-      {
-        title: "Industrial Replacement",
-        slug: "industrial-replacement",
-        imageUrl: "/images/knudson1.jpg",
-        materials: ["Cold Applied Bitumen", "Thermoplastic Membrane", "Green Roof System", "Inverted Roof"],
-      },
-    ],
-  },
-  {
-    id: "residential",
-    label: "Residential Roofing",
-    href: "/residential-roofing",
-    description: "Premium roofing for custom homes & residential builds",
-    projects: [
-      {
-        title: "Custom Home Reroof",
-        slug: "custom-home-reroof",
-        imageUrl: "/images/home.jpg",
-        materials: ["Asphalt Shingles", "Cedar Shakes", "Natural Slate", "Synthetic Slate"],
-      },
-      {
-        title: "New Construction",
-        slug: "new-construction",
-        imageUrl: "/images/about1.jpg",
-        materials: ["Metal Roofing", "Flat Roofing", "Skylight Install", "Custom Metalwork"],
-      },
-    ],
-  },
-  {
-    id: "cladding",
-    label: "Architectural Cladding",
-    href: "/architectural-cladding",
-    description: "Custom facade systems for architects & designers",
-    projects: [
-      {
-        title: "ACM Panel Facade",
-        slug: "acm-panel-facade",
-        imageUrl: "/images/about2.jpg",
-        materials: ["ACM Panels", "Standing Seam", "Zinc Panels", "Copper Cladding"],
-      },
-      {
-        title: "Commercial Cladding",
-        slug: "commercial-cladding",
-        imageUrl: "/images/serviceHero.jpg",
-        materials: ["Fibre Cement", "Wood Panels", "Composite Siding", "Concrete Panels"],
-      },
-    ],
-  },
-  {
-    id: "waterproofing",
-    label: "Waterproofing",
-    href: "/waterproofing",
-    description: "Below & above-grade waterproofing & restoration",
-    projects: [
-      {
-        title: "Foundation System",
-        slug: "foundation-system",
-        imageUrl: "/images/repairs.jpg",
-        materials: ["Hot Rubber Membrane", "Foundation Wrap", "Blindside System", "Traffic Topping"],
-      },
-      {
-        title: "Building Envelope",
-        slug: "building-envelope",
-        imageUrl: "/images/about1.jpg",
-        materials: ["Cementitious Coat", "Sealer Application", "Leak Injection", "Drain System"],
-      },
-    ],
-  },
-  {
-    id: "repairs",
-    label: "Repairs & Maintenance",
-    href: "/repairs",
-    description: "24/7 emergency service & preventative programs",
-    projects: [
-      {
-        title: "Emergency Repair",
-        slug: "emergency-repair",
-        imageUrl: "/images/repairs.jpg",
-        materials: ["Infrared Moisture Test", "HVAC Cone Install", "Skylight Repair", "Retro Curb"],
-      },
-      {
-        title: "Maintenance Program",
-        slug: "maintenance-program",
-        imageUrl: "/images/knudson1.jpg",
-        materials: ["Semi-Annual Inspection", "Detailed Report", "Moisture Testing", "Preventative Seal"],
-      },
-    ],
-  },
-  {
-    id: "restoration",
-    label: "Restoration",
-    href: "/restoration",
-    description: "Building envelope restoration & heritage facade renewal",
-    projects: [
-      {
-        title: "Facade Restoration",
-        slug: "facade-restoration",
-        imageUrl: "/images/about2.jpg",
-        materials: ["Masonry Repair", "Caulking Replacement", "Stone Cleaning", "Coating Systems"],
-      },
-      {
-        title: "Envelope Renewal",
-        slug: "envelope-renewal",
-        imageUrl: "/images/serviceHero.jpg",
-        materials: ["Sealant Injection", "Spandrel Panel Repair", "Through-Wall Flashing", "Window Perimeter Sealing"],
-      },
-    ],
-  },
-];
+// Services dropdown content comes from Admin → Navigation (see lib/nav-menu.ts).
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -143,8 +21,8 @@ const NAV_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
-type Service = (typeof SERVICES)[0];
-type Project = Service["projects"][0];
+type Service = NavService;
+type Project = NavItem;
 
 // ─── Mega menu ────────────────────────────────────────────────────────────────
 
@@ -152,13 +30,15 @@ function MegaMenu({
   open,
   onClose,
   panelRef,
+  services,
 }: {
   open: boolean;
   onClose: () => void;
   panelRef: React.RefObject<HTMLDivElement | null>;
+  services: Service[];
 }) {
-  const [activeService, setActiveService] = useState<Service>(SERVICES[0]);
-  const [activeProject, setActiveProject] = useState<Project>(SERVICES[0].projects[0]);
+  const [activeService, setActiveService] = useState<Service>(services[0]);
+  const [activeProject, setActiveProject] = useState<Project>(services[0].items[0]);
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   const [fading, setFading] = useState(false);
 
@@ -171,13 +51,13 @@ function MegaMenu({
     if (service.id === activeService.id) return;
     fade(() => {
       setActiveService(service);
-      setActiveProject(service.projects[0]);
+      setActiveProject(service.items[0]);
       setActiveProjectIndex(0);
     });
   };
 
   const handleProjectSwitch = (project: Project, index: number) => {
-    if (project.slug === activeProject.slug) return;
+    if (index === activeProjectIndex) return;
     fade(() => {
       setActiveProject(project);
       setActiveProjectIndex(index);
@@ -206,7 +86,7 @@ function MegaMenu({
               Our Services
             </p>
             <ul className="space-y-0.5">
-              {SERVICES.map((service) => {
+              {services.map((service) => {
                 const active = activeService.id === service.id;
                 return (
                   <li key={service.id}>
@@ -266,9 +146,9 @@ function MegaMenu({
 
           {/* Project tabs */}
           <div className="flex gap-2 mb-4">
-            {activeService.projects.map((project, i) => (
+            {activeService.items.map((project, i) => project.title && (
               <button
-                key={project.slug}
+                key={i}
                 onMouseEnter={() => handleProjectSwitch(project, i)}
                 onClick={() => handleProjectSwitch(project, i)}
                 className={`px-3 py-1.5 text-xs font-montserrat rounded-full border transition-all duration-150 ${
@@ -311,13 +191,15 @@ function MegaMenu({
                       {activeProject.title}
                     </h3>
                   </div>
-                  <Link
-                    href={`/projects/${activeProject.slug}`}
-                    onClick={onClose}
-                    className="flex items-center gap-2 bg-white text-primary-950 font-montserrat text-xs uppercase tracking-widest px-4 py-2.5 rounded hover:bg-secondary-50 transition-colors shrink-0 ml-4"
-                  >
-                    View Project <FaArrowRight size={9} />
-                  </Link>
+                  {activeProject.href && (
+                    <Link
+                      href={activeProject.href}
+                      onClick={onClose}
+                      className="flex items-center gap-2 bg-white text-primary-950 font-montserrat text-xs uppercase tracking-widest px-4 py-2.5 rounded hover:bg-secondary-50 transition-colors shrink-0 ml-4"
+                    >
+                      View Project <FaArrowRight size={9} />
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -328,7 +210,7 @@ function MegaMenu({
                 Materials
               </p>
               <ul className="space-y-3">
-                {activeProject.materials.map((mat, i) => (
+                {activeProject.materials.slice(0, NAV_MATERIALS_PER_ITEM).map((mat, i) => (
                   <li key={mat} className="flex items-center gap-3">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-white font-montserrat text-xs shrink-0"
@@ -342,13 +224,15 @@ function MegaMenu({
                   </li>
                 ))}
               </ul>
-              <Link
-                href={`/projects/${activeProject.slug}`}
-                onClick={onClose}
-                className="mt-6 flex items-center gap-2 text-xs text-secondary-700 hover:text-secondary-900 font-montserrat transition-colors"
-              >
-                See full project <FaArrowRight size={9} />
-              </Link>
+              {activeProject.href && (
+                <Link
+                  href={activeProject.href}
+                  onClick={onClose}
+                  className="mt-6 flex items-center gap-2 text-xs text-secondary-700 hover:text-secondary-900 font-montserrat transition-colors"
+                >
+                  See full project <FaArrowRight size={9} />
+                </Link>
+              )}
             </div>
           </div>
 
@@ -373,7 +257,7 @@ function MegaMenu({
 
 // ─── Header ───────────────────────────────────────────────────────────────────
 
-export default function Header() {
+export default function Header({ services }: { services: NavService[] }) {
   const pathname = usePathname();
   const [showMenu, setShowMenu] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
@@ -541,6 +425,7 @@ export default function Header() {
         open={servicesOpen}
         onClose={() => setServicesOpen(false)}
         panelRef={megaMenuRef}
+        services={services}
       />
 
       {/* Backdrop — click to close */}
@@ -611,7 +496,7 @@ export default function Header() {
 
             {mobileServicesOpen && (
               <div className="pb-4 space-y-5 pl-2">
-                {SERVICES.map((service) => (
+                {services.map((service) => (
                   <div key={service.id}>
                     <Link
                       href={service.href}
@@ -620,10 +505,10 @@ export default function Header() {
                     >
                       {service.label}
                     </Link>
-                    {service.projects.map((project) => (
+                    {service.items.filter((item) => item.title && item.href).map((project, i) => (
                       <Link
-                        key={project.slug}
-                        href={`/projects/${project.slug}`}
+                        key={i}
+                        href={project.href}
                         onClick={() => setShowMenu(false)}
                         className="flex items-center gap-2 py-1.5 pl-3 text-xs text-gray-500 font-montserrat hover:text-secondary-700 transition-colors"
                       >

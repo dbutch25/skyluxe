@@ -51,7 +51,15 @@ export default function ResidentialAdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      if (!res.ok) throw new Error("Save failed. Nothing was changed; try again.");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const fields = Object.keys(data?.details?.fieldErrors ?? {});
+        throw new Error(
+          fields.length
+            ? `Save failed. Check these fields: ${fields.join(", ")}`
+            : data?.error ?? "Save failed. Nothing was changed; try again."
+        );
+      }
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {

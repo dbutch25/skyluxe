@@ -1,4 +1,5 @@
 import GallerySlider from '@/components/elements/GallerySlider';
+import GalleryMasonry from '@/components/elements/GalleryMasonry';
 import Link from 'next/link';
 import { FaArrowRight } from 'react-icons/fa';
 
@@ -9,19 +10,23 @@ interface GalleryImage {
 
 interface ServicePagesGalleryProps {
     images: GalleryImage[];
+    /** "slider" (default): one image at a time. "masonry": 3-column grid. Both open the full-screen viewer on click. */
+    layout?: 'slider' | 'masonry';
 }
 
-
-export default function ServicePagesGallery({ images }: ServicePagesGalleryProps) {
+export default function ServicePagesGallery({ images, layout = 'slider' }: ServicePagesGalleryProps) {
     return (
         <div className="container py-20 mx-auto text-center">
-            {/* One image at a time; click to view full screen */}
-            <GallerySlider
-                images={images}
-                aspect="aspect-4/3 sm:aspect-video"
-                sizes="(max-width: 1280px) 100vw, 1200px"
-                className="mx-auto max-w-5xl rounded-lg"
-            />
+            {layout === 'masonry' ? (
+                <GalleryMasonry images={images} className="text-left" />
+            ) : (
+                <GallerySlider
+                    images={images}
+                    aspect="aspect-4/3 sm:aspect-video"
+                    sizes="(max-width: 1280px) 100vw, 1200px"
+                    className="mx-auto max-w-5xl rounded-lg"
+                />
+            )}
 
             <div className="pt-2.5 flex justify-end">
                 <Link href="/projects" className="flex items-center pt-2.5 font-julius gap-3 text-lg text-secondary-900 hover:text-teal-800">

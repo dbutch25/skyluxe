@@ -123,10 +123,7 @@ export default async function ArchitecturalCladdingPage() {
                   Architectural Cladding
                 </span>
               </div>
-              <h1
-                className="font-julius text-white leading-none mb-6"
-                style={{ fontSize: "clamp(3rem,7vw,6rem)" }}
-              >
+              <h1 className="font-julius text-white leading-none mb-6 text-[clamp(2.25rem,11vw,6rem)] lg:text-[clamp(3rem,5.2vw,4.5rem)]">
                 {title}.
               </h1>
               <p className="font-montserrat text-white/70 text-base leading-relaxed mb-8 max-w-lg">
@@ -163,9 +160,12 @@ export default async function ArchitecturalCladdingPage() {
               ].map(({ n, label, sub }) => (
                 <div
                   key={label}
-                  className="bg-primary-950 p-6 text-center hover:bg-primary-900 transition-colors duration-300"
+                  className="bg-primary-950 px-3 py-5 sm:p-6 text-center hover:bg-primary-900 transition-colors duration-300"
                 >
-                  <div className="font-julius text-white text-2xl mb-1">
+                  <div
+                    className="font-julius text-white leading-snug mb-1 text-balance"
+                    style={{ fontSize: "clamp(1.05rem, 4.2vw, 1.5rem)" }}
+                  >
                     {n}
                     <span className="text-secondary-500">.</span>
                   </div>

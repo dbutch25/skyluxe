@@ -389,3 +389,33 @@ export const CharitySpotlightSchema = z.object({
   recapLink: linkField.optional(),
   donateLink: linkField.optional(),
 });
+
+// ─── Navigation: services dropdown ────────────────────────────────────────────
+
+/** "" (none), a site path like "/projects/28-broadleaf", or a full https:// address. */
+const navLink = z
+  .string()
+  .max(500)
+  .refine((v) => v === "" || v.startsWith("/") || /^https?:\/\//.test(v), {
+    message: "Use a page path starting with / or a full https:// link",
+  });
+
+export const NavMenuSchema = z.object({
+  services: z.record(
+    z.string().max(40),
+    z.object({
+      description: z.string().max(200).optional(),
+      items: z
+        .array(
+          z.object({
+            title: z.string().max(80),
+            imageUrl: navLink,
+            href: navLink,
+            materials: z.array(z.string().max(60)).max(6),
+          })
+        )
+        .max(4)
+        .optional(),
+    })
+  ),
+});
