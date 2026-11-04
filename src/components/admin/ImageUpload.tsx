@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { Upload, X, Loader2 } from "lucide-react";
+import { uploadPhotos } from "@/lib/photo-upload";
 
 interface ImageUploadProps {
   value?: string;
@@ -28,6 +29,28 @@ export default function ImageUpload({
   const handleFile = async (file: File) => {
     setUploading(true);
     setError("");
+
+    // Photos go straight from the browser to Cloudflare (resized, location data
+    // removed), so large files don't hit Vercel's 4.5 MB request limit.
+    // Videos still go through /api/upload.
+    if (file.type.startsWith("image/") || /\.(heic|heif)$/i.test(file.name)) {
+      try {
+        let failure = "";
+        const [url] = await uploadPhotos([file], {
+          folder,
+          onProgress: (p) => {
+            if (p.failed.length) failure = p.failed.join(", ");
+          },
+        });
+        if (!url) throw new Error(failure ? `Upload failed: ${failure}` : "Upload failed");
+        onChange(url);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Upload failed");
+      } finally {
+        setUploading(false);
+      }
+      return;
+    }
 
     const formData = new FormData();
     formData.append("file", file);
