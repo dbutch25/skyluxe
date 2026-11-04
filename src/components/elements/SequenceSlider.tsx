@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { safeImageUrl } from "@/lib/utils";
+import { PhotoZoomButton } from "@/components/elements/ProjectLightbox";
 
 const STAGES = [
   { label: "Existing conditions", tag: "Day 0" },
@@ -81,6 +82,8 @@ export default function SequenceSlider({ images, captions = [] }: Props) {
                   sizes="100vw"
                   className="object-cover"
                 />
+                {/* Click to view full screen (only on project pages, which provide the viewer) */}
+                <PhotoZoomButton src={src} label={`View ${STAGES[i]?.label ?? `stage ${i + 1}`} full screen`} />
                 <div
                   className="pointer-events-none absolute inset-x-0 bottom-0 h-[52%]"
                   style={{

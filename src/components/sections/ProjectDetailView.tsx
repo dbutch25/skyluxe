@@ -10,6 +10,7 @@ import { planProjectPhotos } from "@/lib/project-photos";
 import { cn, safeImageUrl } from "@/lib/utils";
 import ProjectsCTA from "@/components/sections/ProjectsCTA";
 import SequenceSlider from "@/components/elements/SequenceSlider";
+import { PhotoZoomButton, ProjectLightboxProvider } from "@/components/elements/ProjectLightbox";
 import type { Chapter, Fact, Highlight, ListSection, Project, ProjectFull, ProjectVideo } from "@/types";
 
 // Shared type/spacing tokens, kept as literals so Tailwind can see them.
@@ -58,6 +59,7 @@ function OverviewWideImage({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative aspect-video lg:aspect-21/9 overflow-hidden bg-primary-900">
       <Image src={safeImageUrl(src)} alt={alt} fill sizes="100vw" className="object-cover" />
+      <PhotoZoomButton src={src} />
     </div>
   );
 }
@@ -98,7 +100,24 @@ export default function ProjectDetailView({ project, related, draft = false }: P
   const overviewImg = photos.overview.bySlot;
   const gallery = photos.onSite;
 
+  // Every photo on the page, in page order, for the full-screen viewer.
+  // The hero is included so it can be reached, though the banner itself isn't clickable.
+  const viewerImages = [
+    project.imageUrl ? { url: project.imageUrl, alt: project.title } : null,
+    ...photos.overviewSlots.map((slot) => {
+      const url = overviewImg[slot.id];
+      return url ? { url, alt: `${project.title} — ${slot.label.toLowerCase()}` } : null;
+    }),
+    highlight?.imageUrl ? { url: highlight.imageUrl, alt: highlight.title } : null,
+    ...chapters.map((c) => (c.imageUrl ? { url: c.imageUrl, alt: c.title } : null)),
+    ...sequence.slice(0, 5).map((url, i) => (url ? { url, alt: `${project.title} — sequence stage ${i + 1}` } : null)),
+    ...gallery.map((url, i) => ({ url, alt: `${project.title} — site photo ${i + 1}` })),
+  ]
+    .filter((img): img is { url: string; alt: string } => !!img?.url)
+    .filter((img, i, all) => all.findIndex((x) => x.url === img.url) === i);
+
   return (
+    <ProjectLightboxProvider images={viewerImages}>
     <main className="bg-primary-950 text-white">
       {draft && (
         <div className="sticky top-0 z-50 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 bg-secondary-300 px-6 py-2.5 text-center font-montserrat text-sm text-primary-950">
@@ -204,6 +223,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                           sizes="(max-width: 1024px) 100vw, 50vw"
                           className="object-cover"
                         />
+                        <PhotoZoomButton src={side} />
                       </div>
                     </div>
                   ) : (
@@ -221,6 +241,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                             sizes="(max-width: 640px) 100vw, 50vw"
                             className="object-cover"
                           />
+                          <PhotoZoomButton src={src} />
                         </div>
                       ))}
                     </div>
@@ -327,6 +348,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
             {highlight.imageUrl && (
               <div className="relative min-w-0 aspect-4/3 bg-secondary-900" style={{ flex: "1 1 420px" }}>
                 <Image src={safeImageUrl(highlight.imageUrl)} alt={highlight.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                <PhotoZoomButton src={highlight.imageUrl} />
               </div>
             )}
           </div>
@@ -347,6 +369,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                   {c.imageUrl && (
                     <div className="relative min-w-0 aspect-4/3 bg-primary-900" style={{ flex: "1 1 400px" }}>
                       <Image src={safeImageUrl(c.imageUrl)} alt={c.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                      <PhotoZoomButton src={c.imageUrl} />
                     </div>
                   )}
                   <div className="min-w-0" style={{ flex: "1.1 1 380px" }}>
@@ -427,6 +450,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover"
                   />
+                  <PhotoZoomButton src={src} />
                 </div>
               ))}
             </div>
@@ -479,5 +503,6 @@ export default function ProjectDetailView({ project, related, draft = false }: P
 
       <ProjectsCTA />
     </main>
+    </ProjectLightboxProvider>
   );
 }

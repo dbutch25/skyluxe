@@ -67,8 +67,8 @@ export default function BgHomeVideo({ video }: Props) {
         />
       )}
 
-      {/* ── Gradient overlay — bottom-heavy ── */}
-      <div className="absolute inset-0 bg-linear-to-t from-primary-950/85 via-primary-950/30 to-primary-950/10" />
+      {/* ── Gradient overlay — bottom-heavy ──
+      <div className="absolute inset-0 bg-linear-to-t from-primary-950/85 via-primary-950/30 to-primary-950/10" /> */}
 
       {/* ── Accent line — left edge ── */}
       <div
