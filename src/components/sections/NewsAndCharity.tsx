@@ -65,14 +65,18 @@ function CharityCard({ charity }: { charity: CharitySpotlight }) {
       className="flex flex-col lg:flex-row overflow-hidden rounded-2xl bg-primary-900"
     >
       {/* Photo */}
-      <div className="relative min-h-72 sm:min-h-96 lg:min-h-115 lg:flex-1 bg-primary-800">
+      <div
+        className={`relative min-h-72 sm:min-h-96 lg:min-h-115 lg:flex-1 ${
+          charity.imageUrl ? "bg-white" : "bg-primary-800"
+        }`}
+      >
         {charity.imageUrl ? (
           <Image
             src={charity.imageUrl}
             alt={charity.imageAlt || charity.title}
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-cover"
+            className="object-contain p-10 sm:p-14 lg:p-16"
           />
         ) : (
           <svg
