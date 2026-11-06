@@ -54,10 +54,13 @@ function Bullet({ children, dark = true }: { children: React.ReactNode; dark?: b
 
 const pad2 = (n: number) => String(n + 1).padStart(2, "0");
 
+const LIFTED_PHOTO =
+  "isolate overflow-hidden rounded-3xl shadow-[0_24px_48px_-18px_rgba(0,0,0,0.45),0_8px_18px_-8px_rgba(0,0,0,0.28)] transition-[transform,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:shadow-[0_34px_64px_-18px_rgba(0,0,0,0.5),0_12px_24px_-8px_rgba(0,0,0,0.3)] motion-reduce:transition-none motion-reduce:hover:translate-y-0";
+
 /** Full-width overview photo: 16:9 on small screens, wider on large ones. */
 function OverviewWideImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative aspect-video lg:aspect-21/9 overflow-hidden bg-primary-900">
+    <div className={cn("relative aspect-video lg:aspect-21/9 bg-primary-900", LIFTED_PHOTO)}>
       <Image src={safeImageUrl(src)} alt={alt} fill sizes="100vw" className="object-cover" />
       <PhotoZoomButton src={src} />
     </div>
@@ -174,7 +177,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
             {facts.map((f) => (
               <div key={f.label} className="bg-primary-950 pt-6.5 pb-7 px-6">
                 <div className={`${EYEBROW} mb-2.5 text-[#8A9299]`}>{f.label}</div>
-                <div className="font-julius text-[18px] leading-snug">{f.value}</div>
+                <div className="font-julius text-[17px] lg:text-[18px] leading-snug">{f.value}</div>
               </div>
             ))}
           </div>
@@ -213,9 +216,9 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                 <Fragment key={i}>
                   {side ? (
                     <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-                      <p className="font-montserrat text-base leading-[1.7] text-gray-600 max-w-[60ch] text-pretty">{p}</p>
+                      <p className="font-montserrat text-lg leading-[1.7] text-gray-600 max-w-[60ch] text-pretty">{p}</p>
                       {/* Paragraphs 1, 3, 5… image right; 2, 4, 6… image left */}
-                      <div className={cn("relative aspect-4/3 overflow-hidden bg-primary-900", i % 2 === 1 && "lg:order-first")}>
+                      <div className={cn("relative aspect-4/3 bg-primary-900", LIFTED_PHOTO, i % 2 === 1 && "lg:order-first")}>
                         <Image
                           src={safeImageUrl(side)}
                           alt={`${project.title} — photo ${i + 1}`}
@@ -227,13 +230,13 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                       </div>
                     </div>
                   ) : (
-                    <p className="font-montserrat text-base leading-[1.7] text-gray-600 max-w-[66ch] text-pretty">{p}</p>
+                    <p className="font-montserrat text-2xl leading-[1.7] text-gray-600 max-w-[66ch] text-pretty">{p}</p>
                   )}
 
                   {pair.length === 2 && (
                     <div className="grid gap-4 sm:grid-cols-2 lg:gap-6">
                       {pair.map((src, j) => (
-                        <div key={j} className="relative aspect-4/3 overflow-hidden bg-primary-900">
+                        <div key={j} className={cn("relative aspect-4/3 bg-primary-900", LIFTED_PHOTO)}>
                           <Image
                             src={safeImageUrl(src)}
                             alt={`${project.title} — detail ${pairIndex * 2 + j + 1}`}
@@ -262,7 +265,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
       {detail?.droneImageUrl && (
         <section className="bg-secondary-950 text-white px-6 lg:px-12 pt-16 pb-24">
           <div className="mx-auto max-w-7xl">
-            <div className="relative w-full overflow-hidden bg-secondary-900" style={{ height: "clamp(380px, 50vw, 560px)" }}>
+            <div className={cn("relative w-full bg-secondary-900", LIFTED_PHOTO)} style={{ height: "clamp(380px, 50vw, 560px)" }}>
               <Image
                 src={safeImageUrl(detail.droneImageUrl)}
                 alt={`${project.title} — drone walkthrough`}
@@ -340,13 +343,13 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                 {highlight.title}
               </h2>
               {highlight.body && (
-                <p className="font-montserrat text-[17px] leading-[1.68] text-[#B9BEC2] max-w-[50ch] text-pretty">
+                <p className="font-montserrat text-[17px] lg:text-[18px] leading-[1.68] text-[#B9BEC2] max-w-[50ch] text-pretty">
                   {highlight.body}
                 </p>
               )}
             </div>
             {highlight.imageUrl && (
-              <div className="relative min-w-0 aspect-4/3 bg-secondary-900" style={{ flex: "1 1 420px" }}>
+              <div className={cn("relative min-w-0 aspect-4/3 bg-secondary-900", LIFTED_PHOTO)} style={{ flex: "1 1 420px" }}>
                 <Image src={safeImageUrl(highlight.imageUrl)} alt={highlight.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                 <PhotoZoomButton src={highlight.imageUrl} />
               </div>
@@ -367,7 +370,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                   className={`flex flex-wrap items-start gap-x-16 gap-y-10 ${ci % 2 ? "flex-row-reverse" : ""}`}
                 >
                   {c.imageUrl && (
-                    <div className="relative min-w-0 aspect-4/3 bg-primary-900" style={{ flex: "1 1 400px" }}>
+                    <div className={cn("relative min-w-0 aspect-4/3 bg-primary-900", LIFTED_PHOTO)} style={{ flex: "1 1 400px" }}>
                       <Image src={safeImageUrl(c.imageUrl)} alt={c.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                       <PhotoZoomButton src={c.imageUrl} />
                     </div>
@@ -442,7 +445,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
               style={{ gridAutoRows: "clamp(180px, 24vw, 236px)" }}
             >
               {gallery.map((src, i) => (
-                <div key={i} className={`relative overflow-hidden bg-primary-900 ${i === 0 ? "row-span-2" : ""}`}>
+                <div key={i} className={cn("relative bg-primary-900", LIFTED_PHOTO, i === 0 && "row-span-2")}>
                   <Image
                     src={safeImageUrl(src)}
                     alt={`${project.title} — site photo ${i + 1}`}

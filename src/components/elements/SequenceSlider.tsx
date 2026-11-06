@@ -61,7 +61,7 @@ export default function SequenceSlider({ images, captions = [] }: Props) {
           </div>
         </div>
 
-        <div className="relative w-full overflow-hidden">
+        <div className="relative w-full isolate overflow-hidden rounded-3xl shadow-[0_24px_48px_-18px_rgba(0,0,0,0.55),0_8px_18px_-8px_rgba(0,0,0,0.35)]">
           <div
             className="flex"
             style={{
