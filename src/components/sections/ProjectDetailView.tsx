@@ -170,11 +170,11 @@ export default function ProjectDetailView({ project, related, draft = false }: P
       {/* ── Facts strip ── */}
       {facts.length > 0 && (
         <section className="bg-primary-950 px-6 lg:px-12">
-          <div className="mx-auto max-w-7xl grid grid-cols-[repeat(auto-fit,minmax(min(190px,100%),1fr))] gap-px bg-white/12 border-b border-white/12">
+          <div className="mx-auto  max-w-7xl grid grid-cols-[repeat(auto-fit,minmax(min(190px,100%),1fr))] gap-px bg-white/12 border-b border-white/12">
             {facts.map((f) => (
-              <div key={f.label} className="bg-primary-950 pt-6.5 pb-7 pr-6">
+              <div key={f.label} className="bg-primary-950 pt-6.5 pb-7 px-6">
                 <div className={`${EYEBROW} mb-2.5 text-[#8A9299]`}>{f.label}</div>
-                <div className="font-julius text-[19px] leading-snug">{f.value}</div>
+                <div className="font-julius text-[18px] leading-snug">{f.value}</div>
               </div>
             ))}
           </div>
@@ -221,7 +221,7 @@ export default function ProjectDetailView({ project, related, draft = false }: P
                           alt={`${project.title} — photo ${i + 1}`}
                           fill
                           sizes="(max-width: 1024px) 100vw, 50vw"
-                          className="object-cover"
+                          className="object-cover rounded-lg shadow-2xl"
                         />
                         <PhotoZoomButton src={side} />
                       </div>
