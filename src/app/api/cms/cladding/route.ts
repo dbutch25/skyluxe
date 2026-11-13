@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/session";
 import { CladdingSchema } from "@/lib/schemas";
@@ -25,6 +26,7 @@ export async function PUT(request: NextRequest) {
     const data = existing
       ? await db.cladding.update({ where: { id: existing.id }, data: parsed.data })
       : await db.cladding.create({ data: parsed.data });
+    revalidateTag("cladding", { expire: 0 }); // page shows changes straight away
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

@@ -25,7 +25,7 @@ const cloudinaryUrl = z
 
 const imageItem = z.object({
   url: z.string().url().or(z.literal("")),
-  alt: z.string().max(200).optional(),
+  alt: z.string().max(200).nullish(),
 });
 
 const listSection = z.object({
@@ -227,23 +227,30 @@ export const RepairsSchema = z.object({
 
 export const WaterproofingSchema = z.object({
   title: z.string().min(1).max(200),
-  description: z.string().max(5000).optional(),
+  description: z.string().max(5000).nullish(),
+  // The six systems, in page order (see lib/waterproofing-content.ts)
   accordionItems: z
     .array(
       z.object({
-        accordionTitle: z.string().min(1).max(300),
+        accordionTitle: z.string().max(300),
         accordionContent: z.string().max(2000),
+        subtitle: z.string().max(200).optional(),
+        tags: z.array(z.string().max(60)).max(12).optional(),
+        gallery: z
+          .array(z.object({ url: z.string().url(), alt: z.string().max(200).nullish() }))
+          .max(30)
+          .optional(),
       })
     )
     .max(20)
     .optional(),
   gallery: z
-    .array(z.object({ url: z.string().url(), galleryAlt: z.string().max(200).optional() }))
+    .array(z.object({ url: z.string().url(), galleryAlt: z.string().max(200).nullish() }))
     .max(50)
     .optional(),
   manufacturersGallery: z
     .array(
-      z.object({ url: z.string().url(), manufacturerAlt: z.string().max(200).optional() })
+      z.object({ url: z.string().url(), manufacturerAlt: z.string().max(200).nullish() })
     )
     .max(50)
     .optional(),
@@ -270,19 +277,37 @@ export const ICIRoofingSchema = z.object({
 
 export const CladdingSchema = z.object({
   title: z.string().min(1).max(200),
-  content: z.string().max(5000).optional(),
-  listSections: z.array(listSection).max(10).optional(),
-  galleryImages: z.array(imageItem).max(50).optional(),
-  extraTitle: z.string().max(200).optional(),
-  extraContent: z.string().max(5000).optional(),
-  carouselMImages: z.array(imageItem).max(50).optional(),
-  carouselADImages: z.array(imageItem).max(50).optional(),
+  content: z.string().max(5000).nullish(),
+  listSections: z.array(listSection).max(10).nullish().transform((v) => v ?? undefined), // Json column: null = leave unchanged
+  galleryImages: z.array(imageItem).max(50).nullish().transform((v) => v ?? undefined), // Json column: null = leave unchanged
+  extraTitle: z.string().max(200).nullish(),
+  extraContent: z.string().max(5000).nullish(),
+  carouselMImages: z.array(imageItem).max(50).nullish().transform((v) => v ?? undefined), // Json column: null = leave unchanged
+  carouselADImages: z.array(imageItem).max(50).nullish().transform((v) => v ?? undefined), // Json column: null = leave unchanged
+  // The rest of the page text (see lib/cladding-content.ts)
+  extras: z
+    .object({
+      heroEyebrow: z.string().max(200),
+      facts: z.array(z.object({ n: z.string().max(60), label: z.string().max(80), sub: z.string().max(120) })).max(4),
+      specialtiesEyebrow: z.string().max(200),
+      specialtiesTitle: z.string().max(200),
+      specialtiesIntro: z.string().max(2000),
+      videos: z.array(z.string().max(60)).max(3),
+      galleryEyebrow: z.string().max(200),
+      galleryTitle: z.string().max(200),
+      ctaEyebrow: z.string().max(200),
+      ctaTitle: z.string().max(200),
+      ctaText: z.string().max(2000),
+    })
+    .partial()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 export const ResidentialSchema = z.object({
   title: z.string().min(1).max(200),
-  backgroundImageUrl: z.string().url().or(z.literal("")).optional(),
-  backgroundImageAlt: z.string().max(200).optional(),
+  backgroundImageUrl: z.string().url().or(z.literal("")).nullish(),
+  backgroundImageAlt: z.string().max(200).nullish(),
 }).passthrough(); // passthrough for all the other fields - residential is very large
 
 // ─── Testimonials ─────────────────────────────────────────────────────────────
@@ -330,12 +355,52 @@ export const RequestFormSchema = z.object({
 });
 // ─── Restoration ─────────────────────────────────────────────────────────────
 
+const restorationItem = z.object({ title: z.string().max(200), description: z.string().max(2000) });
+
 export const RestorationSchema = z.object({
   title: z.string().min(1).max(200),
-  introText: z.string().max(5000).optional(),
-  heroImageUrl: z.string().url().or(z.literal('')).optional(),
-  heroImageAlt: z.string().max(200).optional(),
-  galleryImages: z.array(imageItem).max(30).optional(),
+  introText: z.string().max(5000).nullish(),
+  heroImageUrl: z.string().url().or(z.literal('')).nullish(),
+  heroImageAlt: z.string().max(200).nullish(),
+  galleryImages: z.array(imageItem).max(30).nullish().transform((v) => v ?? undefined), // Json column: null = leave unchanged
+  // The rest of the page text (see lib/restoration-content.ts)
+  extras: z
+    .object({
+      heroEyebrow: z.string().max(200),
+      heroTitle: z.string().max(200),
+      heroAccent: z.string().max(200),
+      heroText: z.string().max(1000),
+      introEyebrow: z.string().max(200),
+      introTitle: z.string().max(200),
+      introAccent: z.string().max(200),
+      introText2: z.string().max(5000),
+      stats: z.array(z.object({ stat: z.string().max(20), label: z.string().max(100), sub: z.string().max(100) })).max(4),
+      capabilitiesEyebrow: z.string().max(200),
+      capabilitiesTitle: z.string().max(200),
+      capabilities: z.array(restorationItem).max(6),
+      scopeEyebrow: z.string().max(200),
+      scopeTitle: z.string().max(200),
+      scopeAccent: z.string().max(200),
+      scopeText: z.string().max(2000),
+      checklist: z.array(z.string().max(200)).max(40),
+      processEyebrow: z.string().max(200),
+      processTitle: z.string().max(200),
+      process: z.array(restorationItem).max(5),
+      galleryEyebrow: z.string().max(200),
+      galleryTitle: z.string().max(200),
+      faqEyebrow: z.string().max(200),
+      faqTitle: z.string().max(200),
+      faqAccent: z.string().max(200),
+      faqText: z.string().max(1000),
+      faqs: z.array(z.object({ title: z.string().max(300), content: z.string().max(3000) })).max(20),
+      ctaEyebrow: z.string().max(200),
+      ctaTitle: z.string().max(200),
+      ctaAccent: z.string().max(200),
+      ctaText: z.string().max(2000),
+    })
+    .partial()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 // ─── News & Charity ───────────────────────────────────────────────────────────

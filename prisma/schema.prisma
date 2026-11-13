@@ -234,6 +234,7 @@ model Cladding {
   extraContent    String?
   carouselMImages Json?    // [{ url: string, alt: string }]
   carouselADImages Json?   // [{ url: string, alt: string }]
+  extras          Json?    // rest of the page text, see src/lib/cladding-content.ts
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -245,6 +246,7 @@ model Restoration {
   heroImageUrl String?
   heroImageAlt String?
   galleryImages Json?
+  extras       Json?    // rest of the page text, see src/lib/restoration-content.ts
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

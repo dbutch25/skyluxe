@@ -137,12 +137,12 @@ function ServiceRow({
             sizes="(max-width: 1024px) 100vw, 50vw"
           />
 
-          {/* Dark overlay gradient */}
+                    {/* Light edge shading toward the text side (keeps photos bright) */}
           <div
             className={`absolute inset-0 ${
               isEven
-                ? "bg-linear-to-r from-transparent to-primary-950/40"
-                : "bg-linear-to-l from-transparent to-primary-950/40"
+                ? "bg-linear-to-r from-transparent from-60% to-primary-950/15"
+                : "bg-linear-to-l from-transparent from-60% to-primary-950/15"
             }`}
           />
 

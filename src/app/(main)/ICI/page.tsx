@@ -105,8 +105,8 @@ export default async function ICIPage() {
             <div className="grid grid-cols-2 gap-px bg-white/10">
               {[
                 {n:"200+", label:"ICI Projects", sub:"Completed across the GTA"},
-                {n:"On Time", label:"Guaranteed", sub:"Every project, every time"},
-                {n:"GAF", label:"Master Elite", sub:"Fewer than 3% qualify"},
+                {n:"Soprema", label:"PAQ+S Certified", sub:"Quality assurance program"},
+                {n:"Siplast", label:"Certified", sub:"Approved applicator"},
                 {n:"10yr", label:"Warranty", sub:"Industry-leading coverage"},
               ].map(({n,label,sub}) => (
                 <div key={label} className="bg-primary-950 p-6 text-center hover:bg-primary-900 transition-colors duration-300">

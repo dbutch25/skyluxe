@@ -197,13 +197,17 @@ export interface RepairsPage {
 export interface WaterproofingPage {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
+  // The six systems, in page order (see lib/waterproofing-content.ts)
   accordionItems?: {
     accordionTitle: string;
     accordionContent: string;
+    subtitle?: string;
+    tags?: string[];
+    gallery?: { url: string; alt?: string }[];
   }[];
-  gallery?: { url: string; galleryAlt?: string }[];
-  manufacturersGallery?: { url: string; manufacturerAlt?: string }[];
+  gallery?: { url: string; galleryAlt?: string | null }[];
+  manufacturersGallery?: { url: string; manufacturerAlt?: string | null }[];
 }
 
 export interface ICIRoofingPage {
@@ -236,15 +240,17 @@ export interface CladdingPage {
   extraContent?: string;
   carouselMImages?: CloudinaryImage[];
   carouselADImages?: CloudinaryImage[];
+  extras?: Partial<import("@/lib/cladding-content").CladdingExtras> | null;
 }
 
 export interface RestorationPage {
   id: string;
   title: string;
-  introText?: string;
-  heroImageUrl?: string;
-  heroImageAlt?: string;
+  introText?: string | null;
+  heroImageUrl?: string | null;
+  heroImageAlt?: string | null;
   galleryImages?: CloudinaryImage[];
+  extras?: Partial<import("@/lib/restoration-content").RestorationExtras> | null;
 }
 
 export interface ResidentialPage {

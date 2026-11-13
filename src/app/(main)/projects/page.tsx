@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { fetchProjects } from "@/lib/data";
+import { fetchMapProjects, fetchProjects } from "@/lib/data";
 import ProjectsClient from "./ProjectsClient";
+import ProjectsMap from "@/components/sections/ProjectsMap";
 import ProjectsCTA from "@/components/sections/ProjectsCTA";
 
 export const metadata: Metadata = {
@@ -10,11 +11,12 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectsPage() {
-  const projects = await fetchProjects();
+  const [projects, mapProjects] = await Promise.all([fetchProjects(), fetchMapProjects()]);
 
   return (
     <>
       <ProjectsClient projects={projects} />
+      <ProjectsMap projects={mapProjects} showViewAll={false} />
       <ProjectsCTA />
     </>
   );

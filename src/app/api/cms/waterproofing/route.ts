@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/session";
 import { WaterproofingSchema } from "@/lib/schemas";
@@ -25,6 +26,7 @@ export async function PUT(request: NextRequest) {
     const data = existing
       ? await db.waterproofing.update({ where: { id: existing.id }, data: parsed.data })
       : await db.waterproofing.create({ data: parsed.data });
+    revalidateTag("waterproofing", { expire: 0 }); // page shows changes straight away
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

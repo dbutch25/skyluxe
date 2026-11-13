@@ -1,0 +1,1 @@
+-- The NavMenu table is created in 20261103170536_create_only_name_check_drift.

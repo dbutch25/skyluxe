@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/session";
 import { RestorationSchema } from "@/lib/schemas";
@@ -28,6 +29,7 @@ export async function PUT(request: NextRequest) {
     const data = existing
       ? await db.restoration.update({ where: { id: existing.id }, data: parsed.data })
       : await db.restoration.create({ data: parsed.data });
+    revalidateTag("restoration", { expire: 0 }); // page shows changes straight away
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized")

@@ -5,34 +5,8 @@ import { Marquee } from "@/components/elements/Marquee";
 import YouTubeEmbed from "@/components/elements/YoutubeEmbed";
 import { getCladdingPage } from "@/lib/data";
 import { BRAND_CONTACT } from "@/constants/brand";
+import { resolveCladdingContent } from "@/lib/cladding-content";
 
-// ─── Static fallback content (mirrors the live site) ──────────────────────────
-
-const FALLBACK = {
-  title: "Architectural Cladding",
-  content:
-    "Skyluxe Roofing and Sheet Metal has extensive expertise in a variety of cladding applications. Our large sheet metal shop is outfitted with state-of-the-art equipment to ensure high-quality results.",
-  extraTitle: "Partners",
-  extraContent:
-    "Our trusted partnerships with top manufacturers, architects, and designers ensure quality, innovation, and lasting value in every project. Collaborating closely with these industry experts allows us to bring cutting-edge materials and designs to life.",
-  listItems: [
-    "Standing Seam Panels",
-    "Corrugated Siding",
-    "Insulated Wall Panels (IMP Panels)",
-    "Custom Sheet Metal Fabrication & Installation",
-    "Wood Panels",
-    "Zinc Panels",
-    "Copper & Exotic Metal Work",
-    "Aluminum Composite Panels (ACM Panels)",
-    "Fibre Cement Panels",
-    "Wood Siding",
-    "Composite Siding",
-    "Concrete Panels",
-  ],
-};
-
-// YouTube walkthroughs featured on the cladding page
-const VIDEO_IDS = ["V-16shpld_8", "XaYfYRqX_EM", "s-0uXog0ZiQ"];
 
 export default async function ArchitecturalCladdingPage() {
   let data = null;
@@ -42,14 +16,11 @@ export default async function ArchitecturalCladdingPage() {
     /* fall back to static content */
   }
 
-  const title = data?.title ?? FALLBACK.title;
-  const content = data?.content ?? FALLBACK.content;
-  const extraTitle = data?.extraTitle ?? FALLBACK.extraTitle;
-  const extraContent = data?.extraContent ?? FALLBACK.extraContent;
-
-  const listItems: string[] = data?.listSections?.length
-    ? data.listSections.flatMap((s) => s.items)
-    : FALLBACK.listItems;
+  // All page text: saved in Admin → Architectural Cladding, or the defaults.
+  const c = resolveCladdingContent(data);
+  const { title, content, specialties: listItems, videos } = c;
+  const extraTitle = c.partnersTitle;
+  const extraContent = c.partnersIntro;
 
   const galleryImages = data?.galleryImages ?? [];
   const manufacturers = data?.carouselMImages ?? [];
@@ -120,7 +91,7 @@ export default async function ArchitecturalCladdingPage() {
               <div className="flex items-center gap-3 mb-6">
                 <span className="h-px w-10 bg-secondary-600" />
                 <span className="font-montserrat text-secondary-300 text-xs uppercase tracking-[0.2em]">
-                  Architectural Cladding
+                  {c.heroEyebrow}
                 </span>
               </div>
               <h1 className="font-julius text-white leading-none mb-6 text-[clamp(2.25rem,11vw,6rem)] lg:text-[clamp(3rem,5.2vw,4.5rem)]">
@@ -152,14 +123,9 @@ export default async function ArchitecturalCladdingPage() {
 
             {/* Capability quick-facts panel */}
             <div className="grid grid-cols-2 gap-px bg-white/10">
-              {[
-                { n: "In-House", label: "Sheet Metal Shop", sub: "State-of-the-art equipment" },
-                { n: "Custom", label: "Fabrication", sub: "Built to your elevation" },
-                { n: "ACM · Zinc", label: "& Copper", sub: "Exotic metal expertise" },
-                { n: "GTA", label: "Wide Service", sub: "ICI & residential" },
-              ].map(({ n, label, sub }) => (
+              {c.facts.map(({ n, label, sub }, i) => (
                 <div
-                  key={label}
+                  key={i}
                   className="bg-primary-950 px-3 py-5 sm:p-6 text-center hover:bg-primary-900 transition-colors duration-300"
                 >
                   <div
@@ -205,22 +171,19 @@ export default async function ArchitecturalCladdingPage() {
               <div className="flex items-center gap-3 mb-5">
                 <span className="h-px w-8 bg-secondary-600" />
                 <span className="font-montserrat text-secondary-700 text-xs uppercase tracking-[0.18em]">
-                  What We Fabricate & Install
+                  {c.specialtiesEyebrow}
                 </span>
               </div>
               <h2
                 className="font-julius text-primary-950 leading-tight"
                 style={{ fontSize: "clamp(1.75rem,2.5vw,2.25rem)" }}
               >
-                Cladding Systems We Specialize In
+                {c.specialtiesTitle}
               </h2>
             </div>
             <div>
               <p className="font-montserrat text-gray-600 text-base leading-relaxed">
-                From standing seam and ACM to zinc, copper and exotic metal work, our
-                sheet metal division fabricates and installs facade systems designed to
-                your building&apos;s exact requirements — for Industrial, Commercial,
-                Institutional and Residential projects.
+                {c.specialtiesIntro}
               </p>
             </div>
           </div>
@@ -229,7 +192,7 @@ export default async function ArchitecturalCladdingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {listItems.map((item, i) => (
               <div
-                key={item}
+                key={`${i}-${item}`}
                 className="flex items-center gap-4 bg-white border border-gray-100 px-5 py-4 hover:border-secondary-200 hover:shadow-sm transition-all duration-300"
               >
                 <span className="font-julius text-secondary-600 text-lg w-8 shrink-0">
@@ -244,11 +207,13 @@ export default async function ArchitecturalCladdingPage() {
       </section>
 
       {/* ── YouTube 1 ── */}
-      <section className="w-full py-10 bg-white">
-        <div className="container max-w-5xl mx-auto px-6 lg:px-10">
-          <YouTubeEmbed videoId={VIDEO_IDS[0]} />
-        </div>
-      </section>
+      {videos[0] && (
+        <section className="w-full py-10 bg-white">
+          <div className="container max-w-5xl mx-auto px-6 lg:px-10">
+            <YouTubeEmbed videoId={videos[0]} />
+          </div>
+        </section>
+      )}
 
       {/* ── Gallery ── */}
       {galleryImages.length > 0 && (
@@ -257,11 +222,11 @@ export default async function ArchitecturalCladdingPage() {
             <div className="flex items-center gap-3 mb-3">
               <span className="h-px w-8 bg-secondary-600" />
               <span className="font-montserrat text-secondary-700 text-xs uppercase tracking-[0.18em]">
-                Project Gallery
+                {c.galleryEyebrow}
               </span>
             </div>
             <h2 className="font-julius text-primary-950 text-2xl mb-8">
-              Cladding Projects Across the GTA
+              {c.galleryTitle}
             </h2>
           </div>
           <ServicePagesGallery images={galleryImages} />
@@ -269,12 +234,18 @@ export default async function ArchitecturalCladdingPage() {
       )}
 
       {/* ── YouTube 2 & 3 ── */}
-      <section className="w-full py-10 bg-white">
-        <div className="container max-w-5xl mx-auto px-6 lg:px-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <YouTubeEmbed videoId={VIDEO_IDS[1]} />
-          <YouTubeEmbed videoId={VIDEO_IDS[2]} />
-        </div>
-      </section>
+      {(videos[1] || videos[2]) && (
+        <section className="w-full py-10 bg-white">
+          <div
+            className={`container max-w-5xl mx-auto px-6 lg:px-10 grid grid-cols-1 gap-6 ${
+              videos[1] && videos[2] ? "md:grid-cols-2" : ""
+            }`}
+          >
+            {videos[1] && <YouTubeEmbed videoId={videos[1]} />}
+            {videos[2] && <YouTubeEmbed videoId={videos[2]} />}
+          </div>
+        </section>
+      )}
 
       {/* ── Partners — Manufacturers + Architects & Designers ── */}
       {(manufacturers.length > 0 || architects.length > 0 || extraContent) && (
@@ -340,19 +311,17 @@ export default async function ArchitecturalCladdingPage() {
               <div className="flex items-center gap-3 mb-4">
                 <span className="h-px w-8 bg-white/40" />
                 <span className="font-montserrat text-white/60 text-xs uppercase tracking-[0.18em]">
-                  Architects · Builders · Developers
+                  {c.ctaEyebrow}
                 </span>
               </div>
               <h2
                 className="font-julius text-white leading-tight mb-4"
                 style={{ fontSize: "clamp(1.75rem,2.5vw,2.5rem)" }}
               >
-                Planning a Facade or Cladding Project?
+                {c.ctaTitle}
               </h2>
               <p className="font-montserrat text-white/70 text-base max-w-lg leading-relaxed">
-                Send us your drawings and we&apos;ll fabricate and install a cladding
-                system to match. Free assessment, response within 24 hours, full GTA
-                service.
+                {c.ctaText}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 lg:shrink-0">

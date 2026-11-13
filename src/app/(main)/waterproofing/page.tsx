@@ -4,93 +4,37 @@ import ServicePagesGallery from "@/components/layouts/ServicePagesGallery";
 import { Marquee } from "@/components/elements/Marquee";
 import { getWaterproofingPage } from "@/lib/data";
 import { BRAND_CONTACT } from "@/constants/brand";
+import { mergeWaterproofingSystems, WATERPROOFING_DESCRIPTION } from "@/lib/waterproofing-content";
 
 export const metadata = {
   title: "Waterproofing | Skyluxe Roofing & Sheet Metal — GTA",
   description: "Below and above-grade waterproofing systems. Foundation, hot rubber, traffic toppings, sealers, cementitious applications, and leak repairs. Led by Ben Serino — GTA waterproofing specialist.",
 };
 
-const SYSTEMS = [
-  {
-    id: "foundation",
-    num: "01",
-    title: "Foundation Waterproofing",
-    subtitle: "Below-Grade Systems",
-    content: "We specialize in providing below grade waterproofing systems for Conventional, Blindside and Tanked systems. These assemblies can be installed in various ways from Torch Applied, Self-Adhered, Liquid Applied, Trowel Applied and Spray Applied.",
-    tags: ["Conventional","Blindside","Tanked","Torch Applied","Self-Adhered","Liquid Applied"],
-    bg: "bg-primary-950",
-    light: true,
-  },
-  {
-    id: "hot-rubber",
-    num: "02",
-    title: "Hot Applied Membrane",
-    subtitle: "Hot Rubber Systems",
-    content: "Hot rubber is commonly used for waterproofing roofs, plaza decks and other flat surfaces. It can be applied to both new and existing structures making it a versatile option for a variety of construction and renovation projects. Provides seamless, monolithic coverage with excellent adhesion.",
-    tags: ["Plaza Decks","Roof Decks","Podium Slabs","New Construction","Renovation"],
-    bg: "bg-[rgb(255,253,245)]",
-    light: false,
-  },
-  {
-    id: "traffic",
-    num: "03",
-    title: "Traffic Topping",
-    subtitle: "Vehicular & Pedestrian",
-    content: "Traffic toppings are a type of flooring material designed to withstand heavy foot and vehicular traffic. Commonly used in parking garages, loading docks, warehouses, roofs and roads where durability and resistance to wear and tear are important considerations.",
-    tags: ["Polyurethane","Epoxy","Cementitious","PMMA / PUMA","Parking Garages","Loading Docks"],
-    bg: "bg-gray-50",
-    light: false,
-  },
-  {
-    id: "sealer",
-    num: "04",
-    title: "Sealer",
-    subtitle: "Surface Protection",
-    content: "Application of sealer on surfaces such as slabs on grade, balconies and service rooms. Penetrating silane/siloxane sealers provide deep protection against water, de-icing salts, and contaminants without altering surface appearance.",
-    tags: ["Slabs on Grade","Balconies","Service Rooms","Penetrating","Film-Forming"],
-    bg: "bg-white",
-    light: false,
-  },
-  {
-    id: "cementitious",
-    num: "05",
-    title: "Cementitious Applications",
-    subtitle: "Rigid Waterproofing",
-    content: "Cementitious waterproofing for stormwater tanks, elevator pits, and sump pits. Ideal for negative-side waterproofing applications where access to the positive side is not available. Can be applied to wet surfaces and allows substrate to breathe.",
-    tags: ["Stormwater Tanks","Elevator Pits","Sump Pits","Negative-Side"],
-    bg: "bg-[rgb(255,253,245)]",
-    light: false,
-  },
-  {
-    id: "leak",
-    num: "06",
-    title: "Leak Injections & Repairs",
-    subtitle: "Emergency & Remedial",
-    content: "Leak repairs on new or existing foundations. We identify and fix water infiltration issues using Polyurethane/Epoxy Injections, Cementitious coating, and cement/chemical grouting depending on conditions. Rapid response for active leaks.",
-    tags: ["Polyurethane Injection","Epoxy Injection","Cementitious Coating","Chemical Grouting"],
-    bg: "bg-primary-950",
-    light: true,
-  },
+// Look of each system section, in page order (text comes from lib/waterproofing-content.ts).
+const SYSTEM_STYLES = [
+  { bg: "bg-primary-950", light: true },
+  { bg: "bg-[rgb(255,253,245)]", light: false },
+  { bg: "bg-gray-50", light: false },
+  { bg: "bg-white", light: false },
+  { bg: "bg-[rgb(255,253,245)]", light: false },
+  { bg: "bg-primary-950", light: true },
 ];
 
-const FALLBACK_DESCRIPTION = "Skyluxe Waterproofing specializes in all building envelope restoration and below & above grade waterproofing systems. Led by Ben Serino — who pioneered the blindside waterproofing market in the GTA — our division brings over 20 years of hands-on expertise to every project.";
 
 export default async function WaterproofingPage() {
   let data = null;
   try { data = await getWaterproofingPage(); } catch { /* fallback */ }
 
-  const description = data?.description ?? FALLBACK_DESCRIPTION;
+  const description = data?.description?.trim() || WATERPROOFING_DESCRIPTION;
   const gallery = data?.gallery ?? [];
   const manufacturersGallery = data?.manufacturersGallery ?? [];
 
-  // If CMS has accordion items, use those for system content
-  const cmsAccordion = data?.accordionItems ?? [];
-
-  // Merge CMS content into system definitions where available
-  const systems = SYSTEMS.map((s, i) => {
-    const cms = cmsAccordion[i];
-    return cms ? { ...s, title: cms.accordionTitle, content: cms.accordionContent } : s;
-  });
+  // Text from Admin → Waterproofing where saved, defaults otherwise; look per position.
+  const systems = mergeWaterproofingSystems(data?.accordionItems).map((s, i) => ({
+    ...s,
+    ...SYSTEM_STYLES[i],
+  }));
 
   return (
     <>

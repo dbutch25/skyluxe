@@ -17,9 +17,11 @@ const ProjectsMapInner = dynamic(() => import("@/components/elements/ProjectsMap
 
 interface Props {
   projects: Project[];
+  /** Show the "View All Projects" link (off on /projects itself). */
+  showViewAll?: boolean;
 }
 
-export default function ProjectsMap({ projects }: Props) {
+export default function ProjectsMap({ projects, showViewAll = true }: Props) {
   const hasPins = projects.some(
     (p) => typeof p.latitude === "number" && typeof p.longitude === "number"
   );
@@ -51,16 +53,18 @@ export default function ProjectsMap({ projects }: Props) {
               roofing, cladding, and waterproofing projects we&apos;ve completed across
               the region. Click any pin to see the project.
             </p>
-            <Link
-              href="/projects"
-              className="group inline-flex items-center gap-2 font-montserrat text-sm font-semibold text-secondary-800 hover:text-secondary-900"
-            >
-              View All Projects
-              <FaArrowRight
-                size={11}
-                className="group-hover:translate-x-1 transition-transform duration-300"
-              />
-            </Link>
+            {showViewAll && (
+              <Link
+                href="/projects"
+                className="group inline-flex items-center gap-2 font-montserrat text-sm font-semibold text-secondary-800 hover:text-secondary-900"
+              >
+                View All Projects
+                <FaArrowRight
+                  size={11}
+                  className="group-hover:translate-x-1 transition-transform duration-300"
+                />
+              </Link>
+            )}
           </div>
         </div>
 
